@@ -7,7 +7,7 @@ export function getSystemPrompt(): string {
   return `Eres un entrenador deportivo y nutricionista certificado especializado en crear planes de entrenamiento y nutrición personalizados.
 
 REGLAS ESTRICTAS:
-1. Genera EXACTAMENTE el número de semanas solicitado
+1. Genera EXACTAMENTE 1 semana (7 días consecutivos)
 2. Cada semana tiene EXACTAMENTE 7 días (lunes a domingo)
 3. Cada día debe tener:
    - Entrenamiento (si aplica) con ejercicios específicos
@@ -20,7 +20,7 @@ REGLAS ESTRICTAS:
 
 FORMATO DE SALIDA (JSON puro):
 {
-  "totalWeeks": 12,
+  "totalWeeks": 1,
   "startDate": "2025-01-20",
   "endDate": "2025-04-14",
   "weeks": [
@@ -121,13 +121,21 @@ FORMATO DE SALIDA (JSON puro):
       "base": 4, "build": 5, "peak": 2, "taper": 1, "recovery": 0
     }
   }
+  CRITICAL: If you cannot complete the response due to token limits:
+  - Return valid JSON with "partial": true
+  - Include "reason": "token_limit"
+  - Stop immediately to avoid JSON corruption
 }`;
 }
 
 /**
  * Construye el prompt específico del usuario
  */
-export function buildUserPrompt(context: any): string {
+export function buildUserPromptForWeek(
+  context: UserPlanningContext,
+  weekNumber: number,
+  phase: string
+): string {
   const phases = context.planning?.phases || { base: 0, build: 0, peak: 0, taper: 0, recovery: 0 };
 
   const totalWeeks = (phases.base || 0) + 
@@ -139,7 +147,10 @@ export function buildUserPrompt(context: any): string {
   const finalWeeks = totalWeeks > 0 ? totalWeeks : 12; 
 
   // TODO EL TEXTO DEBE ESTAR DENTRO DE ESTAS COMILLAS INCLINADAS
-  return `Genera un plan completo de ${finalWeeks} semanas para este usuario:
+  return `Genera la SEMANA ${weekNumber} de un plan de ${totalWeeks} semanas.
+  FASE ACTUAL: ${phase.toUpperCase()}
+
+  IMPORTANTE: Solo genera 7 días consecutivos para esta semana.
 
 DATOS DEL USUARIO:
 - Edad: ${context.biometrics.age} años
@@ -179,11 +190,7 @@ OBJETIVOS CALÓRICOS Y MACROS:
   → Fibra: ${context.targets?.macros?.fiber || 30}g
 
 DISTRIBUCIÓN DE FASES:
-${phases.base > 0 ? `- Base: ${phases.base} semanas` : ""}
-${phases.build > 0 ? `- Build: ${phases.build} semanas` : ""}
-${phases.peak > 0 ? `- Peak: ${phases.peak} semanas` : ""}
-${phases.taper > 0 ? `- Taper: ${phases.taper} semana(s)` : ""}
-${phases.recovery > 0 ? `- Recovery: ${phases.recovery} semana(s)` : ""}
+Esta semana corresponde a la fase: ${phase}
 
 INICIO DEL PLAN: ${context.startPreferences?.startDate || "Hoy"}
 

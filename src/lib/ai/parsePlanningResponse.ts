@@ -1,10 +1,13 @@
-import type { CompletePlanningOutput } from "@/types/planning";
+import type { WeekPlan, PartialWeekResponse } from "@/types/planning";
 
 /**
  * Parsea y valida la respuesta de la AI
  * Convierte el texto JSON en un objeto tipado
  */
-export function parsePlanningResponse(text: string): CompletePlanningOutput {
+export function parseWeekResponse(
+  text: string,
+  expectedWeekNumber: number
+): WeekPlan | PartialWeekResponse {
   try {
     // 1. Limpieza de texto
     let cleanText = text.trim();
@@ -24,19 +27,25 @@ export function parsePlanningResponse(text: string): CompletePlanningOutput {
     cleanText = cleanText.substring(jsonStart, jsonEnd + 1);
 
     // 2. Parse JSON
-    const parsed: CompletePlanningOutput = JSON.parse(cleanText);
+    const parsed: any = JSON.parse(cleanText);
+
+    // Check if response is partial
+    if (parsed.partial) {
+      console.warn('[parseWeekResponse] Received partial response');
+      return parsed as PartialWeekResponse;
+    }
 
     // 3. Validación estructura básica
-    validatePlanStructure(parsed);
+    validateWeekStructure(parsed, expectedWeekNumber);
 
     // 4. Validación lógica
-    validatePlanLogic(parsed);
+    validateWeekLogic(parsed);
 
-    console.log("[parsePlanningResponse] Plan parsed and validated successfully");
-    return parsed;
+    console.log("[parseWeekResponse] Week parsed and validated successfully");
+    return parsed as WeekPlan;
 
   } catch (error: any) {
-    console.error("[parsePlanningResponse] Parse error:", error);
+    console.error("[parseWeekResponse] Parse error:", error);
     
     if (error instanceof SyntaxError) {
       throw new Error("Invalid JSON format from AI");
@@ -47,132 +56,104 @@ export function parsePlanningResponse(text: string): CompletePlanningOutput {
 }
 
 /**
- * Valida que la estructura del plan sea correcta
+ * Valida que la estructura de la semana sea correcta
  */
-function validatePlanStructure(plan: any): void {
+function validateWeekStructure(week: any, expectedWeekNumber: number): void {
   // Campos obligatorios raíz
-  const requiredFields = ["totalWeeks", "startDate", "endDate", "weeks", "overallStats"];
+  const requiredFields = ["weekNumber", "startDate", "endDate", "days", "weeklyStats"];
   for (const field of requiredFields) {
-    if (!(field in plan)) {
+    if (!(field in week)) {
       throw new Error(`Missing required field: ${field}`);
     }
   }
 
-  // Validar que weeks es un array
-  if (!Array.isArray(plan.weeks)) {
-    throw new Error("weeks must be an array");
+  // Validar weekNumber
+  if (!week.weekNumber || week.weekNumber !== expectedWeekNumber) {
+    throw new Error(`Expected week ${expectedWeekNumber}, got ${week.weekNumber}`);
   }
 
-  // Validar que hay al menos 1 semana
-  if (plan.weeks.length === 0) {
-    throw new Error("Plan must have at least 1 week");
+  // Validar que days es un array
+  if (!Array.isArray(week.days)) {
+    throw new Error("days must be an array");
   }
 
-  // Validar cada semana
-  for (let i = 0; i < plan.weeks.length; i++) {
-    const week = plan.weeks[i];
+  // Validar que la semana tiene exactamente 7 días
+  if (week.days.length !== 7) {
+    throw new Error(`Week must have exactly 7 days (has ${week.days.length})`);
+  }
+
+  // Validar cada día
+  for (let j = 0; j < week.days.length; j++) {
+    const day = week.days[j];
     
-    if (!week.weekNumber || !week.days || !Array.isArray(week.days)) {
-      throw new Error(`Invalid structure in week ${i + 1}`);
+    if (!day.date || !day.dayOfWeek || !day.nutrition) {
+      throw new Error(`Invalid structure in day ${j + 1}`);
     }
 
-    // Validar que la semana tiene 7 días
-    if (week.days.length !== 7) {
-      throw new Error(`Week ${week.weekNumber} must have exactly 7 days (has ${week.days.length})`);
+    // Validar nutrition
+    if (!day.nutrition.meals || !Array.isArray(day.nutrition.meals)) {
+      throw new Error(`Day ${j + 1}: meals must be an array`);
     }
 
-    // Validar cada día
-    for (let j = 0; j < week.days.length; j++) {
-      const day = week.days[j];
-      
-      if (!day.date || !day.dayOfWeek || !day.nutrition) {
-        throw new Error(`Invalid structure in week ${week.weekNumber}, day ${j + 1}`);
-      }
+    // Validar workout si es día de entrenamiento
+    if (day.isTrainingDay && !day.workout) {
+      throw new Error(`Day ${j + 1}: marked as training day but no workout`);
+    }
 
-      // Validar nutrition
-      if (!day.nutrition.meals || !Array.isArray(day.nutrition.meals)) {
-        throw new Error(`Week ${week.weekNumber}, day ${j + 1}: meals must be an array`);
-      }
-
-      // Validar workout si es día de entrenamiento
-      if (day.isTrainingDay && !day.workout) {
-        throw new Error(`Week ${week.weekNumber}, day ${j + 1}: marked as training day but no workout`);
-      }
-
-      // Validar que cada meal tenga ingredientes
-      for (const meal of day.nutrition.meals) {
-        if (!meal.ingredients || !Array.isArray(meal.ingredients) || meal.ingredients.length === 0) {
-          throw new Error(`Week ${week.weekNumber}, day ${j + 1}: meal "${meal.name}" has no ingredients`);
-        }
+    // Validar que cada meal tenga ingredientes
+    for (const meal of day.nutrition.meals) {
+      if (!meal.ingredients || !Array.isArray(meal.ingredients) || meal.ingredients.length === 0) {
+        throw new Error(`Day ${j + 1}: meal "${meal.name}" has no ingredients`);
       }
     }
   }
 }
 
 /**
- * Valida la lógica del plan (fechas, macros, etc.)
+ * Valida la lógica de la semana (fechas, macros, etc.)
  */
-function validatePlanLogic(plan: CompletePlanningOutput): void {
-  // 1. Validar que totalWeeks coincide con el array
-  if (plan.totalWeeks !== plan.weeks.length) {
-    console.warn(`totalWeeks (${plan.totalWeeks}) doesn't match weeks array length (${plan.weeks.length})`);
+function validateWeekLogic(week: WeekPlan): void {
+  const weekStart = new Date(week.startDate);
+  const weekEnd = new Date(week.endDate);
+
+  // Validar que startDate < endDate
+  if (weekStart >= weekEnd) {
+    throw new Error(`Week ${week.weekNumber}: startDate must be before endDate`);
   }
 
-  // 2. Validar que las fechas son secuenciales
-  let previousEndDate: Date | null = null;
+  // Validar que las fechas de los días son secuenciales
+  let previousDayDate: Date | null = null;
 
-  for (const week of plan.weeks) {
-    const weekStart = new Date(week.startDate);
-    const weekEnd = new Date(week.endDate);
+  for (const day of week.days) {
+    const dayDate = new Date(day.date);
 
-    // Validar que startDate < endDate
-    if (weekStart >= weekEnd) {
-      throw new Error(`Week ${week.weekNumber}: startDate must be before endDate`);
-    }
+    if (previousDayDate) {
+      const expectedDate = new Date(previousDayDate);
+      expectedDate.setDate(expectedDate.getDate() + 1);
 
-    // Validar que no hay gaps entre semanas
-    if (previousEndDate) {
-      const dayAfterPrevious = new Date(previousEndDate);
-      dayAfterPrevious.setDate(dayAfterPrevious.getDate() + 1);
-
-      if (weekStart.getTime() !== dayAfterPrevious.getTime()) {
-        console.warn(`Gap detected between week ${week.weekNumber - 1} and ${week.weekNumber}`);
+      if (dayDate.getTime() !== expectedDate.getTime()) {
+        throw new Error(`Week ${week.weekNumber}: days are not sequential`);
       }
     }
 
-    previousEndDate = weekEnd;
+    previousDayDate = dayDate;
 
-    // 3. Validar que las fechas de los días son secuenciales
-    let previousDayDate: Date | null = null;
+    // Validar que los macros de las meals suman correctamente
+    if (day.nutrition && day.nutrition.meals) {
+      const totalCalories = day.nutrition.meals.reduce((sum, meal) => sum + meal.calories, 0);
+      const targetCalories = day.nutrition.targetCalories;
 
-    for (const day of week.days) {
-      const dayDate = new Date(day.date);
+      const diff = Math.abs(totalCalories - targetCalories);
+      const diffPercent = (diff / targetCalories) * 100;
 
-      if (previousDayDate) {
-        const expectedDate = new Date(previousDayDate);
-        expectedDate.setDate(expectedDate.getDate() + 1);
-
-        if (dayDate.getTime() !== expectedDate.getTime()) {
-          throw new Error(`Week ${week.weekNumber}: days are not sequential`);
-        }
-      }
-
-      previousDayDate = dayDate;
-
-      // 4. Validar que los macros de las meals suman correctamente
-      if (day.nutrition && day.nutrition.meals) {
-        const totalCalories = day.nutrition.meals.reduce((sum, meal) => sum + meal.calories, 0);
-        const targetCalories = day.nutrition.targetCalories;
-
-        const diff = Math.abs(totalCalories - targetCalories);
-        const diffPercent = (diff / targetCalories) * 100;
-
-        if (diffPercent > 10) {
-          console.warn(`Week ${week.weekNumber}, ${day.dayOfWeek}: meal calories (${totalCalories}) differ from target (${targetCalories}) by ${diffPercent.toFixed(1)}%`);
-        }
+      if (diffPercent > 10) {
+        console.warn(
+          `Week ${week.weekNumber}, ${day.dayOfWeek}: meal calories (${totalCalories}) ` +
+          `differ from target (${targetCalories}) by ${diffPercent.toFixed(1)}%`
+        );
       }
     }
   }
 
-  console.log("[validatePlanLogic] Plan logic validated successfully");
+  console.log("[validateWeekLogic] Week logic validated successfully");
 }
