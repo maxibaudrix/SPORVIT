@@ -83,7 +83,7 @@ export default function Step6ReviewPage() {
     let phases: PlanningPhases = { base: 0, build: 0, peak: 0, taper: 0, recovery: 0 };
     
     if (hasCompetition) {
-      const taperWeeks = targetTimeline >= 12 ? 2 : 1;
+      const taperWeeks = targetTimeline >= 2 ? 2 : 1;
       const buildableWeeks = targetTimeline - taperWeeks - 1;
       phases = { base: Math.floor(buildableWeeks * 0.4), build: Math.floor(buildableWeeks * 0.4), peak: buildableWeeks - Math.floor(buildableWeeks * 0.8), taper: taperWeeks, recovery: 1 };
     } else {

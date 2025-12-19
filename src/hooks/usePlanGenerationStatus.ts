@@ -14,11 +14,7 @@ export function usePlanGenerationStatus() {
         const response = await fetch('/api/planning/status');
         
         if (!response.ok) {
-          if (response.status === 404) {
-            setError('No plan found');
-            setLoading(false);
-            return;
-          }
+          // ✅ ELIMINADO: Ya no tratamos 404 como error
           throw new Error('Failed to fetch status');
         }
 
@@ -26,12 +22,18 @@ export function usePlanGenerationStatus() {
         setStatus(data);
         setError(null);
 
-        // Si el plan está completo, detener polling
-        if (data.isComplete && intervalId) {
+        // ✅ MODIFICADO: Detener polling si no hay plan O si está completo
+        if ((data.totalWeeks === 0 || data.isComplete) && intervalId) {
           clearInterval(intervalId);
+          intervalId = null;
         }
       } catch (err: any) {
         setError(err.message);
+        // ✅ NUEVO: Detener polling en caso de error
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
       } finally {
         setLoading(false);
       }
@@ -40,8 +42,8 @@ export function usePlanGenerationStatus() {
     // Fetch inicial
     fetchStatus();
 
-    // Polling cada 10 segundos
-    intervalId = setInterval(fetchStatus, 10000);
+    // ✅ MODIFICADO: Polling cada 30 segundos (antes 10s)
+    intervalId = setInterval(fetchStatus, 30000);
 
     // Cleanup
     return () => {

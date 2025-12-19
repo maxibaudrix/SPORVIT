@@ -38,10 +38,10 @@ export default function WeeklyCalendar({
     userId,
   });
 
-  // Refetch when week changes
+  // ✅ MODIFICADO: Refetch solo cuando cambia la semana, NO cuando cambia refetch
   useEffect(() => {
     refetch();
-  }, [state.currentWeek, state.currentYear, refetch]);
+  }, [state.currentWeek, state.currentYear]); // ✅ Removido refetch de las dependencias
 
   if (isLoading) {
     return <LoadingState />;
@@ -53,7 +53,6 @@ export default function WeeklyCalendar({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Week selector */}
       <WeekSelector
         currentDate={weekStartDate}
         onPreviousWeek={goToPreviousWeek}
@@ -61,10 +60,9 @@ export default function WeeklyCalendar({
         onToday={goToToday}
       />
 
-      {/* Calendar grid */}
       <div className="flex-1 overflow-x-auto overflow-y-auto">
         <div className="flex min-w-max">
-          {weekPlan.days.map((dayPlan) => (
+          {weekPlan?.days.map((dayPlan) => (
             <DayColumn
               key={dayPlan.date.toISOString()}
               dayPlan={dayPlan}
