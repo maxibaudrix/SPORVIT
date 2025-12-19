@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" fill="none" stroke="#9ca3af" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="10" y="10" width="180" height="130" rx="15" ry="15" stroke-dasharray="10 5"/>
+    <circle cx="100" cy="75" r="30" fill="#f3f4f6" stroke="#d1d5db"/>
+    <line x1="80" y1="75" x2="120" y2="75"/>
+    <line x1="100" y1="55" x2="100" y2="95"/>
+    <text x="100" y="130" font-family="Arial" font-size="12" fill="#9ca3af" text-anchor="middle">No hay datos todavía</text>
+</svg>

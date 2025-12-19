@@ -1,0 +1,568 @@
+// Sporvit MVP - Database Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") // o 'file:./dev.db'
+}
+
+// ============================================
+// AUTH & USERS
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String? // Para auth con credenciales
+  notifications   Notification[]
+  settings        UserSettings?
+  subscription    Subscription?
+  payments        Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations (AUTH)
+  accounts        Account[]
+  sessions        Session[]
+  
+  // Relations (ONBOARDING & PLANS)
+  profile         UserProfile?
+  goals           UserGoals?
+  onboardingData  OnboardingData? // AGREGADO
+  generatedPlans  GeneratedPlan[] // AGREGADO
+  aiLogs          AIGenerationLog[] // AGREGADO
+
+  // Relations (PROGRESS & TRACKING)
+  scannedProducts ScannedProduct[]
+  meals           Meal[] // OLD MEAL
+  workouts        Workout[]
+  progress        ProgressTracking[] // OLD PROGRESS
+  recipes         Recipe[]
+  weightEntries   WeightEntry[] // For WeightEntry
+  measurements    BodyMeasurement[] // For BodyMeasurement
+  progressPhotos  ProgressPhoto[] // For ProgressPhoto
+  diaryMeals      DiaryMeal[] // For DiaryMeal (new)
+  plannedMeals    PlannedMeal[] // For PlannedMeal
+  dailyWater      DailyWater[] // For DailyWater
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// ONBOARDING DATA STORAGE
+// ============================================
+
+model OnboardingData {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // JSON completo del onboarding
+  data      String     // CAMBIADO: Antes era Json. Almacena OnboardingOutputComplete como String
+  
+  // Status
+  status    String   @default("completed") // draft, completed, archived
+  version   String   @default("1.0.0")
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId, status])
+}
+
+// ============================================
+// GENERATED PLANS
+// ============================================
+
+model GeneratedPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Plan metadata
+  planType  String   // "training", "nutrition", "complete"
+  startDate DateTime
+  endDate   DateTime
+  
+  // Plan data (JSON)
+  planData  String
+  
+  // Status
+  status    String   @default("active") // active, completed, cancelled
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId, status])
+  @@index([userId, startDate])
+}
+
+// ============================================
+// AI GENERATION LOGS
+// ============================================
+
+model AIGenerationLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Request info
+  requestType  String   // "training_plan", "nutrition_plan", "recipe"
+  promptTokens Int
+  
+  // Response info
+  responseData String
+  completionTokens Int
+  
+  // Performance
+  durationMs Int
+  
+  // Status
+  success   Boolean
+  error     String?
+  createdAt DateTime @default(now())
+  
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// USER PROFILE
+// ============================================
+
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone String?
+
+  // Biometrics
+  age               Int
+  gender            String // male, female, other
+  heightCm          Float
+  currentWeight     Float
+  bodyFatPercentage Float?
+
+  // Activity
+  activityLevel      String // sedentary, light, moderate, active
+  workoutDaysPerWeek Int    @default(0)
+
+  // Activity details
+  dailySteps   String?
+  sittingHours String?
+  workType     String?
+
+  //  Training Level
+  trainingLevel   String?
+  trainingTypes   String? // Puede ser el sportType o un resumen.
+  sessionDuration Int?
+  intensity       String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserGoals {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Goals
+  goalType     String // cut, bulk, maintain, recomp
+  goalSpeed    String? // slow, moderate, aggressive
+  targetWeight Float // Falta este campo en el onboarding, se asume que se calcula o se pide aparte.
+
+  // Preferences
+  dietType            String?
+  allergies           String?
+  excludedIngredients String? // Puede ser intolerancias + excludedFoods
+
+  targetDate DateTime?
+
+  // Calculated targets
+  targetCalories Int
+  targetProteinG Int
+  targetCarbsG   Int
+  targetFatG     Int
+
+  // Metrics
+  bmr  Int
+  tdee Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// PRODUCTS & NUTRITION
+// ============================================
+
+model ScannedProduct {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Product info
+  barcode     String
+  productName String
+  brands      String?
+  categories  String?
+
+  // Scores
+  nutriscoreGrade String? // A, B, C, D, E
+  novaGroup       Int?    // 1, 2, 3, 4
+  ecoscoreGrade   String? 
+  
+  // Nutritional data (per 100g)
+  energyKcal     Float?
+  proteinsG      Float?
+  carbohydratesG Float?
+  fatG           Float?
+  fiberG         Float?
+  saltG          Float?
+
+  // User serving
+  servingSizeG Float?
+  
+  // Sporvit scoring
+  sporvitScore String? // GREEN, YELLOW, RED
+  scoreReason  String?
+
+  imageUrl  String?
+  scannedAt DateTime @default(now())
+
+  // ADDED RELATION
+  diaryEntries DiaryMeal[] // For DiaryMeal
+
+  @@index([userId, scannedAt])
+}
+
+model Meal {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date     DateTime
+  mealType String // breakfast, lunch, dinner, snack
+
+  // Totals
+  totalCalories Int
+  totalProteinG Float
+  totalCarbsG   Float
+  totalFatG     Float
+
+  notes String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model DiaryMeal {
+  id          String         @id @default(uuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  date        DateTime // Fecha en la que se consume la comida (solo la fecha, la hora está en createdAt)
+  mealType    String // breakfast, lunch, dinner, snacks
+  productId   String
+  product     ScannedProduct @relation(fields: [productId], references: [id])
+  servingSize Float // gramos
+  createdAt   DateTime       @default(now()) // Hora exacta de registro
+
+  @@index([userId, date])
+}
+
+// ============================================
+// TRAINING
+// ============================================
+
+model Workout {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date        DateTime
+  workoutType String // strength, cardio, hiit, rest
+
+  title             String
+  description       String?
+  durationMinutes   Int
+  estimatedCalories Int
+
+  completed         Boolean   @default(false)
+  completedAt       DateTime?
+  actualDurationMin Int?
+  actualCalories    Int?
+
+  // AI adaptation
+  adaptedFromCalories Int?
+  adaptationReason    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+// ============================================
+// PROGRESS
+// ============================================
+
+model ProgressTracking {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date DateTime @unique
+
+  // Metrics
+  weightKg          Float?
+  bodyFatPercentage Float?
+
+  // Measurements (cm)
+  waistCm Float?
+  chestCm Float?
+  hipsCm  Float?
+
+  notes String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model WeightEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime @unique // Único por usuario y fecha
+  weight    Float
+  bodyFat   Float?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date]) // Usar unique constraint compuesta para mayor seguridad
+}
+
+model BodyMeasurement {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime // Puede haber múltiples mediciones en un día si se quisiera, pero se indexa por fecha
+  waistCm   Float?
+  chestCm   Float?
+  hipsCm    Float?
+  armsCm    Float?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model ProgressPhoto {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime
+  type      String // front, side, back
+  imageUrl  String
+  createdAt DateTime @default(now())
+
+  @@index([userId, date, type])
+}
+
+// ============================================
+// RECIPES
+// ============================================
+
+model Recipe {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  servings           Int
+  caloriesPerServing Int
+  prepTimeMinutes    Int?
+  cookTimeMinutes    Int?
+
+  // AGREGAR ESTOS CAMPOS DE MACRONUTRIENTES
+  protein Float // En gramos
+  carbs   Float // En gramos
+  fats    Float // En gramos
+
+  favorited Boolean @default(false)
+  rating    Int?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// ============================================\
+// MEAL PLANNER
+// ============================================\
+
+model PlannedMeal {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Identificador de la semana (e.g., "2024-W40" o la fecha de inicio de la semana)
+  week String
+
+  // Almacena el array WeeklyPlan.plan (el detalle de las comidas de 7 días)
+  planJson String
+
+  // Almacena el objeto WeeklyPlan.weeklyStats (calorías y macros promedio)
+  statsJson String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // **CRUCIAL**: Asegura que un usuario solo tenga un plan por semana.
+  @@unique([userId, week])
+  // Asegura una búsqueda rápida por usuario y semana
+  @@index([userId, week])
+}
+
+model DailyWater {
+  id      String   @id @default(uuid())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+  date    DateTime @unique // Único por usuario y fecha
+  glasses Int      @default(0)
+
+  @@index([userId, date])
+}
+// ============================================
+// NOTIFICATION
+// ============================================
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      String    // 'plan_ready', 'workout_reminder', 'meal_reminder', 'progress_update', 'subscription_activated', 'subscription_canceled'
+  message   String
+  read      Boolean   @default(false)
+  readAt    DateTime?
+  
+  createdAt DateTime  @default(now())
+  
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// USER SETTINGS
+// ============================================
+
+model UserSettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Notificaciones
+  notificationsEmail            Boolean @default(true)
+  notificationsPush             Boolean @default(true)
+  notificationsWorkoutReminders Boolean @default(true)
+  notificationsMealReminders    Boolean @default(true)
+  notificationsWeeklyReport     Boolean @default(true)
+  
+  // Unidades
+  unitsWeight   String @default("kg")   // kg, lb
+  unitsHeight   String @default("cm")   // cm, in
+  unitsDistance String @default("km")   // km, mi
+  
+  // Apariencia
+  theme    String @default("dark")      // dark, light
+  language String @default("es")        // es, en, pt
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// AGREGAR MODELO SUBSCRIPTION
+// ============================================
+
+model Subscription {
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  plan                  String    @default("free") // free, premium
+  status                String    @default("inactive") // active, inactive, canceling, canceled
+  
+  // Stripe integration
+  stripeCustomerId      String?   @unique
+  stripeSubscriptionId  String?   @unique
+  stripePriceId         String?
+  
+  // Billing
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean   @default(false)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([userId, status])
+}
+
+// ============================================
+// MODELO PAYMENT
+// ============================================
+
+model Payment {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount                Int      // En centavos (ej: 1299 = €12.99)
+  currency              String   @default("eur")
+  status                String   // paid, pending, failed, refunded
+  
+  stripePaymentIntentId String?  @unique
+  description           String?
+  
+  createdAt             DateTime @default(now())
+  
+  @@index([userId, createdAt])
+  @@index([status])
+}
