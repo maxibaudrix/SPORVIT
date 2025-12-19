@@ -1,8 +1,9 @@
+//src\hooks\useWeeklyPlan.ts
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { WeekPlan, DayPlan, DayEvent } from '@/types/calendar';
-import { getWeekDays, formatDateISO, getWeekStart } from '@/lib/utils/calendar';
+import { getWeekDays, formatDateISO, getWeekStart, getISOWeek } from '@/lib/utils/calendar';
 
 interface UseWeeklyPlanOptions {
   weekStartDate: Date;
@@ -47,6 +48,14 @@ export function useWeeklyPlan({
 
       const data = await response.json();
       
+      // ✅ Si no hay datos o está vacío, crear semana vacía (NO error)
+      if (!data.days || Object.keys(data.days).length === 0) {
+        const emptyPlan = createEmptyWeekPlan(startDate);
+        setWeekPlan(emptyPlan);
+        setIsLoading(false);
+        return;
+      }
+      
       // Transform API data to WeekPlan format
       const plan: WeekPlan = transformApiDataToWeekPlan(data, startDate);
       
@@ -73,6 +82,26 @@ export function useWeeklyPlan({
 }
 
 /**
+ * ✅ NUEVA: Crear semana vacía para modo manual
+ */
+function createEmptyWeekPlan(startDate: Date): WeekPlan {
+  const weekDays = getWeekDays(startDate);
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + 6);
+
+  return {
+    weekNumber: getISOWeek(startDate),
+    startDate,
+    endDate,
+    days: weekDays.map(date => ({
+      date,
+      dayOfWeek: date.toLocaleDateString('es-ES', { weekday: 'long' }),
+      events: [] // ✅ Vacío - usuario agrega con [+]
+    }))
+  };
+}
+
+/**
  * Transform API response data to WeekPlan format
  */
 function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
@@ -80,7 +109,7 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
   const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + 6);
 
-  const days: DayPlan[] = weekDays.map((date, index) => {
+  const days: DayPlan[] = weekDays.map((date) => {
     const dateISO = formatDateISO(date);
     const dayData = data.days?.[dateISO] || { workouts: [], meals: [] };
     
@@ -89,8 +118,8 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
       ...transformMeals(dayData.meals || []),
     ];
 
-    // Add rest event if no workouts for the day
-    if (events.filter(e => e.type === 'workout').length === 0) {
+    // ✅ MODIFICADO: Solo agregar rest si NO hay eventos (ni workouts ni meals)
+    if (events.length === 0) {
       events.push(createRestEvent(date));
     }
 
@@ -98,11 +127,9 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
       date,
       dayOfWeek: date.toLocaleDateString('es-ES', { weekday: 'long' }),
       events: events.sort((a, b) => {
-        // Sort by startTime if available
         if (a.startTime && b.startTime) {
           return a.startTime.localeCompare(b.startTime);
         }
-        // Workouts first, then meals
         if (a.type === 'workout' && b.type === 'meal') return -1;
         if (a.type === 'meal' && b.type === 'workout') return 1;
         return 0;

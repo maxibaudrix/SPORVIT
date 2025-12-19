@@ -1,3 +1,4 @@
+//src\components\ui\layout\dashboard\calendar\WeeklyCalendar.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -48,10 +49,6 @@ export default function WeeklyCalendar({
 
   if (error) {
     return <ErrorState error={error} onRetry={refetch} />;
-  }
-
-  if (!weekPlan) {
-    return <EmptyState />;
   }
 
   return (
@@ -114,34 +111,6 @@ function ErrorState({ error, onRetry }: { error: string; onRetry: () => void }) 
           className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
         >
           Reintentar
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="flex items-center justify-center h-full min-h-[500px]">
-      <div className="flex flex-col items-center gap-4 max-w-md text-center">
-        <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center">
-          <span className="text-3xl">📅</span>
-        </div>
-        
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-2">
-            Aún no tienes un plan
-          </h3>
-          <p className="text-sm text-slate-400">
-            Completa el onboarding para generar tu plan personalizado de entrenamiento y nutrición.
-          </p>
-        </div>
-
-        <button
-          onClick={() => window.location.href = '/onboarding'}
-          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
-        >
-          Ir al Onboarding
         </button>
       </div>
     </div>
