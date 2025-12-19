@@ -129,6 +129,8 @@ export interface WeekPlan {
   startDate: string; // ISO 8601
   endDate: string; // ISO 8601
   phase: "base" | "build" | "peak" | "taper" | "recovery";
+  generationStatus?: WeekGenerationStatus;
+  partial?: boolean; // Indica si la generación fue parcial por límite de tokens
   days: DayPlan[];
   weeklyStats: WeeklyStats;
 }
@@ -348,4 +350,36 @@ export interface MacrosCalculationResult {
     fat: number;
   };
   status: "on_track" | "under" | "over";
+}
+
+// ============================================
+// WEEK GENERATION STATUS
+// ============================================
+
+export type WeekGenerationStatus = "pending" | "generating" | "generated" | "error";
+
+export interface WeekStatus {
+  weekNumber: number;
+  status: WeekGenerationStatus;
+  generatedAt?: string;
+  error?: string;
+}
+
+export interface PlanGenerationStatus {
+  totalWeeks: number;
+  generatedWeeks: number;
+  pendingWeeks: number;
+  weeks: WeekStatus[];
+  isComplete: boolean;
+}
+
+// ============================================
+// AI PARTIAL RESPONSE
+// ============================================
+
+export interface PartialWeekResponse {
+  partial: true;
+  weekNumber: number;
+  reason: string;
+  dataGenerated?: Partial<WeekPlan>;
 }
