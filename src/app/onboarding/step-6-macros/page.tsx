@@ -1,11 +1,11 @@
-//src\app\onboarding\step-6-macros\page.tsx
 'use client';
 
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles, TrendingUp, Dumbbell, Utensils, Activity, AlertCircle, Edit, Loader2, Calendar, Clock } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding'; // AÑADIR ESTE IMPORT
 
-// 1. DEFINE TYPES FOR COMPLEX OBJECTS (Phases and Macros)
+// Types para cálculos
 interface PlanningPhases {
   base: number;
   build: number;
@@ -23,7 +23,6 @@ interface Macros {
   fatPercent: number;
 }
 
-// 2. DEFINE THE MAIN INTERFACE FOR THE useMemo RESULT
 interface CalculationsResult {
   bmr: number;
   neat: number;
@@ -39,57 +38,129 @@ interface CalculationsResult {
   phases: PlanningPhases;
 }
 
-
 export default function Step6ReviewPage() {
   const router = useRouter();
-  const [error, setError] = useState<string>(""); 
-  const [plan, setPlan] = useState<any>(null);    
   const [startDate, setStartDate] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Obtener datos del store de Zustand
+  const {
+    biometrics,
+    objective,
+    activity,
+    training,
+    nutrition,
+    getCompleteOnboardingData, // Función que agrupa todo
+  } = useOnboardingStore();
 
   // Calcular fecha mínima (hoy) y máxima (30 días desde hoy)
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
   const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-  // Mock data - En producción vendría del store/context
-  const mockOnboardingData = {
-    biometrics: { age: 32, gender: 'male', weight: 74.5, height: 178, bodyFatPercentage: 15 },
-    objective: { primaryGoal: 'performance', targetTimeline: 12, hasCompetition: true, targetDate: '2025-03-15', motivation: 'Quiero completar mi primer Ironman 70.3' },
-    activity: { country: 'ES', dailyActivityLevel: 'moderate', dailySteps: '6k-10k', availableDays: ['monday', 'tuesday', 'thursday', 'saturday', 'sunday'], preferredTimes: ['morning', 'evening'], activeCommute: true },
-    training: { experienceLevel: 'intermediate', sportType: 'triathlon', sportSubtype: 'olympic', favoriteDiscipline: 'bike', daysPerWeek: 5, sessionDuration: 60, trainingLocation: ['gym', 'outdoor', 'pool'], availableEquipment: ['road_bike', 'pool_access', 'gym_full'], hasInjuries: false },
-    nutrition: { dietType: 'omnivore', mealsPerDay: 4, allergies: [], intolerances: ['lactose'], excludedFoods: ['Mariscos'], cookingFrequency: 'regularly' }
-  };
+  // Validar que tenemos todos los datos necesarios
+  const hasCompleteData = useMemo(() => {
+    return !!(
+      biometrics?.age &&
+      biometrics?.weight &&
+      biometrics?.height &&
+      objective?.primaryGoal &&
+      objective?.targetTimeline &&
+      activity?.dailyActivityLevel &&
+      training?.experienceLevel &&
+      training?.daysPerWeek &&
+      nutrition?.dietType &&
+      nutrition?.mealsPerDay
+    );
+  }, [biometrics, objective, activity, training, nutrition]);
 
-  // 3. APPLY THE TYPE TO THE useMemo HOOK
+  // Cálculos basados en datos reales
   const calculations: CalculationsResult = useMemo(() => {
-    const { age, gender, weight, height } = mockOnboardingData.biometrics;
-    let bmr = gender === 'male' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161;
-    const activityMultipliers = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725 };
-    const neat = bmr * (activityMultipliers[mockOnboardingData.activity.dailyActivityLevel] - 1);
+    if (!hasCompleteData) {
+      // Valores por defecto si faltan datos
+      return {
+        bmr: 0,
+        neat: 0,
+        tdeeBase: 0,
+        trainingCaloriesPerDay: 0,
+        tdee: 0,
+        targetCalories: 0,
+        trainingDayCalories: 0,
+        restDayCalories: 0,
+        macros: { protein: 0, carbs: 0, fat: 0, proteinPercent: 0, carbsPercent: 0, fatPercent: 0 },
+        blockSize: 4,
+        totalBlocks: 3,
+        phases: { base: 0, build: 0, peak: 0, taper: 0, recovery: 0 },
+      };
+    }
+
+    const { age, gender, weight, height } = biometrics!;
+    
+    // BMR (Mifflin-St Jeor)
+    let bmr = gender === 'male' 
+      ? 10 * weight + 6.25 * height - 5 * age + 5 
+      : 10 * weight + 6.25 * height - 5 * age - 161;
+
+    // Multiplicadores de actividad
+    const activityMultipliers: Record<string, number> = { 
+      sedentary: 1.2, 
+      light: 1.375, 
+      moderate: 1.55, 
+      active: 1.725 
+    };
+    
+    const activityLevel = activity!.dailyActivityLevel;
+    const neat = bmr * (activityMultipliers[activityLevel] - 1);
     const tdeeBase = Math.round(bmr + neat);
-    const trainingCaloriesPerDay = Math.round((mockOnboardingData.training.daysPerWeek * 400) / 7);
+    
+    // Calorías extra por entrenamiento
+    const trainingCaloriesPerDay = Math.round((training!.daysPerWeek * 400) / 7);
     const tdee = tdeeBase + trainingCaloriesPerDay;
-    const targetCalories = tdee;
+    
+    // Ajuste según objetivo
+    let targetCalories = tdee;
+    const goal = objective!.primaryGoal;
+    
+    if (goal === 'cut' || goal === 'lose_weight') {
+      targetCalories = Math.round(tdee * 0.85); // -15%
+    } else if (goal === 'bulk' || goal === 'gain_muscle') {
+      targetCalories = Math.round(tdee * 1.10); // +10%
+    } else if (goal === 'recomp') {
+      targetCalories = tdee; // Mantenimiento
+    }
+
+    // Macros
     const proteinG = Math.round(weight * 2.0);
     const fatCal = Math.round(targetCalories * 0.30);
     const fatG = Math.round(fatCal / 9);
     const carbsG = Math.round((targetCalories - proteinG * 4 - fatCal) / 4);
     
-    const { targetTimeline, hasCompetition } = mockOnboardingData.objective;
+    // Fases de entrenamiento
+    const targetTimeline = objective!.targetTimeline || 12;
     let blockSize = targetTimeline <= 8 ? 2 : targetTimeline <= 16 ? 4 : 6;
     
-    // Initialize phases with the correct type and default values
     let phases: PlanningPhases = { base: 0, build: 0, peak: 0, taper: 0, recovery: 0 };
     
-    if (hasCompetition) {
-      const taperWeeks = targetTimeline >= 2 ? 2 : 1;
+    if (objective!.hasCompetition) {
+      const taperWeeks = targetTimeline >= 12 ? 2 : 1;
       const buildableWeeks = targetTimeline - taperWeeks - 1;
-      phases = { base: Math.floor(buildableWeeks * 0.4), build: Math.floor(buildableWeeks * 0.4), peak: buildableWeeks - Math.floor(buildableWeeks * 0.8), taper: taperWeeks, recovery: 1 };
+      phases = { 
+        base: Math.floor(buildableWeeks * 0.4), 
+        build: Math.floor(buildableWeeks * 0.4), 
+        peak: buildableWeeks - Math.floor(buildableWeeks * 0.8), 
+        taper: taperWeeks, 
+        recovery: 1 
+      };
     } else {
       const recoveryWeeks = Math.floor(targetTimeline / 4);
       const trainableWeeks = targetTimeline - recoveryWeeks;
-      phases = { base: Math.floor(trainableWeeks * 0.5), build: Math.ceil(trainableWeeks * 0.5), peak: 0, taper: 0, recovery: recoveryWeeks };
+      phases = { 
+        base: Math.floor(trainableWeeks * 0.5), 
+        build: Math.ceil(trainableWeeks * 0.5), 
+        peak: 0, 
+        taper: 0, 
+        recovery: recoveryWeeks 
+      };
     }
 
     return {
@@ -101,115 +172,93 @@ export default function Step6ReviewPage() {
       targetCalories,
       trainingDayCalories: targetCalories + 200,
       restDayCalories: targetCalories - 200,
-      macros: { protein: proteinG, carbs: carbsG, fat: fatG, proteinPercent: Math.round((proteinG * 4 / targetCalories) * 100), carbsPercent: Math.round((carbsG * 4 / targetCalories) * 100), fatPercent: Math.round((fatCal / targetCalories) * 100) },
+      macros: { 
+        protein: proteinG, 
+        carbs: carbsG, 
+        fat: fatG, 
+        proteinPercent: Math.round((proteinG * 4 / targetCalories) * 100), 
+        carbsPercent: Math.round((carbsG * 4 / targetCalories) * 100), 
+        fatPercent: Math.round((fatCal / targetCalories) * 100) 
+      },
       blockSize,
       totalBlocks: Math.ceil(targetTimeline / blockSize),
       phases
     };
-  }, []);
-
+  }, [hasCompleteData, biometrics, objective, activity, training]);
 
   const handleGeneratePlan = async () => {
-    if (!startDate) return;
-    setIsGenerating(true);
-    setError(""); // Limpia errores previos
+    if (!startDate) {
+      alert('Por favor selecciona una fecha de inicio');
+      return;
+    }
 
-    const planningPayload = {
-      startDate,  // ✅ Obligatorio
-      biometrics: mockOnboardingData.biometrics,
-      objective: {
-        goalType: mockOnboardingData.objective.primaryGoal,
-        targetTimeline: mockOnboardingData.objective.targetTimeline,
-        hasCompetition: mockOnboardingData.objective.hasCompetition,
-        targetDate: mockOnboardingData.objective.targetDate,
-        motivation: mockOnboardingData.objective.motivation,
-      },
-      activity: {
-        country: mockOnboardingData.activity.country,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        activityLevel: mockOnboardingData.activity.dailyActivityLevel,
-        dailySteps: mockOnboardingData.activity.dailySteps,
-        availableDays: mockOnboardingData.activity.availableDays,
-        preferredTimes: mockOnboardingData.activity.preferredTimes,
-      },
-      training: {
-        level: mockOnboardingData.training.experienceLevel,
-        sportType: mockOnboardingData.training.sportType,
-        sportSubtype: mockOnboardingData.training.sportSubtype,
-        daysPerWeek: mockOnboardingData.training.daysPerWeek,
-        sessionDuration: mockOnboardingData.training.sessionDuration,
-        location: mockOnboardingData.training.trainingLocation,
-        equipment: mockOnboardingData.training.availableEquipment,
-        hasInjuries: mockOnboardingData.training.hasInjuries,
-        
-      },
-      nutrition: {
-        dietType: mockOnboardingData.nutrition.dietType,
-        mealsPerDay: mockOnboardingData.nutrition.mealsPerDay,
-        allergies: mockOnboardingData.nutrition.allergies,
-        intolerances: mockOnboardingData.nutrition.intolerances,
-        excludedFoods: mockOnboardingData.nutrition.excludedFoods,
-        cookingFrequency: mockOnboardingData.nutrition.cookingFrequency,
-      },
-      planning: {
-        phases: {
-          base: calculations.phases.base,
-          build: calculations.phases.build,
-          peak: calculations.phases.peak,
-          taper: calculations.phases.taper,
-          recovery: calculations.phases.recovery
-        }
-      },
-      targets: {
-        calories: {
-          trainingDay: calculations.trainingDayCalories,
-          restDay: calculations.restDayCalories
-        },
-        macros: calculations.macros
-      },
-      startPreferences: { startDate }
-    };
+    if (!hasCompleteData) {
+      alert('Faltan datos del onboarding. Por favor completa todos los pasos.');
+      return;
+    }
     
-    console.log('📤 [Frontend] Sending payload:', planningPayload);
+    setIsGenerating(true);
 
     try {
+      // Obtener datos completos del onboarding
+      const completeData = getCompleteOnboardingData();
+
+      // Payload a enviar al backend
+      const planningPayload = {
+        ...completeData, // Todos los datos del onboarding
+        startDate, // Fecha seleccionada
+        calculations, // Cálculos realizados
+      };
+
+      console.log('[Step 6] Sending payload to backend:', planningPayload);
+
+      // Llamada al backend
       const response = await fetch('/api/planning/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(planningPayload),
       });
 
-      // 1. Validar si la respuesta es un JSON antes de intentar leerlo
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("El servidor devolvió un error crítico (500). Revisa la terminal.");
-      }
-
       const data = await response.json();
 
-      // 2. Si la respuesta no es OK, manejamos el error aquí y cortamos la ejecución
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Fallo al generar el plan");
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al generar el plan');
       }
 
-      // 3. Si llegamos aquí, data.success es true
-      console.log('✅ [Frontend] Plan generado:', data.plan);
-      
-      // Guardamos el plan en el estado (esto evitará errores de 'undefined' si lo usas en la UI)
-      setPlan(data.plan); 
+      console.log('[Step 6] Plan generation response:', data);
 
-      // Redirigimos
+      // Redirección al dashboard
       router.push(data.redirectTo || '/dashboard');
 
     } catch (error: any) {
-      console.error('❌ [Frontend] Error:', error.message);
-      alert(error.message);
-    } finally {
+      console.error('[Step 6] Error:', error);
+      alert(`Error al generar el plan: ${error.message}`);
       setIsGenerating(false);
     }
   };
 
   const progress = 100;
+
+  // Si faltan datos, mostrar error
+  if (!hasCompleteData) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
+        <div className="max-w-md text-center">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Datos incompletos</h2>
+          <p className="text-slate-400 mb-6">
+            Parece que faltan datos del onboarding. Por favor completa todos los pasos anteriores.
+          </p>
+          <button
+            onClick={() => router.push('/onboarding/step-1-biometrics')}
+            className="px-6 py-3 bg-emerald-500 rounded-xl font-bold hover:bg-emerald-600 transition-colors"
+          >
+            Volver al inicio
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4 relative overflow-hidden">
@@ -231,7 +280,7 @@ export default function Step6ReviewPage() {
             <path d="M 8 40 L 8 34 M 8 40 L 14 40" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round"/>
             <path d="M 40 40 L 40 34 M 40 40 L 34 40" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round"/>
           </svg>
-          <span className="text-sm font-bold text-slate-400">Sporvit</span>
+          <span className="text-sm font-bold text-slate-400">Kiui</span>
         </div>
 
         <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-3xl overflow-hidden">
@@ -264,7 +313,7 @@ export default function Step6ReviewPage() {
 
           <div className="p-8 space-y-6">
             
-            {/* Hero Card */}
+            {/* Hero Card con cálculos */}
             <div className="bg-gradient-to-br from-emerald-900/30 to-teal-900/30 border border-emerald-500/30 rounded-2xl p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
               
@@ -323,7 +372,7 @@ export default function Step6ReviewPage() {
                   <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
                     <div className="flex justify-between">
                       <span className="text-slate-400">Duración:</span>
-                      <span className="text-white font-bold">{mockOnboardingData.objective.targetTimeline} semanas</span>
+                      <span className="text-white font-bold">{objective?.targetTimeline || 12} semanas</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Bloques:</span>
@@ -358,16 +407,18 @@ export default function Step6ReviewPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Básicos:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.biometrics.age}a • {mockOnboardingData.biometrics.height}cm / {mockOnboardingData.biometrics.weight}kg</span>
+                    <span className="text-white font-bold">{biometrics?.age}a • {biometrics?.height}cm / {biometrics?.weight}kg</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Objetivo:</span>
-                    <span className="text-emerald-400 font-bold">Rendimiento</span>
+                    <span className="text-emerald-400 font-bold capitalize">{objective?.primaryGoal?.replace('_', ' ')}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Competición:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.objective.targetDate}</span>
-                  </div>
+                  {objective?.hasCompetition && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Competición:</span>
+                      <span className="text-white font-bold">{objective?.targetDate}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -382,15 +433,15 @@ export default function Step6ReviewPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Deporte:</span>
-                    <span className="text-white font-bold">Triatlón</span>
+                    <span className="text-white font-bold capitalize">{training?.sportType?.replace('_', ' ')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Nivel:</span>
-                    <span className="text-white font-bold">Intermedio</span>
+                    <span className="text-white font-bold capitalize">{training?.experienceLevel}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Frecuencia:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.training.daysPerWeek}d × {mockOnboardingData.training.sessionDuration}min</span>
+                    <span className="text-white font-bold">{training?.daysPerWeek}d × {training?.sessionDuration}min</span>
                   </div>
                 </div>
               </div>
@@ -406,15 +457,17 @@ export default function Step6ReviewPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Dieta:</span>
-                    <span className="text-white font-bold">Omnívoro</span>
+                    <span className="text-white font-bold capitalize">{nutrition?.dietType}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Comidas/día:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.nutrition.mealsPerDay}</span>
+                    <span className="text-white font-bold">{nutrition?.mealsPerDay}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Restricciones:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.nutrition.intolerances.length + mockOnboardingData.nutrition.excludedFoods.length}</span>
+                    <span className="text-white font-bold">
+                      {(nutrition?.intolerances?.length || 0) + (nutrition?.excludedFoods?.length || 0)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -430,27 +483,27 @@ export default function Step6ReviewPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">País:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.activity.country}</span>
+                    <span className="text-white font-bold">{activity?.country}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Nivel:</span>
-                    <span className="text-white font-bold capitalize">{mockOnboardingData.activity.dailyActivityLevel}</span>
+                    <span className="text-white font-bold capitalize">{activity?.dailyActivityLevel}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Días:</span>
-                    <span className="text-white font-bold">{mockOnboardingData.activity.availableDays.length}d disponibles</span>
+                    <span className="text-white font-bold">{activity?.availableDays?.length || 0}d disponibles</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {mockOnboardingData.objective.motivation && (
+            {objective?.motivation && (
               <div className="bg-gradient-to-br from-purple-900/20 to-slate-900/50 border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-start gap-3">
                   <div className="text-2xl">💭</div>
                   <div>
                     <div className="text-xs text-purple-400 font-bold uppercase tracking-wider mb-2">Tu Motivación</div>
-                    <p className="text-white italic">"{mockOnboardingData.objective.motivation}"</p>
+                    <p className="text-white italic">"{objective.motivation}"</p>
                   </div>
                 </div>
               </div>
@@ -464,11 +517,12 @@ export default function Step6ReviewPage() {
                   <ul className="space-y-1 text-sm text-slate-300">
                     <li>• Los cálculos son estimaciones. Ajustaremos según tu progreso.</li>
                     <li>• Tu plan se adapta automáticamente cada semana.</li>
-                    <li>• Recetas con ingredientes de {mockOnboardingData.activity.country}.</li>
+                    <li>• Recetas con ingredientes de {activity?.country}.</li>
                   </ul>
                 </div>
               </div>
             </div>
+
             {/* Start Date Selector */}
             <div className="bg-gradient-to-br from-emerald-900/20 to-slate-900/50 border border-emerald-500/30 rounded-xl p-6">
               <div className="flex items-start gap-3">
@@ -505,68 +559,69 @@ export default function Step6ReviewPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button onClick={() => router.push('/onboarding/step-5-diet')} disabled={isGenerating} className="px-6 py-3 bg-slate-900 border-2 border-slate-700 text-slate-300 font-bold rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                <span className="flex items-center justify-center gap-2"> {/* <-- Único Hijo */}
-                  <ArrowLeft className="w-5 h-5" />
-                  Volver
-                </span>
-              </button>
-              
-              <button onClick={handleGeneratePlan} disabled={isGenerating || !startDate} className="flex-grow bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:scale-100">
-                {isGenerating ? (
-                  <span className="flex items-center justify-center gap-3"> {/* ÚNICO HIJO */}
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <span>Generando plan...</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-3"> {/* ÚNICO HIJO */}
-                    <Sparkles className="w-6 h-6" />
-                    <span>Generar Mi Plan</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {isGenerating && (
-              <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                <div className="flex items-center gap-3 mb-3">
-                  <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
-                  <span className="font-bold text-white">Generando semana 1...</span>
-                </div>
-                <div className="space-y-2 text-sm text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>Contexto creado</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-                    <span>Generando semana 1 con IA...</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-blue-400">
-                    <Clock className="w-4 h-4" />
-                    <span>Semanas 2-12 se generarán en segundo plano</span>
-                  </div>
-                </div>
-              </div>
+              <button 
+                onClick={() => router.push('/onboarding/step-5-diet')} 
+                disabled={isGenerating} 
+                className="px-6 py-3 bg-slate-900 border-2 border-slate-700 text-slate-300
+                <button 
+            onClick={handleGeneratePlan} 
+            disabled={isGenerating || !startDate} 
+            className="flex-grow bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:scale-100"
+          >
+            {isGenerating ? (
+              <span className="flex items-center justify-center gap-3">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span>Generando plan...</span>
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-3">
+                <Sparkles className="w-6 h-6" />
+                <span>Generar Mi Plan</span>
+                <ArrowRight className="w-5 h-5" />
+              </span>
             )}
+          </button>
+        </div>
 
+        {isGenerating && (
+          <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+            <div className="flex items-center gap-3 mb-3">
+              <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
+              <span className="font-bold text-white">Generando semana 1...</span>
+            </div>
+            <div className="space-y-2 text-sm text-slate-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Contexto creado</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
+                <span>Generando semana 1 con IA...</span>
+              </div>
+              <div className="flex items-center gap-2 text-blue-400">
+                <Clock className="w-4 h-4" />
+                <span>Semanas 2-12 se generarán en segundo plano</span>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="text-center mt-6">
-          <p className="text-slate-500 text-sm">
-            ¿Necesitas modificar algo?{' '}
-            <button
-              onClick={() => router.push('/onboarding/step-1-biometrics')}
-              className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
-            >
-              Volver a editar
-            </button>
-          </p>
-        </div>
+        )}
 
       </div>
     </div>
-  );
+
+    <div className="text-center mt-6">
+      <p className="text-slate-500 text-sm">
+        ¿Necesitas modificar algo?{' '}
+        <button
+          onClick={() => router.push('/onboarding/step-1-biometrics')}
+          className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
+        >
+          Volver a editar
+        </button>
+      </p>
+    </div>
+
+  </div>
+</div>
+);
 }

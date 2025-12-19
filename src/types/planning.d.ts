@@ -1,3 +1,4 @@
+//src\types\planning.d.ts
 // ============================================
 // USER PLANNING CONTEXT (CONTRATO PRINCIPAL)
 // ============================================
@@ -7,6 +8,9 @@ export interface UserPlanningContext {
     userId: string;
     createdAt: string; // ISO 8601
     version: "1.0";
+    generationMode: "progressive";
+    generationStatus: "init" | "week1_ready" | "generating" | "complete" | "error";
+
     locale: string;
   };
 
@@ -120,6 +124,15 @@ export interface CompletePlanningOutput {
   totalWeeks: number;
   startDate: string; // ISO 8601
   endDate: string; // ISO 8601
+  skeleton: {
+    totalWeeks: number;
+    startDate: string;
+    weekSummaries: {
+      weekNumber: number;
+      phase: "base" | "build" | "peak" | "taper" | "recovery";
+      loadScore: number;
+    }[];
+  };
   weeks: WeekPlan[];
   overallStats: OverallStats;
 }
@@ -397,8 +410,12 @@ export interface WeekStatus {
 export interface PlanGenerationStatus {
   totalWeeks: number;
   generatedWeeks: number;
-  pendingWeeks: number;
-  weeks: WeekStatus[];
+  weeks: {
+    weekNumber: number;
+    status: "pending" | "generated" | "error";
+    generatedAt?: string;
+  }[];
+
   isComplete: boolean;
 }
 
@@ -407,8 +424,14 @@ export interface PlanGenerationStatus {
 // ============================================
 
 export interface PartialWeekResponse {
-  partial: true;
+  type: "partial";
   weekNumber: number;
-  reason: string;
-  dataGenerated?: Partial<WeekPlan>;
+  status: "generated" | "skipped" | "error";
+  reason?: string;
+}
+
+export interface WeekGenerationEvent {
+  weekNumber: number;
+  status: "started" | "completed" | "failed";
+  timestamp: string;
 }

@@ -3,33 +3,61 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { 
-  BiometricsData, 
-  GoalData, 
+
+import {
+  BiometricsData,
+  GoalData,
   TrainingData,
-  DietData, 
+  DietData,
+  ActivityData,
   OnboardingData,
-  ActivityData
 } from '@/types/onboarding';
 
+/**
+ * Contrato público del store
+ * Los componentes NO deben acceder a `data` directamente
+ */
 interface OnboardingStore {
+  // Estado interno (NO usar directamente en componentes)
   data: OnboardingData;
   currentStep: number;
-  
-  // Actions
+
+  // ============
+  // GETTERS (API pública)
+  // ============
+  biometrics?: BiometricsData;
+  goal?: GoalData;
+  activity?: ActivityData;
+  training?: TrainingData;
+  lifestyle?: any;
+  diet?: DietData;
+  calculatedMacros?: OnboardingData['calculatedMacros'];
+
+  // ============
+  // ACTIONS
+  // ============
   setBiometrics: (data: BiometricsData) => void;
   setGoal: (data: GoalData) => void;
   setActivity: (data: ActivityData) => void;
   setTraining: (data: TrainingData) => void;
+  setLifestyle: (data: any) => void;
   setDiet: (data: DietData) => void;
-  setCalculatedMacros: (macros: OnboardingData['calculatedMacros']) => void;
-  
+  setCalculatedMacros: (
+    macros: OnboardingData['calculatedMacros']
+  ) => void;
+
+  // Navegación
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: number) => void;
+
+  // Reset
   resetOnboarding: () => void;
 }
 
+// ====================
+// Estado inicial
+// ====================
 const initialState: OnboardingData = {
   biometrics: undefined,
   goal: undefined,
@@ -40,13 +68,46 @@ const initialState: OnboardingData = {
   calculatedMacros: undefined,
 };
 
+// ====================
+// Store
+// ====================
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      // ----------------
+      // Estado base
+      // ----------------
       data: initialState,
       currentStep: 1,
 
-      // Setters por sección
+      // ----------------
+      // GETTERS DERIVADOS
+      // ----------------
+      get biometrics() {
+        return get().data.biometrics;
+      },
+      get goal() {
+        return get().data.goal;
+      },
+      get activity() {
+        return get().data.activity;
+      },
+      get training() {
+        return get().data.training;
+      },
+      get lifestyle() {
+        return get().data.lifestyle;
+      },
+      get diet() {
+        return get().data.diet;
+      },
+      get calculatedMacros() {
+        return get().data.calculatedMacros;
+      },
+
+      // ----------------
+      // SETTERS POR SECCIÓN
+      // ----------------
       setBiometrics: (biometrics) =>
         set((state) => ({
           data: { ...state.data, biometrics },
@@ -67,7 +128,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
           data: { ...state.data, training },
         })),
 
-      setLifestyle: (lifestyle: any) =>
+      setLifestyle: (lifestyle) =>
         set((state) => ({
           data: { ...state.data, lifestyle },
         })),
@@ -82,7 +143,9 @@ export const useOnboardingStore = create<OnboardingStore>()(
           data: { ...state.data, calculatedMacros },
         })),
 
-      // Navegación
+      // ----------------
+      // NAVEGACIÓN
+      // ----------------
       nextStep: () =>
         set((state) => ({
           currentStep: Math.min(state.currentStep + 1, 6),
@@ -94,8 +157,13 @@ export const useOnboardingStore = create<OnboardingStore>()(
         })),
 
       setStep: (step) =>
-        set({ currentStep: step }),
+        set({
+          currentStep: step,
+        }),
 
+      // ----------------
+      // RESET
+      // ----------------
       resetOnboarding: () =>
         set({
           data: initialState,
@@ -104,8 +172,10 @@ export const useOnboardingStore = create<OnboardingStore>()(
     }),
     {
       name: 'onboarding-storage',
-      // Solo persistir los datos, no el step actual
-      partialize: (state) => ({ data: state.data }),
+      // Persistimos SOLO los datos, nunca el step
+      partialize: (state) => ({
+        data: state.data,
+      }),
     }
   )
 );
