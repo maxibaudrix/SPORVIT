@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles, TrendingUp, Dumbbell, Utensils, Activity, AlertCircle, Edit, Loader2, Calendar } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles, TrendingUp, Dumbbell, Utensils, Activity, AlertCircle, Edit, Loader2, Calendar, Clock } from 'lucide-react';
 
 // 1. DEFINE TYPES FOR COMPLEX OBJECTS (Phases and Macros)
 interface PlanningPhases {
@@ -532,16 +532,20 @@ export default function Step6ReviewPage() {
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
                 <div className="flex items-center gap-3 mb-3">
                   <Loader2 className="w-5 h-5 text-emerald-400 animate-spin" />
-                  <span className="font-bold text-white">Generando plan</span>
+                  <span className="font-bold text-white">Generando semana 1...</span>
                 </div>
                 <div className="space-y-2 text-sm text-slate-400">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>Calculando macros...</span>
+                    <span>Contexto creado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-                    <span>Generando entrenos...</span>
+                    <span>Generando semana 1 con IA...</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-blue-400">
+                    <Clock className="w-4 h-4" />
+                    <span>Semanas 2-12 se generarán en segundo plano</span>
                   </div>
                 </div>
               </div>
