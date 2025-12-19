@@ -21,8 +21,8 @@ export async function generateWeekPlan(
   const genAI = new GoogleGenerativeAI(apiKey);
   
   // 3. Configurar modelo
-  const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+  const model = genAI.getGenerativeModel({  
+    model: "gemini-1.5-flash-latest",
   });
 
   const generationConfig = {
@@ -35,6 +35,8 @@ export async function generateWeekPlan(
   // 4. Determinar fase de esta semana
   const phase = determinePhaseForWeek(weekNumber, context.planning.phases);
   console.log(`[generateWeekPlan] Generating week ${weekNumber}, phase: ${phase}`);
+
+  let text = ''; // Declarar fuera del try para uso en catch
 
   try {
     console.log("[generateWeekPlan] Starting AI generation...");
@@ -55,7 +57,7 @@ export async function generateWeekPlan(
     });
     
     const response = result.response;
-    const text = response.text();
+    text = response.text(); // Asignar sin declarar (ya está declarado arriba)
     
     const duration = Date.now() - startTime;
     console.log(`[generateWeekPlan] AI responded in ${duration}ms`);
@@ -76,14 +78,28 @@ export async function generateWeekPlan(
   } catch (error: any) {
     console.error("[generateWeekPlan] Error:", error);
     
+    // Intentar parsear respuesta parcial si existe texto
+    if (error.message?.includes('JSON') && text) {
+      console.log('[generateWeekPlan] Attempting to salvage partial response...');
+      try {
+        // Intentar cerrar JSON incompleto
+        const fixedText = text.trim() + '}]}';
+        const salvaged = parseWeekResponse(fixedText, weekNumber);
+        console.warn('[generateWeekPlan] Partial response salvaged');
+        return salvaged;
+      } catch (salvageError) {
+        console.error('[generateWeekPlan] Could not salvage response');
+      }
+    }
+    
     // Manejo de errores específicos de Google AI
-    if (error.message?.includes("API_KEY") || error.message?.includes("API key")) {
+    if (error.message?.includes('API_KEY') || error.message?.includes('API key')) {
       throw new Error("Invalid Google AI API key. Check your .env file.");
     }
-    if (error.message?.includes("quota")) {
+    if (error.message?.includes('quota')) {
       throw new Error("Google AI API quota exceeded. Consider using a pay-as-you-go tier.");
     }
-    if (error.message?.includes("model") || error.message?.includes("not found")) {
+    if (error.message?.includes('model') || error.message?.includes('not found')) {
       throw new Error("Model not available. Try 'gemini-1.5-flash-latest' or 'gemini-pro'.");
     }
     
