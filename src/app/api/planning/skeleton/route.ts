@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
-import type { PlanSkeleton } from '@/types/planning';
+import type { PlanSkeletonWithStatus, WeekGenerationStatus } from '@/types/planning';
 
 /**
  * GET /api/planning/skeleton
@@ -37,6 +37,9 @@ export async function GET(req: NextRequest) {
         startDate: true,
         endDate: true,
         planJson: true,
+        generationStatus: true,
+        generatedAt: true,
+        generationError: true,
       },
     });
 
@@ -49,6 +52,19 @@ export async function GET(req: NextRequest) {
 
     // 3. Construir skeleton
     const skeleton = weeklyPlans.map(week => {
+      // Si la semana está pendiente o generándose, retornar estructura básica
+      if (week.generationStatus !== 'generated') {
+        return {
+          weekNumber: week.weekNumber,
+          startDate: week.startDate.toISOString(),
+          endDate: week.endDate.toISOString(),
+          phase: 'pending',
+          generationStatus: week.generationStatus as WeekGenerationStatus,
+          days: [], // Sin días aún
+        };
+      }
+
+      // Semana generada: parsear datos completos
       const planData = JSON.parse(week.planJson);
       
       return {
@@ -56,13 +72,9 @@ export async function GET(req: NextRequest) {
         startDate: week.startDate.toISOString(),
         endDate: week.endDate.toISOString(),
         phase: planData.phase || 'base',
+        generationStatus: week.generationStatus as WeekGenerationStatus,
+        generatedAt: week.generatedAt?.toISOString(),
         days: planData.days.map((day: any) => ({
-          date: day.date,
-          dayOfWeek: day.dayOfWeek,
-          hasWorkout: day.isTrainingDay,
-          workoutType: day.workout?.type || null,
-          workoutDuration: day.workout?.duration || 0,
-          targetCalories: day.nutrition?.targetCalories || 0,
         })),
       };
     });
@@ -76,7 +88,7 @@ export async function GET(req: NextRequest) {
     });
 
     // 5. Construir respuesta
-    const response: PlanSkeleton = {
+    const response: PlanSkeletonWithStatus = {
       totalWeeks: skeleton.length,
       currentWeek: currentWeek >= 0 ? currentWeek + 1 : 1,
       startDate: skeleton[0].startDate,

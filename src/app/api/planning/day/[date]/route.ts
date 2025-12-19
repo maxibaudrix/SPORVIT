@@ -53,8 +53,31 @@ export async function GET(
       );
     }
 
+    // Validar que la semana esté generada
+    if (weeklyPlan.generationStatus !== 'generated') {
+      return NextResponse.json(
+        { 
+          error: 'Week is not ready yet',
+          status: weeklyPlan.generationStatus,
+          message: weeklyPlan.generationStatus === 'generating' 
+            ? 'Esta semana se está generando. Intenta de nuevo en unos segundos.'
+            : 'Esta semana aún no ha sido generada.'
+        },
+        { status: 425 } // 425 Too Early
+      );
+    }
+
     // 4. Parsear el plan y encontrar el día específico
-    const planData = JSON.parse(weeklyPlan.planJson);
+    let planData;
+    try {
+      planData = JSON.parse(weeklyPlan.planJson);
+    } catch (error) {
+      console.error('[Planning Day] Error parsing plan data:', error);
+      return NextResponse.json(
+        { error: 'Invalid plan data' },
+        { status: 500 }
+      );
+    }
     const dayData = planData.days.find((d: any) => {
       const dayDate = new Date(d.date);
       return dayDate.toISOString().split('T')[0] === targetDate.toISOString().split('T')[0];

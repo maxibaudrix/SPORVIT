@@ -57,10 +57,41 @@ export function WeekStatusIndicator({ weekNumber, status, error }: Props) {
         Semana {weekNumber}: {config.label}
       </span>
       {error && (
-        <span className="text-xs text-red-300 ml-2" title={error}>
-          ⚠️
-        </span>
+        <>
+          <span className="text-xs text-red-300 ml-2" title={error}>
+            ⚠️
+          </span>
+          <button
+            onClick={() => handleRetry(weekNumber)}
+            className="ml-auto text-xs px-2 py-1 bg-red-500/20 hover:bg-red-500/30 rounded text-red-300 transition-colors"
+            title="Reintentar generación"
+          >
+            Reintentar
+          </button>
+        </>
       )}
     </div>
   );
+}
+
+// Función helper para reintentar generación
+async function handleRetry(weekNumber: number) {
+  try {
+    const response = await fetch('/api/planning/retry-week', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weekNumber }),
+    });
+
+    if (response.ok) {
+      alert(`Reintentando generación de semana ${weekNumber}...`);
+      window.location.reload();
+    } else {
+      const data = await response.json();
+      alert(`Error: ${data.error || 'No se pudo reintentar'}`);
+    }
+  } catch (error) {
+    console.error('Retry error:', error);
+    alert('Error de conexión. Intenta de nuevo.');
+  }
 }
