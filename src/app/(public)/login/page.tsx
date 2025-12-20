@@ -80,13 +80,7 @@ const SporvitLogin = () => {
             <div className="relative w-full max-w-md">
                 {/* Logo & Title */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/50">
-                            <Dumbbell className="w-7 h-7 text-white" />
-                        </div>
-                        <span className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                            Sporvit
-                        </span>
+                    <div className="inline-flex items-center gap-2 mb-4">                     
                     </div>
                     <h1 className="text-3xl font-bold mb-2">Bienvenido de nuevo</h1>
                     <p className="text-slate-400">Inicia sesión para continuar tu progreso</p>
