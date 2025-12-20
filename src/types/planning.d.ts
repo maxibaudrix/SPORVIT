@@ -410,12 +410,13 @@ export interface WeekStatus {
 export interface PlanGenerationStatus {
   totalWeeks: number;
   generatedWeeks: number;
+  pendingWeeks: number; // ✅ AÑADIR ESTA LÍNEA
   weeks: {
     weekNumber: number;
-    status: "pending" | "generated" | "error";
+    status: WeekGenerationStatus; // ✅ MEJOR USAR EL TIPO EXISTENTE
     generatedAt?: string;
+    error?: string; // ✅ AÑADIR TAMBIÉN ESTE CAMPO
   }[];
-
   isComplete: boolean;
 }
 
