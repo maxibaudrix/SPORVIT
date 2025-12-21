@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Dumbbell, TrendingUp, Zap, AlertTriangle, Settings, CheckCircle2, Info, Bike, Waves, Footprints as Run, Target } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding';
 
 // 1. FIX: Define the FormDataState interface to explicitly type the state object.
 interface FormDataState {
@@ -124,17 +125,76 @@ export default function Step4TrainingPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Form valid, navigating to step 5...', formData);
-      router.push('/onboarding/step-5-diet');
+const store = useOnboardingStore();
+
+const handleSubmit = () => {
+  if (validate()) {
+    // ✅ MAPEAR experienceLevel a trainingLevel
+    const trainingLevelMap: Record<string, 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'> = {
+      'beginner': 'BEGINNER',
+      'principiante': 'BEGINNER',
+      'intermediate': 'INTERMEDIATE',
+      'intermedio': 'INTERMEDIATE',
+      'advanced': 'ADVANCED',
+      'avanzado': 'ADVANCED',
+    };
+
+    // ✅ MAPEAR daysPerWeek a trainingFrequency
+    const frequencyMap: Record<number, '1_2' | '3_4' | '5_6' | 'DOUBLE'> = {
+      1: '1_2',
+      2: '1_2',
+      3: '3_4',
+      4: '3_4',
+      5: '5_6',
+      6: '5_6',
+      7: 'DOUBLE',
+    };
+
+    // ✅ MAPEAR sessionDuration
+    const durationMap: Record<number, 'UNDER_30' | '30_60' | '60_90' | 'OVER_90'> = {
+      30: 'UNDER_30',
+      45: '30_60',
+      60: '30_60',
+      90: '60_90',
+      120: 'OVER_90',
+    };
+
+    // ✅ CREAR trainingTypes desde sportType
+    const trainingTypes: string[] = [];
+    if (formData.sportType) {
+      trainingTypes.push(formData.sportType);
     }
-  };
+    if (formData.sportSubtype) {
+      trainingTypes.push(formData.sportSubtype);
+    }
 
-  const handleBack = () => {
-    router.push('/onboarding/step-3-activity');
-  };
+    // ✅ MAPEAR intensity (si no existe en formData, usar default)
+    const intensityMap: Record<string, 'LOW' | 'MODERATE' | 'HIGH'> = {
+      'low': 'LOW',
+      'bajo': 'LOW',
+      'moderate': 'MODERATE',
+      'moderado': 'MODERATE',
+      'high': 'HIGH',
+      'alto': 'HIGH',
+    };
 
+    // ✅ GUARDAR EN STORE
+    store.setTraining({
+      trainingLevel: trainingLevelMap[formData.experienceLevel.toLowerCase()] || 'INTERMEDIATE',
+      trainingFrequency: frequencyMap[Number(formData.daysPerWeek)] || '3_4',
+      trainingTypes: trainingTypes.length > 0 ? trainingTypes : ['general'],
+      sessionDuration: durationMap[Number(formData.sessionDuration)] || '30_60',
+      intensity: 'MODERATE', // ✅ Siempre usar MODERATE por defecto ya que no está en el formulario // Default si no existe
+    });
+    
+    console.log('Training saved, navigating to step 5...', formData);
+    router.push('/onboarding/step-5-diet');
+  }
+};
+
+const handleBack = () => {
+  router.push('/onboarding/step-3-activity');
+};
   const progress = (4 / 6) * 100;
 
   const experienceLevels = [

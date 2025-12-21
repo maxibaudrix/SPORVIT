@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, User, Ruler, Scale, Activity, Info, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useOnboardingStore } from '@/store/onboarding';
 
 
 // 1. Definición de Interfaces para el Estado del Formulario
@@ -75,12 +76,25 @@ export default function Step1BiometricsPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Form valid, navigating to step 2...', formData);
-      router.push('/onboarding/step-2-objective');
-    }
-  };
+  const store = useOnboardingStore(); // Añadir al inicio del componente
+
+const handleSubmit = () => {
+  if (validate()) {
+    // ✅ CONVERTIR STRINGS A NÚMEROS Y GUARDAR
+    store.setBiometrics({
+      age: Number(formData.age),
+      gender: formData.gender as 'MALE' | 'FEMALE' | 'OTHER', // Cast para gender
+      weight: Number(formData.weight),
+      height: Number(formData.height),
+      bodyFatPercentage: formData.bodyFatPercentage 
+        ? Number(formData.bodyFatPercentage) 
+        : undefined, // Opcional
+    });
+    
+    console.log('Biometrics saved, navigating to step 2...', formData);
+    router.push('/onboarding/step-2-objective');
+  }
+};
 
   const handleBack = () => {
     console.log('Back to welcome');

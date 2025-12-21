@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Target, TrendingDown, TrendingUp, Activity, Flame, Trophy, Calendar, Zap, Info, CheckCircle2, Award, AlertCircle } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding';
 
 // 1. Definición de Interfaces para el Estado del Formulario
 interface ObjectiveData {
@@ -155,19 +156,40 @@ export default function Step2ObjectivePage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const store = useOnboardingStore(); // Añadir al inicio del componente
+
+const handleSubmit = () => {
   if (!validate()) return;
 
-  const outputData = {
-    ...formData,
-    planning: planningCalculation
+  const goalTypeMap: Record<string, 'LOSE' | 'GAIN' | 'MAINTAIN' | 'RECOMP'> = {
+    'cut': 'LOSE',
+    'bulk': 'GAIN',
+    'maintain': 'MAINTAIN',
+    'recomp': 'RECOMP',
+    'performance': 'MAINTAIN',
   };
 
-  console.log('Form valid, navigating to step 3...', outputData);
+  // ✅ CALCULAR targetWeight según el objetivo
+  const currentWeight = store.biometrics?.weight || 0;
+  let targetWeight: number | undefined = undefined;
+  
+  if (formData.primaryGoal === 'cut') {
+    targetWeight = currentWeight * 0.90; // -10%
+  } else if (formData.primaryGoal === 'bulk') {
+    targetWeight = currentWeight * 1.10; // +10%
+  } else {
+    targetWeight = currentWeight; // Mantener
+  }
 
+  store.setGoal({
+    goalType: goalTypeMap[formData.primaryGoal] || 'MAINTAIN',
+    targetWeight,
+    goalSpeed: formData.goalSpeed?.toUpperCase() as 'SLOW' | 'MODERATE' | 'AGGRESSIVE',
+  });
+
+  console.log('Goal saved, navigating to step 3...', formData);
   router.push('/onboarding/step-3-activity');
 };
-
 
   const handleBack = () => {
   router.push('/onboarding/step-1-biometrics');

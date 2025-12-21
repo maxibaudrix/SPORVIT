@@ -51,6 +51,16 @@ export default function Step6ReviewPage() {
   const training = store.training;
   const diet = store.diet;
 
+  // LOGS PARA DEBUG
+  console.log('[Step 6 Debug] Store data:', {
+    biometrics,
+    goal,
+    activity,
+    training,
+    diet,
+    rawData: store.data // Ver el estado raw también
+  });
+
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
   const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];

@@ -34,6 +34,10 @@ export interface ActivityData {
   sittingHours?: "" | "LESS_THAN_4H" | "4H_6H" | "6H_8H" | "MORE_THAN_8H";
 
   workType?: "" | "DESK" | "MIXED" | "ACTIVE" | "PHYSICAL";
+
+  // ✅ NUEVOS CAMPOS AÑADIDOS
+  availableDays?: string[]; // Ej: ['monday', 'wednesday', 'friday']
+  preferredTimes?: string[]; // Ej: ['morning', 'evening']
 }
 
 // ============================================

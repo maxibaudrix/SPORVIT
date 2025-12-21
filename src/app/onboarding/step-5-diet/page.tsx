@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Salad, AlertCircle, Coffee, Clock, Apple, ChefHat, Flame, Info, CheckCircle2, X } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding';
 
 // 1. DEFINE THE EXPLICIT TYPE FOR THE FORM DATA
 interface NutritionFormData {
@@ -110,16 +111,51 @@ export default function Step5NutritionPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Form valid, navigating to step 6...', formData);
-      router.push('/onboarding/step-6-macros');
-    }
-  };
+ 
+const store = useOnboardingStore();
 
-  const handleBack = () => {
-    router.push('/onboarding/step-4-training-level');
-  };
+const handleSubmit = () => {
+  if (validate()) {
+    // ✅ MAPEAR dietType a mayúsculas
+    const dietTypeMap: Record<string, 'NONE' | 'OMNIVORE' | 'VEGETARIAN' | 'VEGAN' | 'PESCETARIAN' | 'KETO' | 'PALEO' | 'MEDITERRANEAN' | 'LOW_CARB' | 'CARNIVORE' | 'OTHER'> = {
+      'none': 'NONE',
+      'ninguna': 'NONE',
+      'omnivore': 'OMNIVORE',
+      'omnívoro': 'OMNIVORE',
+      'vegetarian': 'VEGETARIAN',
+      'vegetariano': 'VEGETARIAN',
+      'vegan': 'VEGAN',
+      'vegano': 'VEGAN',
+      'pescetarian': 'PESCETARIAN',
+      'pescetariano': 'PESCETARIAN',
+      'keto': 'KETO',
+      'cetogénica': 'KETO',
+      'paleo': 'PALEO',
+      'mediterranean': 'MEDITERRANEAN',
+      'mediterránea': 'MEDITERRANEAN',
+      'low_carb': 'LOW_CARB',
+      'baja_carbos': 'LOW_CARB',
+      'carnivore': 'CARNIVORE',
+      'carnívora': 'CARNIVORE',
+      'other': 'OTHER',
+      'otra': 'OTHER',
+    };
+
+    // ✅ GUARDAR EN STORE
+    store.setDiet({
+      dietType: dietTypeMap[formData.dietType.toLowerCase()] || 'NONE',
+      allergies: formData.allergies || [],
+      excludedIngredients: formData.excludedFoods || [], // ✅ USAR excludedFoods del formulario
+    });
+    
+    console.log('Diet saved, navigating to step 6...', formData);
+    router.push('/onboarding/step-6-macros');
+  }
+};
+
+const handleBack = () => {
+  router.push('/onboarding/step-4-training-level');
+};
 
   const progress = (5 / 6) * 100;
 

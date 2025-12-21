@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Activity, Footprints, Armchair, Coffee, Briefcase, Bike, Info, CheckCircle2, TrendingUp, Globe, Clock, Calendar as CalendarIcon } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding';
 
 // 1. Definición de Interfaces
 interface ActivityData {
@@ -84,12 +85,50 @@ export default function Step3ActivityPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Form valid, navigating to step 4...', formData);
-      router.push('/onboarding/step-4-training-level');
-    }
-  };
+const store = useOnboardingStore();
+
+const handleSubmit = () => {
+  if (validate()) {
+    const activityLevelMap: Record<string, 'SEDENTARY' | 'LIGHTLY_ACTIVE' | 'MODERATELY_ACTIVE' | 'VERY_ACTIVE' | 'SUPER_ACTIVE'> = {
+      'sedentary': 'SEDENTARY',
+      'light': 'LIGHTLY_ACTIVE',
+      'lightly_active': 'LIGHTLY_ACTIVE',
+      'moderate': 'MODERATELY_ACTIVE',
+      'moderately_active': 'MODERATELY_ACTIVE',
+      'active': 'VERY_ACTIVE',
+      'very_active': 'VERY_ACTIVE',
+      'super_active': 'SUPER_ACTIVE',
+    };
+
+    const sittingHoursMap: Record<string, '' | 'LESS_THAN_4H' | '4H_6H' | '6H_8H' | 'MORE_THAN_8H'> = {
+      'less_than_4h': 'LESS_THAN_4H',
+      'less_4h': 'LESS_THAN_4H',
+      '4h_6h': '4H_6H',
+      '6h_8h': '6H_8H',
+      'more_than_8h': 'MORE_THAN_8H',
+      'more_8h': 'MORE_THAN_8H',
+    };
+
+    const workTypeMap: Record<string, '' | 'DESK' | 'MIXED' | 'ACTIVE' | 'PHYSICAL'> = {
+      'desk': 'DESK',
+      'mixed': 'MIXED',
+      'active': 'ACTIVE',
+      'physical': 'PHYSICAL',
+    };
+
+    // ✅ GUARDAR EN STORE CON NUEVOS CAMPOS
+    store.setActivity({
+      activityLevel: activityLevelMap[formData.dailyActivityLevel.toLowerCase()] || 'MODERATELY_ACTIVE',
+      sittingHours: sittingHoursMap[formData.sittingHours.toLowerCase()] || '',
+      workType: workTypeMap[formData.workType.toLowerCase()] || '',
+      availableDays: formData.availableDays, // ✅ NUEVO
+      preferredTimes: formData.preferredTimes, // ✅ NUEVO
+    });
+    
+    console.log('Activity saved, navigating to step 4...', formData);
+    router.push('/onboarding/step-4-training-level');
+  }
+};
 
   const handleBack = () => {
     router.push('/onboarding/step-2-objective');

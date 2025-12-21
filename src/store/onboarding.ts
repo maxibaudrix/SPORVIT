@@ -1,4 +1,3 @@
-// src/store/onboarding.ts
 'use client';
 
 import { create } from 'zustand';
@@ -13,25 +12,21 @@ import {
   OnboardingData,
 } from '@/types/onboarding';
 
-/**
- * Contrato público del store
- * Los componentes NO deben acceder a `data` directamente
- */
 interface OnboardingStore {
-  // Estado interno (NO usar directamente en componentes)
+  // Estado interno
   data: OnboardingData;
   currentStep: number;
 
   // ============
-  // GETTERS (API pública)
+  // GETTERS (propiedades computadas)
   // ============
-  biometrics?: BiometricsData;
-  goal?: GoalData;
-  activity?: ActivityData;
-  training?: TrainingData;
-  lifestyle?: any;
-  diet?: DietData;
-  calculatedMacros?: OnboardingData['calculatedMacros'];
+  biometrics: BiometricsData | undefined;
+  goal: GoalData | undefined;
+  activity: ActivityData | undefined;
+  training: TrainingData | undefined;
+  lifestyle: any | undefined;
+  diet: DietData | undefined;
+  calculatedMacros: OnboardingData['calculatedMacros'] | undefined;
 
   // ============
   // ACTIONS
@@ -42,22 +37,14 @@ interface OnboardingStore {
   setTraining: (data: TrainingData) => void;
   setLifestyle: (data: any) => void;
   setDiet: (data: DietData) => void;
-  setCalculatedMacros: (
-    macros: OnboardingData['calculatedMacros']
-  ) => void;
-
-  // Navegación
+  setCalculatedMacros: (macros: OnboardingData['calculatedMacros']) => void;
+  
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: number) => void;
-
-  // Reset
   resetOnboarding: () => void;
 }
 
-// ====================
-// Estado inicial
-// ====================
 const initialState: OnboardingData = {
   biometrics: undefined,
   goal: undefined,
@@ -68,21 +55,14 @@ const initialState: OnboardingData = {
   calculatedMacros: undefined,
 };
 
-// ====================
-// Store
-// ====================
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
     (set, get) => ({
-      // ----------------
       // Estado base
-      // ----------------
       data: initialState,
       currentStep: 1,
 
-      // ----------------
-      // GETTERS DERIVADOS
-      // ----------------
+      // ✅ GETTERS COMO PROPIEDADES (no como funciones get)
       get biometrics() {
         return get().data.biometrics;
       },
@@ -105,47 +85,57 @@ export const useOnboardingStore = create<OnboardingStore>()(
         return get().data.calculatedMacros;
       },
 
-      // ----------------
-      // SETTERS POR SECCIÓN
-      // ----------------
-      setBiometrics: (biometrics) =>
+      // ✅ SETTERS
+      setBiometrics: (biometrics) => {
+        console.log('[Store] setBiometrics:', biometrics);
         set((state) => ({
           data: { ...state.data, biometrics },
-        })),
+        }));
+      },
 
-      setGoal: (goal) =>
+      setGoal: (goal) => {
+        console.log('[Store] setGoal:', goal);
         set((state) => ({
           data: { ...state.data, goal },
-        })),
+        }));
+      },
 
-      setActivity: (activity) =>
+      setActivity: (activity) => {
+        console.log('[Store] setActivity:', activity);
         set((state) => ({
           data: { ...state.data, activity },
-        })),
+        }));
+      },
 
-      setTraining: (training) =>
+      setTraining: (training) => {
+        console.log('[Store] setTraining:', training);
         set((state) => ({
           data: { ...state.data, training },
-        })),
+        }));
+      },
 
-      setLifestyle: (lifestyle) =>
+      setLifestyle: (lifestyle) => {
+        console.log('[Store] setLifestyle:', lifestyle);
         set((state) => ({
           data: { ...state.data, lifestyle },
-        })),
+        }));
+      },
 
-      setDiet: (diet) =>
+      setDiet: (diet) => {
+        console.log('[Store] setDiet:', diet);
         set((state) => ({
           data: { ...state.data, diet },
-        })),
+        }));
+      },
 
-      setCalculatedMacros: (calculatedMacros) =>
+      setCalculatedMacros: (calculatedMacros) => {
+        console.log('[Store] setCalculatedMacros:', calculatedMacros);
         set((state) => ({
           data: { ...state.data, calculatedMacros },
-        })),
+        }));
+      },
 
-      // ----------------
-      // NAVEGACIÓN
-      // ----------------
+      // Navegación
       nextStep: () =>
         set((state) => ({
           currentStep: Math.min(state.currentStep + 1, 6),
@@ -161,9 +151,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
           currentStep: step,
         }),
 
-      // ----------------
-      // RESET
-      // ----------------
+      // Reset
       resetOnboarding: () =>
         set({
           data: initialState,
@@ -172,7 +160,6 @@ export const useOnboardingStore = create<OnboardingStore>()(
     }),
     {
       name: 'onboarding-storage',
-      // Persistimos SOLO los datos, nunca el step
       partialize: (state) => ({
         data: state.data,
       }),
