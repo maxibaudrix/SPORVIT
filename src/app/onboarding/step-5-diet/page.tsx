@@ -112,7 +112,7 @@ export default function Step5NutritionPage() {
   };
 
  
-const store = useOnboardingStore();
+const setDiet = useOnboardingStore((state) => state.setDiet);
 
 const handleSubmit = () => {
   if (validate()) {
@@ -142,7 +142,7 @@ const handleSubmit = () => {
     };
 
     // ✅ GUARDAR EN STORE
-    store.setDiet({
+    setDiet({
       dietType: dietTypeMap[formData.dietType.toLowerCase()] || 'NONE',
       allergies: formData.allergies || [],
       excludedIngredients: formData.excludedFoods || [], // ✅ USAR excludedFoods del formulario

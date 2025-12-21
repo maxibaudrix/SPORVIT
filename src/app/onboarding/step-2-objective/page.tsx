@@ -156,7 +156,7 @@ export default function Step2ObjectivePage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const store = useOnboardingStore(); // Añadir al inicio del componente
+  const setGoal = useOnboardingStore((state) => state.setGoal);
 
 const handleSubmit = () => {
   if (!validate()) return;
@@ -169,33 +169,20 @@ const handleSubmit = () => {
     'performance': 'MAINTAIN',
   };
 
-  // ✅ CALCULAR targetWeight según el objetivo
-  const currentWeight = store.biometrics?.weight || 0;
-  let targetWeight: number | undefined = undefined;
-  
-  if (formData.primaryGoal === 'cut') {
-    targetWeight = currentWeight * 0.90; // -10%
-  } else if (formData.primaryGoal === 'bulk') {
-    targetWeight = currentWeight * 1.10; // +10%
-  } else {
-    targetWeight = currentWeight; // Mantener
-  }
-
-  store.setGoal({
+  // ✅ GUARDAR EN STORE
+  setGoal({
     goalType: goalTypeMap[formData.primaryGoal] || 'MAINTAIN',
-    targetWeight,
+    targetWeight: undefined,
     goalSpeed: formData.goalSpeed?.toUpperCase() as 'SLOW' | 'MODERATE' | 'AGGRESSIVE',
   });
 
-  console.log('Goal saved, navigating to step 3...', formData);
+  console.log('Goal saved:', useOnboardingStore.getState());
   router.push('/onboarding/step-3-activity');
 };
 
-  const handleBack = () => {
+const handleBack = () => {
   router.push('/onboarding/step-1-biometrics');
 };
-
-
   const progress = (2 / 6) * 100;
 
   const goals = [

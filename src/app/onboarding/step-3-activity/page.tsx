@@ -85,7 +85,7 @@ export default function Step3ActivityPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-const store = useOnboardingStore();
+const setActivity = useOnboardingStore((state) => state.setActivity); 
 
 const handleSubmit = () => {
   if (validate()) {
@@ -117,7 +117,7 @@ const handleSubmit = () => {
     };
 
     // ✅ GUARDAR EN STORE CON NUEVOS CAMPOS
-    store.setActivity({
+    setActivity({
       activityLevel: activityLevelMap[formData.dailyActivityLevel.toLowerCase()] || 'MODERATELY_ACTIVE',
       sittingHours: sittingHoursMap[formData.sittingHours.toLowerCase()] || '',
       workType: workTypeMap[formData.workType.toLowerCase()] || '',

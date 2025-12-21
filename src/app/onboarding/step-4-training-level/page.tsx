@@ -125,7 +125,7 @@ export default function Step4TrainingPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-const store = useOnboardingStore();
+const setTraining = useOnboardingStore((state) => state.setTraining);
 
 const handleSubmit = () => {
   if (validate()) {
@@ -179,7 +179,7 @@ const handleSubmit = () => {
     };
 
     // ✅ GUARDAR EN STORE
-    store.setTraining({
+    setTraining({
       trainingLevel: trainingLevelMap[formData.experienceLevel.toLowerCase()] || 'INTERMEDIATE',
       trainingFrequency: frequencyMap[Number(formData.daysPerWeek)] || '3_4',
       trainingTypes: trainingTypes.length > 0 ? trainingTypes : ['general'],

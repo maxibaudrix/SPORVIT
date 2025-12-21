@@ -76,25 +76,39 @@ export default function Step1BiometricsPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const store = useOnboardingStore(); // Añadir al inicio del componente
+  const setBiometrics = useOnboardingStore((state) => state.setBiometrics);
 
-const handleSubmit = () => {
-  if (validate()) {
-    // ✅ CONVERTIR STRINGS A NÚMEROS Y GUARDAR
-    store.setBiometrics({
-      age: Number(formData.age),
-      gender: formData.gender as 'MALE' | 'FEMALE' | 'OTHER', // Cast para gender
-      weight: Number(formData.weight),
-      height: Number(formData.height),
-      bodyFatPercentage: formData.bodyFatPercentage 
-        ? Number(formData.bodyFatPercentage) 
-        : undefined, // Opcional
-    });
+  const handleSubmit = () => {
+    console.log('=== HANDLE SUBMIT CALLED ===');
+    console.log('FormData ANTES de validar:', formData);
     
-    console.log('Biometrics saved, navigating to step 2...', formData);
-    router.push('/onboarding/step-2-objective');
-  }
-};
+    if (validate()) {
+      console.log('✅ Validation PASSED');
+      
+      const dataToSave = {
+        age: Number(formData.age),
+        gender: formData.gender as 'MALE' | 'FEMALE' | 'OTHER',
+        weight: Number(formData.weight),
+        height: Number(formData.height),
+        bodyFatPercentage: formData.bodyFatPercentage 
+          ? Number(formData.bodyFatPercentage) 
+          : undefined,
+      };
+      
+      console.log('Datos a guardar:', dataToSave);
+      
+      setBiometrics(dataToSave);
+      
+      console.log('Después de setBiometrics, store completo:', useOnboardingStore.getState());
+      console.log('localStorage:', localStorage.getItem('onboarding-storage'));
+      
+      console.log('Navigating to step 2...');
+      router.push('/onboarding/step-2-objective');
+    } else {
+      console.log('❌ Validation FAILED');
+      console.log('Errors:', errors);
+    }
+  };
 
   const handleBack = () => {
     console.log('Back to welcome');
@@ -315,7 +329,6 @@ const handleSubmit = () => {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-
           </div>
         </div>
 
