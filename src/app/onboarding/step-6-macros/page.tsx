@@ -44,22 +44,22 @@ export default function Step6ReviewPage() {
   const [startDate, setStartDate] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const store = useOnboardingStore();
-  const biometrics = store.biometrics;
-  const goal = store.goal;
-  const activity = store.activity;
-  const training = store.training;
-  const diet = store.diet;
+  // ✅ OBTENER DATOS DEL STORE (sin variable store)
+  const biometrics = useOnboardingStore((state) => state.biometrics);
+  const goal = useOnboardingStore((state) => state.goal);
+  const activity = useOnboardingStore((state) => state.activity);
+  const training = useOnboardingStore((state) => state.training);
+  const diet = useOnboardingStore((state) => state.diet);
 
-  // LOGS PARA DEBUG
-  console.log('[Step 6 Debug] Store data:', {
-    biometrics,
-    goal,
-    activity,
-    training,
-    diet,
-    rawData: store.data // Ver el estado raw también
-  });
+  // ✅ LOGS DE DEBUG
+  console.log('=== STEP 6 DATA ===');
+  console.log('biometrics:', biometrics);
+  console.log('goal:', goal);
+  console.log('activity:', activity);
+  console.log('training:', training);
+  console.log('diet:', diet);
+  console.log('localStorage:', localStorage.getItem('onboarding-storage'));
+  console.log('===================');
 
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
