@@ -18,6 +18,7 @@ export interface GoalData {
   goalType: 'LOSE' | 'GAIN' | 'MAINTAIN' | 'RECOMP';
   targetWeight?: number;
   goalSpeed?: 'SLOW' | 'MODERATE' | 'AGGRESSIVE';
+  targetTimeline?: number; // ✅ AÑADIR ESTE CAMPO (en semanas)
 }
 
 // ============================================

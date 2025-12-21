@@ -128,10 +128,7 @@ export default function Step6ReviewPage() {
     const fatG = Math.round(fatCal / 9);
     const carbsG = Math.round((targetCalories - proteinG * 4 - fatCal) / 4);
     
-    const speedMap: Record<string, number> = {
-      'SLOW': 16, 'MODERATE': 12, 'AGGRESSIVE': 8
-    };
-    const targetTimeline = speedMap[goal!.goalSpeed || 'MODERATE'] || 12;
+    const targetTimeline = goal?.targetTimeline || 12; // Usar el valor guardado del formulario
     let blockSize = targetTimeline <= 8 ? 2 : targetTimeline <= 16 ? 4 : 6;
 
     const recoveryWeeks = Math.floor(targetTimeline / 4);
@@ -203,24 +200,22 @@ export default function Step6ReviewPage() {
 
       console.log('[Step 6] Sending payload to backend:', planningPayload);
 
-      const response = await fetch('/api/planning/init', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(planningPayload),
-      });
+      // TODO: Implementar backend /api/planning/init
+      // Simulación temporal mientras se desarrolla el backend
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al generar el plan');
-      }
-
-      console.log('[Step 6] Plan generation response:', data);
-      router.push(data.redirectTo || '/dashboard');
+      console.log('[Step 6] Plan generation simulated successfully');
+      console.log('[Step 6] Redirecting to dashboard...');
+      
+      // Guardar la fecha de inicio en el store (opcional)
+      // useOnboardingStore.getState().setStartDate(startDate);
+      
+      router.push('/dashboard');
 
     } catch (error: any) {
       console.error('[Step 6] Error:', error);
       alert(`Error al generar el plan: ${error.message}`);
+    } finally {
       setIsGenerating(false);
     }
   };

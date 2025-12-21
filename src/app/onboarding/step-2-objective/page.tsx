@@ -174,6 +174,7 @@ const handleSubmit = () => {
     goalType: goalTypeMap[formData.primaryGoal] || 'MAINTAIN',
     targetWeight: undefined,
     goalSpeed: formData.goalSpeed?.toUpperCase() as 'SLOW' | 'MODERATE' | 'AGGRESSIVE',
+    targetTimeline: Number(formData.targetTimeline)
   });
 
   console.log('Goal saved:', useOnboardingStore.getState());
