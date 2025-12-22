@@ -1,18 +1,18 @@
 import type { UserPlanningContext } from "@/types/planning";
 
 /**
- * System prompt ultra-compacto
+ * System prompt ultra-compacto para chunks
  */
 export function getSystemPrompt(): string {
-  return `Genera 7 días de entrenamiento y nutrición en JSON puro.
+  return `Genera días de entrenamiento y nutrición en JSON puro.
 
 REGLAS:
-1. EXACTAMENTE 7 días (lunes a domingo)
+1. Genera SOLO los días solicitados
 2. 2 ejercicios por entrenamiento
 3. 3 comidas por día
-3. 3 ingredientes por comida
-4. NO incluyas: notes, tempo, category, description, instructions?, tags, difficulty, prepTime, cookTime
-5. NO uses markdown
+4. 3 ingredientes por comida
+5. NO incluyas: notes, tempo, category, description, instructions, tags, difficulty, prepTime, cookTime
+6. NO uses markdown
 
 FORMATO:
 {
@@ -74,14 +74,21 @@ Si llegas al límite, detén y retorna: {"partial": true}`;
 }
 
 /**
- * User prompt ultra-compacto
+ * User prompt compacto con soporte para chunks
  */
 export function buildUserPromptForWeek(
   context: UserPlanningContext,
   weekNumber: number,
-  phase: string
+  phase: string,
+  chunk?: { start: number; end: number } // ✅ NUEVO: soporte para chunks
 ): string {
+  
+  const chunkInfo = chunk 
+    ? `GENERA SOLO DÍAS ${chunk.start}-${chunk.end} (${chunk.end - chunk.start + 1} días)`
+    : `GENERA 7 DÍAS COMPLETOS`;
+  
   return `SEM${weekNumber}|${phase.toUpperCase()}
+${chunkInfo}
 
 ${context.biometrics.age}a|${context.biometrics.gender}|${context.biometrics.weight}kg
 ${context.training.experienceLevel}|${context.objective.primaryGoal}
@@ -95,5 +102,5 @@ ${context.nutrition.excludedFoods?.length ? `NO: ${context.nutrition.excludedFoo
 
 START: ${context.startPreferences?.startDate}
 
-JSON. 2 ejercicios, 3 comidas, 3 ingredientes. Sin notes/tempo/instructions.`;
+JSON. 2 ejercicios, 3 comidas, 3 ingredientes máx.`;
 }

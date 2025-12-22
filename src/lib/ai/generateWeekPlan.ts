@@ -10,6 +10,12 @@ const MODELS_TO_TRY = [
   "gemini-flash-latest",
   "gemini-2.0-flash",
 ];
+const generationConfig = {
+  temperature: 0.7,
+  topP: 0.8,
+  topK: 40,
+  maxOutputTokens: 4000,
+};
 
 /**
  * Genera una semana del plan usando Google AI (Gemini) con fallback
@@ -33,15 +39,13 @@ export async function generateWeekPlan(
 
   // 4. Preparar prompts
   const systemPrompt = getSystemPrompt();
-  const userPrompt = buildUserPromptForWeek(context, weekNumber, phase);
+  const userPrompt = buildUserPromptForWeek(
+    context, 
+    weekNumber, 
+    phase,
+    undefined // Sin chunk = generar semana completa
+  );
   const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
-
-  const generationConfig = {
-    temperature: 0.7,
-    topP: 0.8,
-    topK: 40,
-    maxOutputTokens: 4000,
-  };
 
   // ✅ 5. INTENTAR CON MÚLTIPLES MODELOS (FALLBACK)
   let lastError: any;

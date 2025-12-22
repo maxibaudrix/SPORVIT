@@ -5,6 +5,7 @@ import { buildUserPlanningContext } from '@/lib/planning/buildUserPlanningContex
 import { generateWeekPlan } from '@/lib/ai/generateWeekPlan';
 import { persistWeek } from '@/lib/planning/persistWeek';
 import { generateRemainingWeeks } from '@/lib/jobs/generateRemainingWeeks';
+import { generateWeekInChunks } from '@/lib/ai/generateWeekInChunks';
 
 /**
  * POST /api/planning/init
@@ -88,12 +89,12 @@ export async function POST(req: NextRequest) {
 
     // 7. Generar SOLO semana 1 con AI (sincrónico)
     console.log('[Planning Init] Calling AI to generate week 1...');
-    const week1Output = await generateWeekPlan(userContext, 1);
-    console.log('[Planning Init] Week 1 generated successfully');
+    console.log('[Planning Init] Calling AI to generate week 1 in chunks...');
+    const weekOutput = await generateWeekInChunks(userContext, 1);
 
     // 8. Persistir semana 1 en base de datos
     console.log('[Planning Init] Persisting week 1 to database...');
-    await persistWeek(userContext, week1Output, 1);
+    await persistWeek(userContext, weekOutput, 1);
     console.log('[Planning Init] Week 1 persisted successfully');
 
     // 9. Crear registros pendientes para semanas 2-N

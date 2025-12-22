@@ -1,0 +1,44 @@
+=== GEMINI RESPONSE ===
+Model: gemini-2.5-flash
+Week: 1
+Phase: base
+Duration: 19961ms
+Length: 794 chars
+Timestamp: 2025-12-22T16:52:50.302Z
+
+=== JSON START ===
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 50,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con mancuernas",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press de banca con mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60
+          }
+        ],
+        "warmup
+=== JSON END ===
