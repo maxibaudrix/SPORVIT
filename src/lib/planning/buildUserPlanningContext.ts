@@ -83,6 +83,8 @@ export function buildUserPlanningContext(
       userId,
       createdAt: new Date().toISOString(),
       version: "1.0",
+      generationMode: "progressive", // ✅ AÑADIR
+      generationStatus: "init", // ✅ AÑADIR
       locale,
     },
 

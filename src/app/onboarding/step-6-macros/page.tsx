@@ -51,16 +51,6 @@ export default function Step6ReviewPage() {
   const training = useOnboardingStore((state) => state.training);
   const diet = useOnboardingStore((state) => state.diet);
 
-  // ✅ LOGS DE DEBUG
-  console.log('=== STEP 6 DATA ===');
-  console.log('biometrics:', biometrics);
-  console.log('goal:', goal);
-  console.log('activity:', activity);
-  console.log('training:', training);
-  console.log('diet:', diet);
-  console.log('localStorage:', localStorage.getItem('onboarding-storage'));
-  console.log('===================');
-
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
   const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -170,18 +160,24 @@ export default function Step6ReviewPage() {
     try {
       const planningPayload = {
         biometrics: {
-          age: biometrics!.age, gender: biometrics!.gender,
-          weight: biometrics!.weight, height: biometrics!.height,
+          age: biometrics!.age, 
+          gender: biometrics!.gender,
+          weight: biometrics!.weight, 
+          height: biometrics!.height,
           bodyFatPercentage: biometrics!.bodyFatPercentage,
         },
         objective: {
-          goalType: goal!.goalType, targetWeight: goal!.targetWeight,
+          goalType: goal!.goalType, 
+          targetWeight: goal!.targetWeight,
           goalSpeed: goal!.goalSpeed,
+          targetTimeline: goal!.targetTimeline, // ✅ AÑADIR
         },
         activity: {
           activityLevel: activity!.activityLevel,
           sittingHours: activity!.sittingHours,
           workType: activity!.workType,
+          availableDays: activity!.availableDays, // ✅ AÑADIR
+          preferredTimes: activity!.preferredTimes, // ✅ AÑADIR
         },
         training: {
           trainingLevel: training!.trainingLevel,
@@ -190,31 +186,45 @@ export default function Step6ReviewPage() {
           sessionDuration: training!.sessionDuration,
           intensity: training!.intensity,
         },
-        diet: {
+        nutrition: {  // ✅ CAMBIAR "diet" a "nutrition"
           dietType: diet!.dietType,
-          allergies: diet!.allergies,
-          excludedIngredients: diet!.excludedIngredients,
+          mealsPerDay: 4, // ✅ AÑADIR (puedes leerlo del formulario si existe)
+          allergies: diet!.allergies || [],
+          intolerances: [], // ✅ AÑADIR si existe en el formulario
+          excludedFoods: diet!.excludedIngredients || [],
+          cookingFrequency: 'regularly', // ✅ AÑADIR (puedes leerlo del formulario si existe)
         },
-        startDate, calculations,
+        startDate, 
+        calculations,
       };
 
       console.log('[Step 6] Sending payload to backend:', planningPayload);
 
-      // TODO: Implementar backend /api/planning/init
-      // Simulación temporal mientras se desarrolla el backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // ✅ LLAMADA REAL AL BACKEND
+      const response = await fetch('/api/planning/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(planningPayload),
+      });
 
-      console.log('[Step 6] Plan generation simulated successfully');
-      console.log('[Step 6] Redirecting to dashboard...');
-      
-      // Guardar la fecha de inicio en el store (opcional)
-      // useOnboardingStore.getState().setStartDate(startDate);
-      
-      router.push('/dashboard');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al generar el plan');
+      }
+
+      console.log('[Step 6] Plan generation response:', data);
+
+      // Mostrar mensaje de éxito
+      if (data.message) {
+        alert(`✅ ${data.message}`);
+      }
+
+      router.push(data.redirectTo || '/dashboard');
 
     } catch (error: any) {
       console.error('[Step 6] Error:', error);
-      alert(`Error al generar el plan: ${error.message}`);
+      alert(`❌ Error al generar el plan:\n${error.message}`);
     } finally {
       setIsGenerating(false);
     }
