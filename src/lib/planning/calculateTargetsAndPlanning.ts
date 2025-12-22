@@ -203,16 +203,19 @@ export function calculateTargetsAndPlanning(
     data.objective.primaryGoal
   );
 
-  // 5. Planning blocks
+  /// 5. Planning blocks
   const planning = calculatePlanningBlocks(
     data.objective.targetTimeline,
     data.training.experienceLevel
   );
 
+  // ✅ CAMBIAR ESTE RETURN
   return {
     trainingDayCalories,
     restDayCalories,
     macros,
-    ...planning,
+    blockSize: planning.blockSize, 
+    totalBlocks: planning.totalBlocks, 
+    phases: planning.phases, 
   };
 }

@@ -170,7 +170,7 @@ export default function Step6ReviewPage() {
           goalType: goal!.goalType, 
           targetWeight: goal!.targetWeight,
           goalSpeed: goal!.goalSpeed,
-          targetTimeline: goal!.targetTimeline, // ✅ AÑADIR
+          targetTimeline: goal!.targetTimeline || 4,
         },
         activity: {
           activityLevel: activity!.activityLevel,

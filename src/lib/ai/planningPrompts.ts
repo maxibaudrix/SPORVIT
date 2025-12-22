@@ -121,11 +121,10 @@ FORMATO DE SALIDA (JSON puro):
       "base": 4, "build": 5, "peak": 2, "taper": 1, "recovery": 0
     }
   }
-  CRITICAL: If you cannot complete the response due to token limits:
-  - Return valid JSON with "partial": true
-  - Include "reason": "token_limit"
-  - Stop immediately to avoid JSON corruption
-}`;
+  CRITICAL: 
+- Start your response with { and end with }
+- Use ONLY double quotes for strings
+- If you cannot complete due to token limits, return: {"partial": true, "reason": "token_limit"}`;
 }
 
 /**

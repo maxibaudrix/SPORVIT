@@ -66,7 +66,7 @@ export function buildUserPlanningContext(
     biometrics: onboardingData.biometrics,
     objective: {
       primaryGoal: onboardingData.objective.goalType as any,
-      targetTimeline: onboardingData.objective.targetTimeline,
+      targetTimeline: onboardingData.objective.targetTimeline || 4,
     },
     activity: {
       dailyActivityLevel: onboardingData.activity.activityLevel as any,

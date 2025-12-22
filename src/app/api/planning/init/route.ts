@@ -55,6 +55,11 @@ export async function POST(req: NextRequest) {
       'es'
     );
 
+    // ✅ AÑADIR ESTOS LOGS
+    console.log('[Planning Init] userContext.planning:', userContext.planning);
+    console.log('[Planning Init] blockSize:', userContext.planning.blockSize);
+    console.log('[Planning Init] totalBlocks:', userContext.planning.totalBlocks);
+
     console.log('[Planning Init] Context built successfully');
 
     // 5. Calcular número total de semanas
