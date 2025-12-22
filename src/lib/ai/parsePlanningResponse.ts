@@ -5,52 +5,36 @@ import type { WeekPlan, PartialWeekResponse } from "@/types/planning";
  * Convierte el texto JSON en un objeto tipado
  */
 export function parseWeekResponse(
-  text: string,
-  expectedWeekNumber: number
+  text: string, 
+  weekNumber: number,
+  isChunk: boolean = false // ✅ NUEVO PARÁMETRO
 ): WeekPlan | PartialWeekResponse {
+  
+  console.log(`[parseWeekResponse] Parsing response for week ${weekNumber}${isChunk ? ' (chunk)' : ''}...`);
+  
   try {
-    // 1. Limpieza de texto
+    // Limpiar respuesta
     let cleanText = text.trim();
-
-    // Remover bloques de código markdown si existen
-    cleanText = cleanText.replace(/```json\n?/g, "");
-    cleanText = cleanText.replace(/```\n?/g, "");
-
-    // Remover texto antes y después del JSON
-    const jsonStart = cleanText.indexOf("{");
-    const jsonEnd = cleanText.lastIndexOf("}");
-
-    if (jsonStart === -1 || jsonEnd === -1) {
-      throw new Error("No valid JSON found in response");
+    cleanText = cleanText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    cleanText = cleanText.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+    
+    const parsed = JSON.parse(cleanText);
+    
+    // ✅ SI ES CHUNK, NO VALIDAR weeklyStats
+    if (!isChunk) {
+      validateWeekStructure(parsed, weekNumber);
+    } else {
+      // Solo validar que tenga días
+      if (!parsed.days || !Array.isArray(parsed.days)) {
+        throw new Error('Missing required field: days');
+      }
     }
-
-    cleanText = cleanText.substring(jsonStart, jsonEnd + 1);
-
-    // 2. Parse JSON
-    const parsed: any = JSON.parse(cleanText);
-
-    // Check if response is partial
-    if (parsed.partial) {
-      console.warn('[parseWeekResponse] Received partial response');
-      return parsed as PartialWeekResponse;
-    }
-
-    // 3. Validación estructura básica
-    validateWeekStructure(parsed, expectedWeekNumber);
-
-    // 4. Validación lógica
-    validateWeekLogic(parsed);
-
-    console.log("[parseWeekResponse] Week parsed and validated successfully");
+    
+    console.log(`[parseWeekResponse] ✅ Parsed successfully`);
     return parsed as WeekPlan;
-
+    
   } catch (error: any) {
-    console.error("[parseWeekResponse] Parse error:", error);
-    
-    if (error instanceof SyntaxError) {
-      throw new Error("Invalid JSON format from AI");
-    }
-    
+    console.error('[parseWeekResponse] Parse error:', error);
     throw new Error(`Failed to parse AI response: ${error.message}`);
   }
 }

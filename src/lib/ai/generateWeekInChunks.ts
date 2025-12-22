@@ -15,9 +15,10 @@ interface ChunkConfig {
 }
 
 const CHUNKS: ChunkConfig[] = [
-  { start: 1, end: 3 },   // Lunes-Miércoles
-  { start: 4, end: 5 },   // Jueves-Viernes
-  { start: 6, end: 7 },   // Sábado-Domingo
+  { start: 1, end: 2 },   // Lunes-Martes
+  { start: 3, end: 4 },   // Miércoles-Jueves
+  { start: 5, end: 6 },   // Viernes-Sábado
+  { start: 7, end: 7 },   // Domingo (1 día)
 ];
 
 /**
@@ -91,7 +92,7 @@ async function generateChunk(
           }
 
           // Parsear
-          const parsed = parseWeekResponse(text, weekNumber);
+          const parsed = parseWeekResponse(text, weekNumber, true);
           
           if ('days' in parsed) {
             console.log(`[generateChunk] ✅ Parsed ${parsed.days.length} days for chunk ${chunk.start}-${chunk.end}`);
@@ -141,12 +142,21 @@ export async function generateWeekInChunks(
   console.log(`[generateWeekInChunks] Starting week ${weekNumber} generation in ${CHUNKS.length} chunks...`);
   
   try {
-    // Generar todos los chunks en paralelo
-    const chunkPromises = CHUNKS.map(chunk => 
-      generateChunk(context, weekNumber, phase, chunk)
-    );
+    // Generar todos los chunks for loop
+    const chunkResults: DayPlan[] = [];
+
+    for (const chunk of CHUNKS) {
+    console.log(`[generateWeekInChunks] Generating chunk ${chunk.start}-${chunk.end}...`);
     
-    const chunkResults = await Promise.all(chunkPromises);
+    const days = await generateChunk(context, weekNumber, phase, chunk);
+    chunkResults.push(...days);
+    
+    // Pequeña pausa entre chunks para evitar rate limit
+    if (chunk !== CHUNKS[CHUNKS.length - 1]) { // No pausar en el último
+        console.log('[generateWeekInChunks] ⏳ Waiting 2s before next chunk...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    }
     
     // Combinar todos los días
     const allDays: DayPlan[] = chunkResults.flat();

@@ -1,0 +1,258 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-03",
+      "dayOfWeek": "sábado",
+      "dayNumber": 6,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 50,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano",
+            "muscleGroup": "isquiotibiales",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          },
+          {
+            "name": "Press Militar con Mancuernas",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2706,
+        "targetProtein": 164,
+        "targetCarbs": 308,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostadas de huevo",
+            "calories": 500,
+            "protein": 35,
+            "carbs": 60,
+            "fat": 15,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Arroz con pollo y verduras",
+            "calories": 900,
+            "protein": 65,
+            "carbs": 100,
+            "fat": 20,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pasta con carne magra",
+            "calories": 1306,
+            "protein": 64,
+            "carbs": 148,
+            "fat": 33,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pasta integral",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Carne molida magra",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-04",
+      "dayOfWeek": "domingo",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "phase": "recovery",
+        "focus": "active_recovery",
+        "duration": 30,
+        "intensity": "low",
+        "exercises": [
+          {
+            "name": "Caminata ligera",
+            "muscleGroup": "cardio",
+            "sets": 1,
+            "reps": 30,
+            "rest": 0
+          },
+          {
+            "name": "Estiramiento dinámico",
+            "muscleGroup": "movilidad",
+            "sets": 1,
+            "reps": 15,
+            "rest": 0
+          }
+        ],
+        "warmup": {
+          "duration": 0
+        },
+        "cooldown": {
+          "duration": 0
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2214,
+        "targetProtein": 164,
+        "targetCarbs": 228,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "09:00",
+            "name": "Yogurt con frutos",
+            "calories": 380,
+            "protein": 30,
+            "carbs": 40,
+            "fat": 10,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogurt griego 0%",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Fresas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Semillas de chía",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "14:00",
+            "name": "Sándwich de pavo y aguacate",
+            "calories": 750,
+            "protein": 54,
+            "carbs": 90,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pechuga de pavo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 80,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con quinoa",
+            "calories": 1084,
+            "protein": 80,
+            "carbs": 98,
+            "fat": 33,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa cocida",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 200,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
