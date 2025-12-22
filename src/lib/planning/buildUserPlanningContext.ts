@@ -61,6 +61,9 @@ export function buildUserPlanningContext(
     throw new Error("startDate is required in onboarding data");
   }
 
+  console.log('[buildUserPlanningContext] onboardingData.objective:', onboardingData.objective);
+  console.log('[buildUserPlanningContext] targetTimeline:', onboardingData.objective?.targetTimeline);
+
   // Calcular todos los targets y planning
   const calculations = calculateTargetsAndPlanning({
     biometrics: onboardingData.biometrics,
@@ -76,6 +79,8 @@ export function buildUserPlanningContext(
       daysPerWeek: onboardingData.training.daysPerWeek,
     },
   });
+
+  console.log('[buildUserPlanningContext] calculations result:', calculations);
 
   // Construir contexto limpio
   const context: UserPlanningContext = {
