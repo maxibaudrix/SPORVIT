@@ -1,197 +1,119 @@
 import type { UserPlanningContext } from "@/types/planning";
 
 /**
- * System prompt que define el rol y reglas para la AI
+ * System prompt ultra-compacto
  */
 export function getSystemPrompt(): string {
-  return `Eres un entrenador deportivo y nutricionista certificado especializado en crear planes de entrenamiento y nutrición personalizados.
+  return `Eres un entrenador y nutricionista. Genera planes en JSON puro.
 
-REGLAS ESTRICTAS:
-1. Genera EXACTAMENTE 1 semana (7 días consecutivos)
-2. Cada semana tiene EXACTAMENTE 7 días (lunes a domingo)
-3. Cada día debe tener:
-   - Entrenamiento (si aplica) con ejercicios específicos
-   - Plan nutricional con 3-5 comidas detalladas
-4. Respeta TODAS las restricciones alimentarias del usuario
-5. Ajusta calorías según sea día de entreno o descanso
-6. IMPORTANTE: Responde SOLO con JSON válido, sin explicaciones adicionales
-7. NO uses bloques de código markdown (sin \`\`\`json)
-8. Asegúrate de que el JSON esté completo y bien formado
+REGLAS:
+1. Genera EXACTAMENTE 7 días (lunes a domingo)
+2. SOLO 3 ejercicios por entrenamiento
+3. SOLO 3 comidas por día (desayuno, almuerzo, cena)
+4. Máximo 4 ingredientes por comida
+5. Instrucciones: MÁXIMO 3 pasos cortos
+6. Descripciones de ejercicios: MÁXIMO 1 línea corta
+7. NO uses markdown (\`\`\`json)
+8. Responde SOLO JSON válido
 
-FORMATO DE SALIDA (JSON puro):
+FORMATO (ejemplo con 1 día):
 {
-  "totalWeeks": 1,
-  "startDate": "2025-01-20",
-  "endDate": "2025-04-14",
-  "weeks": [
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
     {
-      "weekNumber": 1,
-      "startDate": "2025-01-20",
-      "endDate": "2025-01-26",
-      "phase": "base",
-      "days": [
-        {
-          "date": "2025-01-20",
-          "dayOfWeek": "lunes",
-          "dayNumber": 1,
-          "isTrainingDay": true,
-          "workout": {
-            "type": "strength",
-            "phase": "base",
-            "focus": "full_body",
-            "duration": 60,
-            "intensity": "moderate",
-            "description": "Entrenamiento de cuerpo completo enfocado en técnica",
-            "exercises": [
-              {
-                "name": "Sentadillas",
-                "category": "compound",
-                "muscleGroup": "piernas",
-                "sets": 4,
-                "reps": 12,
-                "rest": 90,
-                "tempo": "2-0-2-0",
-                "notes": "Mantén la espalda recta"
-              }
-            ],
-            "warmup": {
-              "description": "5 min cardio ligero + movilidad articular",
-              "duration": 10
-            },
-            "cooldown": {
-              "description": "Estiramientos estáticos",
-              "duration": 10
-            }
-          },
-          "nutrition": {
-            "targetCalories": 2400,
-            "targetProtein": 180,
-            "targetCarbs": 280,
-            "targetFat": 60,
-            "targetFiber": 35,
-            "meals": [
-              {
-                "mealType": "breakfast",
-                "timing": "07:00",
-                "name": "Avena con proteína y plátano",
-                "description": "Desayuno energético alto en carbohidratos",
-                "calories": 450,
-                "protein": 35,
-                "carbs": 60,
-                "fat": 8,
-                "fiber": 8,
-                "ingredients": [
-                  { "name": "Avena integral", "amount": 60, "unit": "g" },
-                  { "name": "Proteína whey", "amount": 30, "unit": "g" },
-                  { "name": "Plátano", "amount": 1, "unit": "unidad" }
-                ],
-                "instructions": [
-                  "Cocinar la avena con agua durante 5 minutos",
-                  "Mezclar la proteína cuando esté lista",
-                  "Añadir el plátano en rodajas por encima"
-                ],
-                "prepTime": 5,
-                "cookTime": 5,
-                "difficulty": "easy",
-                "tags": ["high_protein", "quick"]
-              }
-            ]
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 60,
+        "intensity": "moderate",
+        "description": "Fuerza full body",
+        "exercises": [
+          {
+            "name": "Sentadilla",
+            "category": "compound",
+            "muscleGroup": "piernas",
+            "sets": 4,
+            "reps": 12,
+            "rest": 90,
+            "tempo": "2-0-2-0",
+            "notes": "Espalda recta"
           }
-        }
-      ],
-      "weeklyStats": {
-        "totalCalories": 16800,
-        "avgDailyCalories": 2400,
-        "totalProtein": 1260,
-        "totalCarbs": 1960,
-        "totalFat": 420,
-        "trainingDays": 4,
-        "restDays": 3,
-        "totalTrainingMinutes": 240,
-        "avgIntensity": "moderate"
+        ],
+        "warmup": {"description": "5min cardio", "duration": 5},
+        "cooldown": {"description": "Estiramientos", "duration": 5}
+      },
+      "nutrition": {
+        "targetCalories": 2400,
+        "targetProtein": 180,
+        "targetCarbs": 280,
+        "targetFat": 60,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:00",
+            "name": "Avena proteica",
+            "description": "Alto en proteína",
+            "calories": 450,
+            "protein": 35,
+            "carbs": 60,
+            "fat": 8,
+            "fiber": 8,
+            "ingredients": [
+              {"name": "Avena", "amount": 60, "unit": "g"},
+              {"name": "Proteína", "amount": 30, "unit": "g"},
+              {"name": "Plátano", "amount": 1, "unit": "unidad"}
+            ],
+            "instructions": ["Cocinar avena 5min", "Mezclar proteína", "Añadir plátano"],
+            "prepTime": 5,
+            "cookTime": 5,
+            "difficulty": "easy",
+            "tags": ["high_protein"]
+          }
+        ]
       }
     }
-  ],
-  "overallStats": {
-    "totalTrainingDays": 48,
-    "totalRestDays": 36,
-    "totalTrainingHours": 48,
-    "avgWeeklyCalories": 16800,
-    "phaseDistribution": {
-      "base": 4, "build": 5, "peak": 2, "taper": 1, "recovery": 0
-    }
-  }
-  CRITICAL: 
-- Start your response with { and end with }
-- Use ONLY double quotes for strings
-- If you cannot complete due to token limits, return: {"partial": true, "reason": "token_limit"}`;
+  ]
+}
+
+CRÍTICO: Si llegas al límite de tokens, detén y retorna: {"partial": true, "reason": "token_limit"}`;
 }
 
 /**
- * Construye el prompt específico del usuario
+ * User prompt ultra-compacto
  */
 export function buildUserPromptForWeek(
   context: UserPlanningContext,
   weekNumber: number,
   phase: string
 ): string {
-  const phases = context.planning?.phases || { base: 0, build: 0, peak: 0, taper: 0, recovery: 0 };
+  return `SEMANA ${weekNumber} | FASE: ${phase.toUpperCase()}
 
-  const totalWeeks = (phases.base || 0) + 
-                     (phases.build || 0) + 
-                     (phases.peak || 0) + 
-                     (phases.taper || 0) + 
-                     (phases.recovery || 0);
+USER: ${context.biometrics.age}a, ${context.biometrics.gender}, ${context.biometrics.weight}kg, ${context.biometrics.height}cm
+NIVEL: ${context.training.experienceLevel}
+OBJETIVO: ${context.objective.primaryGoal}
 
-  const finalWeeks = totalWeeks > 0 ? totalWeeks : 12; 
+ENTRENO: ${context.training.daysPerWeek}d/sem × ${context.training.sessionDuration}min
+DEPORTE: ${context.training.sportType}${context.training.sportSubtype ? ` (${context.training.sportSubtype})` : ''}
+${context.training.hasInjuries ? `⚠️ LESIÓN: ${context.training.injuryDetails}` : ''}
 
-  // TODO EL TEXTO DEBE ESTAR DENTRO DE ESTAS COMILLAS INCLINADAS
-  return `Genera la SEMANA ${weekNumber} de un plan de ${totalWeeks} semanas.
-  FASE ACTUAL: ${phase.toUpperCase()}
+CALORÍAS:
+- Entreno: ${context.targets?.calories?.trainingDay || 2000}kcal → ${context.targets?.macros?.protein}P/${context.targets?.macros?.carbs}C/${context.targets?.macros?.fat}F
+- Descanso: ${context.targets?.calories?.restDay || 1800}kcal → ${Math.round((context.targets?.macros?.protein || 150)*0.9)}P/${Math.round((context.targets?.macros?.carbs || 200)*0.8)}C/${context.targets?.macros?.fat}F
 
-  IMPORTANTE: Solo genera 7 días consecutivos para esta semana.
+DIETA: ${context.nutrition.dietType} | Comidas: ${context.nutrition.mealsPerDay}
+${context.nutrition.excludedFoods?.length ? `EXCLUIR: ${context.nutrition.excludedFoods.slice(0, 3).join(', ')}` : ''}
+${context.nutrition.allergies?.length ? `ALERGIAS: ${context.nutrition.allergies.join(', ')}` : ''}
 
-DATOS DEL USUARIO:
-- Edad: ${context.biometrics.age} años
-- Peso: ${context.biometrics.weight} kg
-- Altura: ${context.biometrics.height} cm
-- Sexo: ${context.biometrics.gender}
-- Nivel: ${context.training.experienceLevel}
-- Objetivo: ${context.objective.primaryGoal}
+INICIO: ${context.startPreferences?.startDate}
 
-ENTRENAMIENTO:
-- Días disponibles: ${context.training.daysPerWeek} días/semana
-- Duración por sesión: ${context.training.sessionDuration} minutos
-- Tipo de deporte: ${context.training.sportType}
-${context.training.sportSubtype ? `- Subtipo: ${context.training.sportSubtype}` : ""}
-- Ubicación: ${context.training.trainingLocation?.join(", ") || "No especificada"}
-- Equipamiento: ${context.training.availableEquipment?.join(", ") || "Ninguno"}
-${context.training.hasInjuries ? `- LESIONES: ${context.training.injuryDetails}` : ""}
-
-NUTRICIÓN:
-- Dieta: ${context.nutrition.dietType}
-- Comidas/día: ${context.nutrition.mealsPerDay}
-- Alergias: ${context.nutrition.allergies?.length > 0 ? context.nutrition.allergies.join(", ") : "ninguna"}
-- Intolerancias: ${context.nutrition.intolerances?.length > 0 ? context.nutrition.intolerances.join(", ") : "ninguna"}
-- Alimentos excluidos: ${context.nutrition.excludedFoods?.length > 0 ? context.nutrition.excludedFoods.join(", ") : "ninguno"}
-
-OBJETIVOS CALÓRICOS Y MACROS:
-- Día de entrenamiento: ${context.targets?.calories?.trainingDay || 2000} kcal
-  → Proteína: ${context.targets?.macros?.protein || 150}g
-  → Carbohidratos: ${context.targets?.macros?.carbs || 200}g
-  → Grasas: ${context.targets?.macros?.fat || 70}g
-  → Fibra: ${context.targets?.macros?.fiber || 30}g
-  
-- Día de descanso: ${context.targets?.calories?.restDay || 1800} kcal
-  → Proteína: ${Math.round((context.targets?.macros?.protein || 150) * 0.95)}g
-  → Carbohidratos: ${Math.round((context.targets?.macros?.carbs || 200) * 0.8)}g
-  → Grasas: ${context.targets?.macros?.fat || 70}g
-  → Fibra: ${context.targets?.macros?.fiber || 30}g
-
-DISTRIBUCIÓN DE FASES:
-Esta semana corresponde a la fase: ${phase}
-
-INICIO DEL PLAN: ${context.startPreferences?.startDate || "Hoy"}
-
-Genera el plan completo en JSON puro (sin markdown) siguiendo EXACTAMENTE el formato especificado en el system prompt.`;
+Genera JSON válido. RECUERDA: 3 ejercicios máx, 3 comidas máx, 4 ingredientes máx, instrucciones cortas.`;
 }

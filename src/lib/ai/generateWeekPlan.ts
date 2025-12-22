@@ -7,9 +7,9 @@ import { parseWeekResponse } from "@/lib/ai/parsePlanningResponse";
 // ✅ LISTA DE MODELOS CON FALLBACK
 const MODELS_TO_TRY = [
   "gemini-2.5-flash",
-  "gemini-flash-latest", 
-  "gemini-pro-latest",
-  "gemini-2.5-pro",
+  "gemini-flash-latest",
+  "gemini-2.0-flash", 
+
 ];
 
 /**
@@ -41,7 +41,7 @@ export async function generateWeekPlan(
     temperature: 0.7,
     topP: 0.8,
     topK: 40,
-    maxOutputTokens: 8000,
+    maxOutputTokens: 4000,
   };
 
   // ✅ 5. INTENTAR CON MÚLTIPLES MODELOS (FALLBACK)

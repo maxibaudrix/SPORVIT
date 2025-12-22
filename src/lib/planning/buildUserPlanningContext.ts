@@ -56,31 +56,72 @@ export function buildUserPlanningContext(
   userId: string,
   locale: string = "es"
 ): UserPlanningContext {
-  // Validar que startDate existe
-  if (!onboardingData.startDate) {
-    throw new Error("startDate is required in onboarding data");
-  }
+  
+  // ✅ NORMALIZAR goalType a minúsculas
+  const normalizedGoalType = (onboardingData.objective.goalType || 'maintain').toLowerCase();
+  
+  // ✅ MAPEAR goalType del onboarding al formato esperado
+  const goalTypeMap: Record<string, "cut" | "bulk" | "maintain" | "recomp" | "performance"> = {
+    'lose': 'cut',
+    'gain': 'bulk',
+    'maintain': 'maintain',
+    'recomp': 'recomp',
+    'performance': 'performance',
+  };
+  
+  const mappedGoalType = goalTypeMap[normalizedGoalType] || 'maintain';
 
   console.log('[buildUserPlanningContext] onboardingData.objective:', onboardingData.objective);
-  console.log('[buildUserPlanningContext] targetTimeline:', onboardingData.objective?.targetTimeline);
+  console.log('[buildUserPlanningContext] normalizedGoalType:', normalizedGoalType);
+  console.log('[buildUserPlanningContext] mappedGoalType:', mappedGoalType);
+  console.log('[buildUserPlanningContext] targetTimeline:', onboardingData.objective.targetTimeline);
 
   // Calcular todos los targets y planning
   const calculations = calculateTargetsAndPlanning({
     biometrics: onboardingData.biometrics,
     objective: {
-      primaryGoal: onboardingData.objective.goalType as any,
+      primaryGoal: mappedGoalType, // ✅ Usar el valor mapeado
       targetTimeline: onboardingData.objective.targetTimeline || 4,
     },
     activity: {
-      dailyActivityLevel: onboardingData.activity.activityLevel as any,
+      dailyActivityLevel: (onboardingData.activity.activityLevel || 'moderate').toLowerCase() as any,
     },
     training: {
-      experienceLevel: onboardingData.training.level as any,
-      daysPerWeek: onboardingData.training.daysPerWeek,
+      experienceLevel: (onboardingData.training.level || 'beginner').toLowerCase() as any,
+      daysPerWeek: onboardingData.training.daysPerWeek || 3,
     },
   });
 
   console.log('[buildUserPlanningContext] calculations result:', calculations);
+
+  // ✅ VALIDAR que no haya NaN
+  if (isNaN(calculations.trainingDayCalories) || 
+      isNaN(calculations.restDayCalories) || 
+      !calculations.blockSize) {
+    
+    console.error('[buildUserPlanningContext] ❌ Calculations returned NaN, using fallback');
+    
+    const weight = onboardingData.biometrics.weight || 70;
+    const fallbackCalories = weight * 30;
+    
+    calculations.trainingDayCalories = Math.round(fallbackCalories * 1.1);
+    calculations.restDayCalories = Math.round(fallbackCalories * 0.9);
+    calculations.macros = {
+      protein: Math.round(weight * 2),
+      carbs: Math.round(fallbackCalories * 0.5 / 4),
+      fat: Math.round(fallbackCalories * 0.25 / 9),
+      fiber: 30,
+    };
+    calculations.blockSize = 4;
+    calculations.totalBlocks = Math.ceil((onboardingData.objective.targetTimeline || 4) / 4);
+    calculations.phases = {
+      base: Math.floor((onboardingData.objective.targetTimeline || 4) * 0.5),
+      build: Math.ceil((onboardingData.objective.targetTimeline || 4) * 0.3),
+      peak: 0,
+      taper: 0,
+      recovery: Math.floor((onboardingData.objective.targetTimeline || 4) * 0.2),
+    };
+  }
 
   // Construir contexto limpio
   const context: UserPlanningContext = {
@@ -88,8 +129,8 @@ export function buildUserPlanningContext(
       userId,
       createdAt: new Date().toISOString(),
       version: "1.0",
-      generationMode: "progressive", // ✅ AÑADIR
-      generationStatus: "init", // ✅ AÑADIR
+      generationMode: "progressive", 
+      generationStatus: "init", 
       locale,
     },
 
@@ -107,7 +148,7 @@ export function buildUserPlanningContext(
     },
 
     objective: {
-      primaryGoal: onboardingData.objective.goalType as any,
+      primaryGoal: mappedGoalType, // ✅ Usar el valor mapeado
       targetTimeline: onboardingData.objective.targetTimeline,
       hasCompetition: onboardingData.objective.hasCompetition || false,
       competitionType: onboardingData.objective.competitionType,
@@ -117,15 +158,15 @@ export function buildUserPlanningContext(
 
     activity: {
       country: onboardingData.activity.country,
-      timezone: onboardingData.activity.timezone,
-      dailyActivityLevel: onboardingData.activity.activityLevel as any,
+      timezone: onboardingData.activity.timezone || 'Europe/Madrid',
+      dailyActivityLevel: (onboardingData.activity.activityLevel || 'moderate').toLowerCase() as any,
       dailySteps: onboardingData.activity.dailySteps as any,
       availableDays: onboardingData.activity.availableDays,
       preferredTimes: onboardingData.activity.preferredTimes,
     },
 
     training: {
-      experienceLevel: onboardingData.training.level as any,
+      experienceLevel: (onboardingData.training.level || 'beginner').toLowerCase() as any,
       sportType: onboardingData.training.sportType,
       sportSubtype: onboardingData.training.sportSubtype,
       daysPerWeek: onboardingData.training.daysPerWeek,
