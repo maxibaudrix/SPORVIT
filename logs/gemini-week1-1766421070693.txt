@@ -1,0 +1,272 @@
+=== GEMINI RESPONSE ===
+Model: gemini-flash-latest
+Week: 1
+Phase: base
+Duration: 14803ms
+Length: 8651 chars
+Timestamp: 2025-12-22T16:31:10.693Z
+
+=== JSON START ===
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body_a",
+        "duration": 50,
+        "intensity": "moderate",
+        "description": "Fuerza full body básica, enfoque en compuestos.",
+        "exercises": [
+          {
+            "name": "Sentadilla con barra",
+            "category": "compound",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90,
+            "tempo": "3-0-1-0",
+            "notes": "Mantén el pecho arriba y la espalda recta."
+          },
+          {
+            "name": "Press de banca con mancuernas",
+            "category": "compound",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 12,
+            "rest": 75,
+            "tempo": "2-0-1-0",
+            "notes": "Controla el peso en la bajada."
+          },
+          {
+            "name": "Remo con barra (Pendlay)",
+            "category": "compound",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 10,
+            "rest": 75,
+            "tempo": "2-0-1-0",
+            "notes": "Tira hacia el abdomen bajo."
+          }
+        ],
+        "warmup": {
+          "description": "5min cardio ligero + movilidad articular.",
+          "duration": 8
+        },
+        "cooldown": {
+          "description": "Estiramiento de cuádriceps y pecho.",
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2706,
+        "targetProtein": 164,
+        "targetCarbs": 308,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostadas con huevos y aguacate",
+            "description": "Comida balanceada para energía matutina.",
+            "calories": 902,
+            "protein": 55,
+            "carbs": 102,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Pan integral", "amount": 3, "unit": "rebanadas"},
+              {"name": "Huevos", "amount": 3, "unit": "unidades"},
+              {"name": "Aguacate", "amount": 60, "unit": "g"},
+              {"name": "Pavo en rebanadas", "amount": 100, "unit": "g"}
+            ],
+            "instructions": [
+              "Tostar el pan.",
+              "Cocinar los huevos revueltos o fritos.",
+              "Servir con aguacate y pavo."
+            ],
+            "prepTime": 5,
+            "cookTime": 5,
+            "difficulty": "easy",
+            "tags": ["high_protein"]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pollo con arroz y brócoli",
+            "description": "Clásico post-entreno, alto en carbohidratos.",
+            "calories": 902,
+            "protein": 55,
+            "carbs": 102,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Pechuga de pollo", "amount": 150, "unit": "g"},
+              {"name": "Arroz blanco", "amount": 150, "unit": "g cocido"},
+              {"name": "Brócoli", "amount": 150, "unit": "g"},
+              {"name": "Aceite de oliva", "amount": 1, "unit": "cda"}
+            ],
+            "instructions": [
+              "Cocinar el arroz y el brócoli al vapor.",
+              "Sazonar y cocinar el pollo a la plancha.",
+              "Mezclar todo con aceite de oliva."
+            ],
+            "prepTime": 10,
+            "cookTime": 15,
+            "difficulty": "medium",
+            "tags": ["lean_protein"]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón con batata",
+            "description": "Fuentes de grasa saludable y carbohidratos complejos.",
+            "calories": 902,
+            "protein": 54,
+            "carbs": 104,
+            "fat": 22,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Salmón", "amount": 150, "unit": "g"},
+              {"name": "Batata (camote)", "amount": 200, "unit": "g"},
+              {"name": "Espárragos", "amount": 150, "unit": "g"},
+              {"name": "Limón", "amount": 1, "unit": "unidad"}
+            ],
+            "instructions": [
+              "Asar el salmón con limón.",
+              "Hornear la batata en cubos.",
+              "Servir con espárragos al vapor."
+            ],
+            "prepTime": 10,
+            "cookTime": 20,
+            "difficulty": "medium",
+            "tags": ["omega_3"]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2214,
+        "targetProtein": 148,
+        "targetCarbs": 246,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur proteico con fruta",
+            "description": "Rápido y alto en proteína.",
+            "calories": 738,
+            "protein": 50,
+            "carbs": 82,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Yogur griego natural", "amount": 200, "unit": "g"},
+              {"name": "Proteína en polvo (vainilla)", "amount": 20, "unit": "g"},
+              {"name": "Fresa", "amount": 100, "unit": "g"},
+              {"name": "Semillas de chía", "amount": 10, "unit": "g"}
+            ],
+            "instructions": [
+              "Mezclar el yogur y la proteína.",
+              "Cortar la fruta.",
+              "Añadir la fruta y las semillas de chía."
+            ],
+            "prepTime": 5,
+            "cookTime": 0,
+            "difficulty": "easy",
+            "tags": ["high_protein"]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Sándwich de pavo y queso",
+            "description": "Comida sencilla para el día de descanso.",
+            "calories": 738,
+            "protein": 50,
+            "carbs": 82,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Pan integral", "amount": 2, "unit": "rebanadas"},
+              {"name": "Pavo rebanado", "amount": 100, "unit": "g"},
+              {"name": "Queso bajo en grasa", "amount": 40, "unit": "g"},
+              {"name": "Mostaza", "amount": 1, "unit": "cda"}
+            ],
+            "instructions": [
+              "Untar mostaza en el pan.",
+              "Colocar el pavo y el queso.",
+              "Tostar ligeramente si se desea."
+            ],
+            "prepTime": 5,
+            "cookTime": 0,
+            "difficulty": "easy",
+            "tags": ["quick_prep"]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Lentejas con vegetales",
+            "description": "Alto contenido de fibra y carbohidratos.",
+            "calories": 738,
+            "protein": 48,
+            "carbs": 82,
+            "fat": 22,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Lentejas", "amount": 150, "unit": "g cocidas"},
+              {"name": "Zanahoria", "amount": 50, "unit": "g"},
+              {"name": "Caldo de verduras", "amount": 200, "unit": "ml"},
+              {"name": "Cebolla", "amount": 50, "unit": "g"}
+            ],
+            "instructions": [
+              "Sofreír la cebolla y la zanahoria.",
+              "Añadir lentejas y caldo.",
+              "Cocinar a fuego lento hasta espesar."
+            ],
+            "prepTime": 10,
+            "cookTime": 20,
+            "difficulty": "medium",
+            "tags": ["fiber_rich"]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-31",
+      "dayOfWeek": "miércoles",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body_b",
+        "duration": 55,
+        "intensity": "moderate",
+        "description": "Énfasis en la cadena posterior y empujes verticales.",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano (RDL)",
+            "category": "compound",
+            "muscleGroup": "isquios",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90,
+            "tempo
+=== JSON END ===

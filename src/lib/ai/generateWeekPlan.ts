@@ -8,8 +8,7 @@ import { parseWeekResponse } from "@/lib/ai/parsePlanningResponse";
 const MODELS_TO_TRY = [
   "gemini-2.5-flash",
   "gemini-flash-latest",
-  "gemini-2.0-flash", 
-
+  "gemini-2.0-flash",
 ];
 
 /**
@@ -68,10 +67,45 @@ export async function generateWeekPlan(
           
           const response = result.response;
           const text = response.text();
-          
+
           const duration = Date.now() - startTime;
           console.log(`[generateWeekPlan] ✅ AI responded in ${duration}ms with model ${modelName}`);
           console.log(`[generateWeekPlan] Response length: ${text.length} characters`);
+
+          // ✅ GUARDAR RESPUESTA COMPLETA
+          if (typeof window === 'undefined') { // Solo en servidor
+            try {
+              const fs = require('fs');
+              const path = require('path');
+              const timestamp = Date.now();
+              const filename = path.join(process.cwd(), `logs/gemini-week${weekNumber}-${timestamp}.txt`);
+              
+              // Crear carpeta logs si no existe
+              const logsDir = path.join(process.cwd(), 'logs');
+              if (!fs.existsSync(logsDir)) {
+                fs.mkdirSync(logsDir, { recursive: true });
+              }
+              
+              // Guardar con metadata
+              const content = `=== GEMINI RESPONSE ===
+Model: ${modelName}
+Week: ${weekNumber}
+Phase: ${phase}
+Duration: ${duration}ms
+Length: ${text.length} chars
+Timestamp: ${new Date().toISOString()}
+
+=== JSON START ===
+${text}
+=== JSON END ===`;
+              
+              fs.writeFileSync(filename, content, 'utf8');
+              console.log(`[generateWeekPlan] 💾 Response saved to: ${filename}`);
+            } catch (err) {
+              console.error('[generateWeekPlan] Failed to save response:', err);
+            }
+          }
+
           console.log(`[generateWeekPlan] First 200 chars:`, text.substring(0, 200));
           console.log(`[generateWeekPlan] Last 200 chars:`, text.substring(text.length - 200));
 

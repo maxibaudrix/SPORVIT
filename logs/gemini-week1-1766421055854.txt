@@ -1,0 +1,118 @@
+=== GEMINI RESPONSE ===
+Model: gemini-2.5-flash
+Week: 1
+Phase: base
+Duration: 19643ms
+Length: 3734 chars
+Timestamp: 2025-12-22T16:30:55.860Z
+
+=== JSON START ===
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 50,
+        "intensity": "moderate",
+        "description": "Fuerza full body para principiantes.",
+        "exercises": [
+          {
+            "name": "Sentadilla con peso corporal",
+            "category": "compound",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60,
+            "tempo": "2-0-2-0",
+            "notes": "Mantén la espalda recta y el pecho erguido."
+          },
+          {
+            "name": "Flexiones de rodillas",
+            "category": "compound",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60,
+            "tempo": "2-0-2-0",
+            "notes": "Baja el pecho casi hasta el suelo."
+          },
+          {
+            "name": "Remo con mancuernas (unilateral)",
+            "category": "compound",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60,
+            "tempo": "2-0-2-0",
+            "notes": "Tira del codo hacia el techo, contrae la espalda."
+          }
+        ],
+        "warmup": {"description": "5 min de cardio ligero y movilidad articular.", "duration": 5},
+        "cooldown": {"description": "5 min de estiramientos suaves.", "duration": 5}
+      },
+      "nutrition": {
+        "targetCalories": 2706,
+        "targetProtein": 164,
+        "targetCarbs": 308,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Avena proteica con plátano",
+            "description": "Desayuno energético y rico en proteínas.",
+            "calories": 650,
+            "protein": 40,
+            "carbs": 75,
+            "fat": 15,
+            "fiber": 8,
+            "ingredients": [
+              {"name": "Avena", "amount": 70, "unit": "g"},
+              {"name": "Proteína en polvo", "amount": 30, "unit": "g"},
+              {"name": "Plátano", "amount": 1, "unit": "unidad"},
+              {"name": "Leche", "amount": 200, "unit": "ml"}
+            ],
+            "instructions": ["Cocina la avena con leche.", "Mezcla la proteína.", "Añade el plátano en rodajas."],
+            "prepTime": 2,
+            "cookTime": 5,
+            "difficulty": "easy",
+            "tags": ["high_protein", "pre_workout"]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pollo con arroz y brócoli",
+            "description": "Comida completa para reponer energías.",
+            "calories": 1000,
+            "protein": 60,
+            "carbs": 115,
+            "fat": 25,
+            "fiber": 12,
+            "ingredients": [
+              {"name": "Pechuga de pollo", "amount": 180, "unit": "g"},
+              {"name": "Arroz integral", "amount": 100, "unit": "g"},
+              {"name": "Brócoli", "amount": 150, "unit": "g"},
+              {"name": "Aceite de oliva", "amount": 10, "unit": "ml"}
+            ],
+            "instructions": ["Cocina el pollo a la plancha.", "Hierve el arroz y el brócoli.", "Sirve con un chorrito de aceite."],
+            "prepTime": 10,
+            "cookTime": 20,
+            "difficulty": "medium",
+            "tags": ["post_workout", "balanced"]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "
+=== JSON END ===

@@ -163,14 +163,14 @@ export interface WorkoutPlan {
   focus?: "full_body" | "upper" | "lower" | "push" | "pull";
   duration: number; // minutos
   intensity: "low" | "moderate" | "high";
-  description: string;
+  description?: string;
   exercises?: Exercise[];
   warmup?: {
-    description: string;
+    description?: string;
     duration: number;
   };
   cooldown?: {
-    description: string;
+    description?: string;
     duration: number;
   };
   notes?: string;
