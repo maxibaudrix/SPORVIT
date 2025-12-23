@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { WeekPlan, DayPlan, DayEvent } from '@/types/calendar';
 import { getWeekDays, formatDateISO, getWeekStart, getISOWeek } from '@/lib/utils/calendar';
 
@@ -24,8 +24,13 @@ export function useWeeklyPlan({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ 1. Estabilizamos la fecha convirtiéndola a string (evita bucle infinito)
-  const startDateISO = formatDateISO(getWeekStart(weekStartDate));
+  // ✅ 1. Estabilizamos la fecha: obtenemos el inicio de semana y lo pasamos a String.
+  // Al usar el tiempo (getTime) como dependencia del useMemo, evitamos que React
+  // crea que la fecha es "nueva" en cada renderizado de objeto.
+  const startDateISO = useMemo(() => {
+    const start = getWeekStart(weekStartDate);
+    return formatDateISO(start);
+  }, [weekStartDate.getTime()]);
 
   const fetchWeeklyPlan = useCallback(async () => {
     if (!userId) {
@@ -37,8 +42,8 @@ export function useWeeklyPlan({
     setError(null);
 
     try {
-      // Necesitamos el objeto Date original para las funciones de ayuda
-      const startDateObj = getWeekStart(weekStartDate);
+      // Usamos una fecha base estable para las funciones de ayuda
+      const startDateObj = getWeekStart(new Date(startDateISO + 'T12:00:00'));
       
       const response = await fetch(
         `/api/dashboard/weekly-plan?startDate=${startDateISO}`
@@ -50,27 +55,28 @@ export function useWeeklyPlan({
 
       const data = await response.json();
       
-      // ✅ 2. Manejo de semana vacía
+      // ✅ 2. Definimos el plan final (vacio o transformado)
+      let finalPlan: WeekPlan;
+
       if (!data.days || Object.keys(data.days).length === 0) {
-        const emptyPlan = createEmptyWeekPlan(startDateObj);
-        setWeekPlan(emptyPlan);
-        return;
+        finalPlan = createEmptyWeekPlan(startDateObj);
+      } else {
+        // ✅ 3. Aquí es donde se define 'plan' correctamente
+        finalPlan = transformApiDataToWeekPlan(data, startDateObj);
       }
       
-      // ✅ 3. Definición correcta de 'plan' (Solución al error Cannot find name 'plan')
-      const plan: WeekPlan = transformApiDataToWeekPlan(data, startDateObj);
-      
-      setWeekPlan(plan);
+      setWeekPlan(finalPlan);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error desconocido';
       setError(message);
-      console.error('Error fetching weekly plan:', err);
+      console.error('[useWeeklyPlan] Error:', err);
     } finally {
       setIsLoading(false);
     }
-    // ✅ Dependencias estables: userId y el string de la fecha
-  }, [startDateISO, userId, weekStartDate]); 
+    // ✅ Dependencias estables: Evitamos que cambie la referencia de la función fetch
+  }, [startDateISO, userId]); 
 
+  // ✅ 4. El efecto solo se dispara si la función memorizada cambia
   useEffect(() => {
     fetchWeeklyPlan();
   }, [fetchWeeklyPlan]);
@@ -84,7 +90,7 @@ export function useWeeklyPlan({
 }
 
 /**
- * Crea una estructura de semana vacía (Modo Manual)
+ * Crea una estructura de semana vacía para días sin plan generado
  */
 function createEmptyWeekPlan(startDate: Date): WeekPlan {
   const weekDays = getWeekDays(startDate);
@@ -104,7 +110,7 @@ function createEmptyWeekPlan(startDate: Date): WeekPlan {
 }
 
 /**
- * Transforma los datos crudos de la API al formato WeekPlan de la interfaz
+ * Transforma los datos de la API al formato que requiere el Calendario/Dashboard
  */
 function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
   const weekDays = getWeekDays(startDate);
@@ -120,7 +126,7 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
       ...transformMeals(dayData.meals || []),
     ];
 
-    // Agregar evento de descanso si no hay nada planeado
+    // Si no hay entrenos ni comidas, agregamos un evento visual de descanso
     if (events.length === 0) {
       events.push(createRestEvent(date));
     }
@@ -128,14 +134,7 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
     return {
       date,
       dayOfWeek: date.toLocaleDateString('es-ES', { weekday: 'long' }),
-      events: events.sort((a, b) => {
-        if (a.startTime && b.startTime) {
-          return a.startTime.localeCompare(b.startTime);
-        }
-        if (a.type === 'workout' && b.type === 'meal') return -1;
-        if (a.type === 'meal' && b.type === 'workout') return 1;
-        return 0;
-      }),
+      events: events.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')),
     };
   });
 
@@ -152,7 +151,7 @@ function transformWorkouts(workouts: any[]): DayEvent[] {
     id: workout.id,
     userId: workout.userId,
     date: new Date(workout.date),
-    type: 'workout',
+    type: 'workout' as const,
     workoutType: workout.workoutType,
     title: workout.title,
     description: workout.description,
@@ -160,8 +159,6 @@ function transformWorkouts(workouts: any[]): DayEvent[] {
     estimatedCalories: workout.estimatedCalories,
     completed: workout.completed,
     completedAt: workout.completedAt ? new Date(workout.completedAt) : undefined,
-    actualDurationMin: workout.actualDurationMin,
-    actualCalories: workout.actualCalories,
     startTime: workout.startTime,
     endTime: workout.endTime,
     createdAt: new Date(workout.createdAt),
@@ -173,7 +170,7 @@ function transformMeals(meals: any[]): DayEvent[] {
     id: meal.id,
     userId: meal.userId,
     date: new Date(meal.date),
-    type: 'meal',
+    type: 'meal' as const,
     mealType: meal.mealType,
     title: meal.title || meal.mealType,
     totalCalories: meal.totalCalories,
