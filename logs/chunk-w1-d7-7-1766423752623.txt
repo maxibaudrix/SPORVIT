@@ -1,0 +1,68 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-04",
+      "dayOfWeek": "domingo",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 2214,
+        "targetProtein": 140,
+        "targetCarbs": 250,
+        "targetFat": 60,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Avena con frutos rojos",
+            "calories": 450,
+            "protein": 25,
+            "carbs": 50,
+            "fat": 18,
+            "fiber": 6,
+            "ingredients": [
+              {"name": "Avena", "amount": 60, "unit": "g"},
+              {"name": "Proteína en polvo", "amount": 25, "unit": "g"},
+              {"name": "Arándanos", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Bowl de arroz y pavo",
+            "calories": 750,
+            "protein": 50,
+            "carbs": 80,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Arroz integral cocido", "amount": 200, "unit": "g"},
+              {"name": "Pavo molido", "amount": 150, "unit": "g"},
+              {"name": "Pimiento rojo", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Merluza y batata",
+            "calories": 1014,
+            "protein": 65,
+            "carbs": 120,
+            "fat": 12,
+            "fiber": 9,
+            "ingredients": [
+              {"name": "Filete de merluza", "amount": 200, "unit": "g"},
+              {"name": "Batata (camote)", "amount": 300, "unit": "g"},
+              {"name": "Espárragos", "amount": 150, "unit": "g"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

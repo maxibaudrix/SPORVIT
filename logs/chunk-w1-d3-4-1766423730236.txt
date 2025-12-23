@@ -1,0 +1,230 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-31",
+      "dayOfWeek": "miércoles",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 50,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano",
+            "muscleGroup": "isquiotibiales",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press de Banca con mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2706,
+        "targetProtein": 164,
+        "targetCarbs": 308,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostadas con huevos revueltos",
+            "calories": 680,
+            "protein": 38,
+            "carbs": 70,
+            "fat": 28,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevos",
+                "amount": 3,
+                "unit": "unidades"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Arroz con pollo y verduras",
+            "calories": 950,
+            "protein": 60,
+            "carbs": 120,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Arroz blanco",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón con batata y espinacas",
+            "calories": 1076,
+            "protein": 66,
+            "carbs": 118,
+            "fat": 20,
+            "fiber": 15,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 200,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-01",
+      "dayOfWeek": "jueves",
+      "dayNumber": 4,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2214,
+        "targetProtein": 135,
+        "targetCarbs": 250,
+        "targetFat": 55,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur con bayas y semillas",
+            "calories": 550,
+            "protein": 40,
+            "carbs": 55,
+            "fat": 18,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Bayas mixtas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Semillas de chía",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de atún y garbanzos",
+            "calories": 700,
+            "protein": 50,
+            "carbs": 70,
+            "fat": 25,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Atún en lata",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Garbanzos",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Hojas verdes",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:00",
+            "name": "Sopa de lentejas con pan",
+            "calories": 964,
+            "protein": 45,
+            "carbs": 125,
+            "fat": 12,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Lentejas",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Zanahoria",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 80,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

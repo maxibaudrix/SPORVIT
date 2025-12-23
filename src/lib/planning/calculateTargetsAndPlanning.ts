@@ -26,6 +26,8 @@ interface OnboardingData {
 function calculateBMR(biometrics: OnboardingData["biometrics"]): number {
   const { age, gender, weight, height } = biometrics;
 
+  if (!weight || !height || !age) return 1500;
+
   if (gender === "male") {
     return 10 * weight + 6.25 * height - 5 * age + 5;
   } else {
@@ -44,8 +46,11 @@ function calculateTDEE(
   const multipliers = {
     sedentary: 1.2,
     light: 1.375,
+    lightly_active: 1.375,     
     moderate: 1.55,
+    moderately_active: 1.55,   
     active: 1.725,
+    very_active: 1.725,        
   };
 
   return Math.round(bmr * multipliers[activityLevel]);
@@ -105,7 +110,8 @@ function calculateMacros(
 
   // Carbohidratos: resto de calorías
   const proteinCalories = protein * 4; // 4 kcal por gramo
-  const carbCalories = calories - proteinCalories - fatCalories;
+  // Línea 105 aprox.
+  const carbCalories = Math.max(0, calories - proteinCalories - fatCalories);
   const carbs = Math.round(carbCalories / 4); // 4 kcal por gramo
 
   // Fibra: 14g por cada 1000 kcal

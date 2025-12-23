@@ -52,11 +52,28 @@ interface OnboardingCompleteData {
  * desde los datos crudos del onboarding
  */
 export function buildUserPlanningContext(
-  onboardingData: OnboardingCompleteData,
+  onboardingData: any,
   userId: string,
-  locale: string = "es"
+  locale: string = 'es'
 ): UserPlanningContext {
   
+  // ✅ CONVERSIONES EXPLÍCITAS:
+  const age = Number(onboardingData.biometrics?.age) || 0;
+  const weight = Number(onboardingData.biometrics?.weight) || 0;
+  const height = Number(onboardingData.biometrics?.height) || 0;
+  const daysPerWeek = Number(onboardingData.training?.trainingFrequency) || 3;
+  
+  // ✅ CONVERSIÓN DE sessionDuration (string → number):
+  let sessionDuration = 60; // default
+  if (onboardingData.training?.sessionDuration) {
+    const durationStr = String(onboardingData.training.sessionDuration);
+    if (durationStr === 'UNDER_30') sessionDuration = 25;
+    else if (durationStr === '30_60') sessionDuration = 45;
+    else if (durationStr === '60_90') sessionDuration = 75;
+    else if (durationStr === 'OVER_90') sessionDuration = 105;
+    else sessionDuration = Number(durationStr) || 60;
+   }
+   
   // ✅ NORMALIZAR goalType a minúsculas
   const normalizedGoalType = (onboardingData.objective.goalType || 'maintain').toLowerCase();
   
@@ -76,6 +93,16 @@ export function buildUserPlanningContext(
   console.log('[buildUserPlanningContext] mappedGoalType:', mappedGoalType);
   console.log('[buildUserPlanningContext] targetTimeline:', onboardingData.objective.targetTimeline);
 
+  // ✅ MAPEAR activityLevel para que coincida con los multiplicadores y Prisma
+    const activityLevelMap: Record<string, any> = {
+      'sedentary': 'sedentary',
+      'light': 'lightly_active',
+      'moderate': 'moderately_active',
+      'active': 'very_active',
+    };
+
+    const mappedActivityLevel = activityLevelMap[onboardingData.activity.activityLevel.toLowerCase()] || 'moderate';
+
   // Calcular todos los targets y planning
   const calculations = calculateTargetsAndPlanning({
     biometrics: onboardingData.biometrics,
@@ -84,7 +111,7 @@ export function buildUserPlanningContext(
       targetTimeline: onboardingData.objective.targetTimeline || 4,
     },
     activity: {
-      dailyActivityLevel: (onboardingData.activity.activityLevel || 'moderate').toLowerCase() as any,
+      dailyActivityLevel: mappedActivityLevel,
     },
     training: {
       experienceLevel: (onboardingData.training.level || 'beginner').toLowerCase() as any,
@@ -170,7 +197,9 @@ export function buildUserPlanningContext(
       sportType: onboardingData.training.sportType,
       sportSubtype: onboardingData.training.sportSubtype,
       daysPerWeek: onboardingData.training.daysPerWeek,
-      sessionDuration: onboardingData.training.sessionDuration,
+      sessionDuration: typeof onboardingData.training.sessionDuration === 'string' 
+        ? (onboardingData.training.sessionDuration === "30_60" ? 45 : 75)
+        : onboardingData.training.sessionDuration,
       trainingLocation: onboardingData.training.location,
       availableEquipment: onboardingData.training.equipment,
       hasInjuries: onboardingData.training.hasInjuries,
@@ -188,14 +217,14 @@ export function buildUserPlanningContext(
 
     targets: {
       calories: {
-        trainingDay: calculations.trainingDayCalories,
-        restDay: calculations.restDayCalories,
+        trainingDay: Math.round(calculations.trainingDayCalories || 2000),
+        restDay: Math.round(calculations.restDayCalories || 1800),
       },
       macros: {
-        protein: calculations.macros.protein,
-        carbs: calculations.macros.carbs,
-        fat: calculations.macros.fat,
-        fiber: calculations.macros.fiber,
+        protein: Math.round(calculations.macros.protein || 0),
+        carbs: Math.round(calculations.macros.carbs || 0),
+        fat: Math.round(calculations.macros.fat || 0),
+        fiber: Math.round(calculations.macros.fiber || 30),
       },
     },
 

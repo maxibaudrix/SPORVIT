@@ -256,34 +256,16 @@ export interface OverallStats {
 // SKELETON (ESTRUCTURA LIGERA PARA DASHBOARD)
 // ============================================
 
-export interface PlanSkeleton {
-  totalWeeks: number;
-  currentWeek: number;
-  startDate: string;
-  endDate: string;
-  skeleton: WeekSkeleton[];
-}
-
-// ============================================
-// SKELETON WITH STATUS
-// ============================================
-
 export interface WeekSkeleton {
   weekNumber: number;
   startDate: string;
   endDate: string;
   phase: string;
-  generationStatus?: WeekGenerationStatus;
-  generatedAt?: string;
-  days: Array<{
-    date: string;
-    dayOfWeek: string;
-    hasWorkout: boolean;
-    workoutType: string | null;
-    workoutDuration: number;
-    targetCalories: number;
-  }>;
+  generationStatus?: WeekGenerationStatus;  
+  generatedAt?: string;                     
+  days: DaySkeleton[];
 }
+
 
 export interface PlanSkeletonWithStatus {
   totalWeeks: number;

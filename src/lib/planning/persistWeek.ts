@@ -12,7 +12,7 @@ export async function persistWeek(
   try {
     // 1. Validar si es respuesta parcial
     if ('partial' in weekOutput && weekOutput.partial) {
-      const partialResponse = weekOutput as PartialWeekResponse;
+      const partialResponse = weekOutput as unknown as PartialWeekResponse;
       throw new Error(`Week ${weekNumber} generation was partial: ${partialResponse.reason}`);
     }
     const week = weekOutput as WeekPlan;
@@ -122,6 +122,10 @@ export async function persistWeek(
       if (weekNumber === 1) {
         console.log('[persistWeek] Updating user profile and goals...');
 
+        const sessionDurationMinutes = typeof context.training.sessionDuration === 'string' 
+        ? (context.training.sessionDuration === "30_60" ? 45 : 75) // Mapeo de ejemplo
+        : context.training.sessionDuration;
+
         await tx.userProfile.upsert({
           where: { userId },
           create: {
@@ -135,7 +139,7 @@ export async function persistWeek(
             workoutDaysPerWeek: context.training.daysPerWeek,
             trainingLevel: context.training.experienceLevel,
             trainingTypes: context.training.sportType,
-            sessionDuration: context.training.sessionDuration,
+            sessionDuration: sessionDurationMinutes,
           },
           update: {
             age: context.biometrics.age,
@@ -155,10 +159,10 @@ export async function persistWeek(
             goalType: context.objective.primaryGoal,
             targetWeight: context.biometrics.weight, // Placeholder
             targetDate: context.objective.targetDate ? new Date(context.objective.targetDate) : undefined,
-            targetCalories: context.targets.calories.trainingDay,
-            targetProteinG: context.targets.macros.protein,
-            targetCarbsG: context.targets.macros.carbs,
-            targetFatG: context.targets.macros.fat,
+            targetCalories: context.targets.calories.trainingDay || 0,
+            targetProteinG: context.targets.macros.protein || 0,
+            targetCarbsG: context.targets.macros.carbs || 0,
+            targetFatG: context.targets.macros.fat || 0,
             targetFiberG: context.targets.macros.fiber || 30,
             bmr: 0, // Placeholder - calcular si es necesario
             tdee: 0, // Placeholder - calcular si es necesario
@@ -166,10 +170,10 @@ export async function persistWeek(
             allergies: context.nutrition.allergies?.join(', ') || '',
           },
           update: {
-            targetCalories: context.targets.calories.trainingDay,
-            targetProteinG: context.targets.macros.protein,
-            targetCarbsG: context.targets.macros.carbs,
-            targetFatG: context.targets.macros.fat,
+            targetCalories: context.targets.calories.trainingDay || 0,
+            targetProteinG: context.targets.macros.protein || 0,
+            targetCarbsG: context.targets.macros.carbs || 0,
+            targetFatG: context.targets.macros.fat || 0,
             targetFiberG: context.targets.macros.fiber || 30,
           },
         });

@@ -67,6 +67,23 @@ export async function POST(req: NextRequest) {
     const totalWeeks = userContext.planning.totalBlocks * userContext.planning.blockSize;
     console.log(`[Planning Init] Total weeks to generate: ${totalWeeks}`);
 
+    // ✅ AÑADIR VALIDACIÓN CRÍTICA:
+    if (isNaN(totalWeeks) || totalWeeks <= 0 || totalWeeks > 52) {
+      console.error('[Planning Init] Invalid totalWeeks:', totalWeeks);
+      console.error('[Planning Init] Context:', userContext.planning);
+      return NextResponse.json(
+        { 
+          error: 'Failed to calculate valid plan duration. Please check your onboarding data.',
+          debug: {
+            totalBlocks: userContext.planning.totalBlocks,
+            blockSize: userContext.planning.blockSize,
+            result: totalWeeks
+          }
+        },
+        { status: 400 }
+      );
+    }
+
     // 6. Verificar si ya existe un plan activo
     const existingPlan = await prisma.weeklyPlan.findFirst({
       where: {
@@ -161,47 +178,71 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('[Planning Init] Error:', error);
+  console.error('[Planning Init] Error:', error);
 
-    // Log error
+  // ✅ USAR userId YA EXISTENTE (no volver a llamar auth):
+  let currentUserId: string | undefined;
+  try {
+    const errorSession = await auth();
+    currentUserId = errorSession?.user?.id;
+  } catch {
+    currentUserId = undefined;
+  }
+  
+  // Log error (con mejor manejo)
+  if (currentUserId) {
     try {
-      const session = await auth();
-      if (session?.user?.id) {
-        await prisma.aIGenerationLog.create({
-          data: {
-            userId: session.user.id,
-            requestType: 'training_plan',
-            promptTokens: 0,
-            responseData: '',
-            completionTokens: 0,
-            durationMs: 0,
-            success: false,
+      await prisma.aIGenerationLog.create({
+        data: {
+          userId: currentUserId, // ✅ Reusar variable
+          requestType: 'training_plan',
+          promptTokens: 0,
+          responseData: JSON.stringify({ 
             error: error.message,
-          },
-        });
-      }
+            stack: error.stack?.substring(0, 500) // ✅ Incluir stack trace truncado
+          }),
+          completionTokens: 0,
+          durationMs: 0,
+          success: false,
+          error: error.message,
+        },
+      });
     } catch (logError) {
-      console.error('[Planning Init] Failed to log error:', logError);
+      // ✅ SI FALLA EL LOG, AL MENOS IMPRIMIRLO:
+      console.error('[Planning Init] Failed to log error to DB:', logError);
+      console.error('[Planning Init] Original error was:', error);
     }
+  }
 
-    // Retornar error apropiado
-    if (error.message?.includes('API key')) {
-      return NextResponse.json(
-        { error: 'AI service configuration error' },
-        { status: 500 }
-      );
-    }
-
-    if (error.message?.includes('quota')) {
-      return NextResponse.json(
-        { error: 'AI service temporarily unavailable' },
-        { status: 503 }
-      );
-    }
-
+  // Retornar errores específicos
+  if (error.message?.includes('API key')) {
     return NextResponse.json(
-      { error: 'Failed to generate plan. Please try again.' },
+      { error: 'AI service configuration error' },
       { status: 500 }
     );
   }
+
+  if (error.message?.includes('quota') || error.message?.includes('429')) {
+    return NextResponse.json(
+      { error: 'AI service temporarily unavailable. Please try again in a few minutes.' },
+      { status: 503 }
+    );
+  }
+  
+  // ✅ AÑADIR MANEJO PARA NaN:
+  if (error.message?.includes('Invalid plan duration') || error.message?.includes('NaN')) {
+    return NextResponse.json(
+      { error: 'Invalid onboarding data. Please complete the onboarding again.' },
+      { status: 400 }
+    );
+  }
+
+  return NextResponse.json(
+    { 
+      error: 'Failed to generate plan. Please try again.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    },
+    { status: 500 }
+  );
+}
 }
