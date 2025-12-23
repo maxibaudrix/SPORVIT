@@ -1,4 +1,3 @@
-//src\hooks\useWeeklyPlan.ts
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -25,6 +24,9 @@ export function useWeeklyPlan({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ 1. Estabilizamos la fecha convirtiéndola a string (evita bucle infinito)
+  const startDateISO = formatDateISO(getWeekStart(weekStartDate));
+
   const fetchWeeklyPlan = useCallback(async () => {
     if (!userId) {
       setIsLoading(false);
@@ -35,8 +37,8 @@ export function useWeeklyPlan({
     setError(null);
 
     try {
-      const startDate = getWeekStart(weekStartDate);
-      const startDateISO = formatDateISO(startDate);
+      // Necesitamos el objeto Date original para las funciones de ayuda
+      const startDateObj = getWeekStart(weekStartDate);
       
       const response = await fetch(
         `/api/dashboard/weekly-plan?startDate=${startDateISO}`
@@ -48,16 +50,15 @@ export function useWeeklyPlan({
 
       const data = await response.json();
       
-      // ✅ Si no hay datos o está vacío, crear semana vacía (NO error)
+      // ✅ 2. Manejo de semana vacía
       if (!data.days || Object.keys(data.days).length === 0) {
-        const emptyPlan = createEmptyWeekPlan(startDate);
+        const emptyPlan = createEmptyWeekPlan(startDateObj);
         setWeekPlan(emptyPlan);
-        setIsLoading(false);
         return;
       }
       
-      // Transform API data to WeekPlan format
-      const plan: WeekPlan = transformApiDataToWeekPlan(data, startDate);
+      // ✅ 3. Definición correcta de 'plan' (Solución al error Cannot find name 'plan')
+      const plan: WeekPlan = transformApiDataToWeekPlan(data, startDateObj);
       
       setWeekPlan(plan);
     } catch (err) {
@@ -67,7 +68,8 @@ export function useWeeklyPlan({
     } finally {
       setIsLoading(false);
     }
-  }, [weekStartDate, userId]);
+    // ✅ Dependencias estables: userId y el string de la fecha
+  }, [startDateISO, userId, weekStartDate]); 
 
   useEffect(() => {
     fetchWeeklyPlan();
@@ -82,7 +84,7 @@ export function useWeeklyPlan({
 }
 
 /**
- * ✅ NUEVA: Crear semana vacía para modo manual
+ * Crea una estructura de semana vacía (Modo Manual)
  */
 function createEmptyWeekPlan(startDate: Date): WeekPlan {
   const weekDays = getWeekDays(startDate);
@@ -96,13 +98,13 @@ function createEmptyWeekPlan(startDate: Date): WeekPlan {
     days: weekDays.map(date => ({
       date,
       dayOfWeek: date.toLocaleDateString('es-ES', { weekday: 'long' }),
-      events: [] // ✅ Vacío - usuario agrega con [+]
+      events: [] 
     }))
   };
 }
 
 /**
- * Transform API response data to WeekPlan format
+ * Transforma los datos crudos de la API al formato WeekPlan de la interfaz
  */
 function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
   const weekDays = getWeekDays(startDate);
@@ -118,7 +120,7 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
       ...transformMeals(dayData.meals || []),
     ];
 
-    // ✅ MODIFICADO: Solo agregar rest si NO hay eventos (ni workouts ni meals)
+    // Agregar evento de descanso si no hay nada planeado
     if (events.length === 0) {
       events.push(createRestEvent(date));
     }
@@ -138,22 +140,19 @@ function transformApiDataToWeekPlan(data: any, startDate: Date): WeekPlan {
   });
 
   return {
-    weekNumber: data.weekNumber || 1,
+    weekNumber: data.weekNumber || getISOWeek(startDate),
     startDate,
     endDate,
     days,
   };
 }
 
-/**
- * Transform workout data from API to WorkoutEvent
- */
 function transformWorkouts(workouts: any[]): DayEvent[] {
   return workouts.map((workout: any) => ({
     id: workout.id,
     userId: workout.userId,
     date: new Date(workout.date),
-    type: 'workout' as const,
+    type: 'workout',
     workoutType: workout.workoutType,
     title: workout.title,
     description: workout.description,
@@ -163,26 +162,20 @@ function transformWorkouts(workouts: any[]): DayEvent[] {
     completedAt: workout.completedAt ? new Date(workout.completedAt) : undefined,
     actualDurationMin: workout.actualDurationMin,
     actualCalories: workout.actualCalories,
-    series: workout.series,
-    repetitions: workout.repetitions,
-    notes: workout.notes,
     startTime: workout.startTime,
     endTime: workout.endTime,
     createdAt: new Date(workout.createdAt),
   }));
 }
 
-/**
- * Transform meal data from API to MealEvent
- */
 function transformMeals(meals: any[]): DayEvent[] {
   return meals.map((meal: any) => ({
     id: meal.id,
     userId: meal.userId,
     date: new Date(meal.date),
-    type: 'meal' as const,
+    type: 'meal',
     mealType: meal.mealType,
-    title: meal.title,
+    title: meal.title || meal.mealType,
     totalCalories: meal.totalCalories,
     totalProteinG: meal.totalProteinG,
     totalCarbsG: meal.totalCarbsG,
@@ -194,9 +187,6 @@ function transformMeals(meals: any[]): DayEvent[] {
   }));
 }
 
-/**
- * Create a rest event for a day with no workouts
- */
 function createRestEvent(date: Date): DayEvent {
   return {
     id: `rest-${formatDateISO(date)}`,

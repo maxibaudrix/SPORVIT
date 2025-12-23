@@ -10,11 +10,12 @@ export async function persistWeek(
   weekNumber: number
 ): Promise<void> {
   try {
-    // 1. Validar si es respuesta parcial
-    if ('partial' in weekOutput && weekOutput.partial) {
+    // 1. Validar si es respuesta parcial (Fix TS: as unknown)
+    if ('type' in weekOutput && weekOutput.type === 'partial') {
       const partialResponse = weekOutput as unknown as PartialWeekResponse;
-      throw new Error(`Week ${weekNumber} generation was partial: ${partialResponse.reason}`);
+      throw new Error(`Week ${weekNumber} generation was partial: ${partialResponse.status}`);
     }
+
     const week = weekOutput as WeekPlan;
     const userId = context.meta.userId;
 
@@ -25,8 +26,6 @@ export async function persistWeek(
       // 3. Guardar/actualizar semana
       const weekStartDate = new Date(week.startDate);
       const weekEndDate = new Date(week.endDate);
-
-      console.log(`[persistWeek] Saving week ${weekNumber}...`);
 
       await tx.weeklyPlan.upsert({
         where: {
@@ -49,45 +48,37 @@ export async function persistWeek(
           planJson: JSON.stringify(week),
           generationStatus: 'generated',
           generatedAt: new Date(),
-          generationError: null, // Limpiar error si existía
+          generationError: null,
         },
       });
-
-      console.log(`[persistWeek] Week ${weekNumber} saved`);
 
       // 4. Guardar workouts y meals de cada día
       for (const day of week.days) {
         const dayDate = new Date(day.date);
 
-        // 4.1. Guardar workout si existe
         if (day.isTrainingDay && day.workout) {
-          // Primero verificar si existe
           const existingWorkout = await tx.workout.findFirst({
-            where: {
-              userId,
-              date: dayDate,
-            },
+            where: { userId, date: dayDate },
           });
+
+          const workoutData = {
+            workoutType: day.workout.type,
+            title: `${day.workout.type} - ${day.workout.focus || 'Training'}`,
+            description: day.workout.description || '',
+            durationMinutes: day.workout.duration,
+          };
 
           if (existingWorkout) {
             await tx.workout.update({
               where: { id: existingWorkout.id },
-              data: {
-                workoutType: day.workout.type,
-                title: `${day.workout.type} - ${day.workout.focus || 'Training'}`,
-                description: day.workout.description || '',
-                durationMinutes: day.workout.duration,
-              },
+              data: workoutData,
             });
           } else {
             await tx.workout.create({
               data: {
+                ...workoutData,
                 user: { connect: { id: userId } },
                 date: dayDate,
-                workoutType: day.workout.type,
-                title: `${day.workout.type} - ${day.workout.focus || 'Training'}`,
-                description: day.workout.description || '',
-                durationMinutes: day.workout.duration,
                 estimatedCalories: day.workout.intensity === 'high' ? 500 : 
                                   day.workout.intensity === 'moderate' ? 350 : 200,
                 completed: false,
@@ -96,8 +87,9 @@ export async function persistWeek(
           }
         }
 
-        // 4.2. Guardar meals del día
         if (day.nutrition?.meals) {
+          // Nota: Aquí podrías querer borrar comidas previas del mismo día 
+          // si permites re-generar para evitar duplicados.
           for (const meal of day.nutrition.meals) {
             await tx.meal.create({
               data: {
@@ -116,15 +108,14 @@ export async function persistWeek(
         }
       }
 
-      console.log(`[persistWeek] Workouts and meals saved for week ${weekNumber}`);
-
       // 5. Actualizar UserProfile y UserGoals (solo en semana 1)
       if (weekNumber === 1) {
         console.log('[persistWeek] Updating user profile and goals...');
 
+        // Fix Prisma: Convertir string "30_60" a Int y asegurar valores
         const sessionDurationMinutes = typeof context.training.sessionDuration === 'string' 
-        ? (context.training.sessionDuration === "30_60" ? 45 : 75) // Mapeo de ejemplo
-        : context.training.sessionDuration;
+          ? (context.training.sessionDuration === "30_60" ? 45 : 75)
+          : context.training.sessionDuration;
 
         await tx.userProfile.upsert({
           where: { userId },
@@ -136,10 +127,10 @@ export async function persistWeek(
             currentWeight: context.biometrics.weight,
             bodyFatPercentage: context.biometrics.bodyFatPercentage,
             activityLevel: context.activity.dailyActivityLevel,
-            workoutDaysPerWeek: context.training.daysPerWeek,
-            trainingLevel: context.training.experienceLevel,
-            trainingTypes: context.training.sportType,
-            sessionDuration: sessionDurationMinutes,
+            workoutDaysPerWeek: context.training.daysPerWeek || 3,
+            trainingLevel: context.training.experienceLevel || 'beginner',
+            trainingTypes: context.training.sportType || 'fitness',
+            sessionDuration: Number(sessionDurationMinutes) || 60,
           },
           update: {
             age: context.biometrics.age,
@@ -148,7 +139,8 @@ export async function persistWeek(
             currentWeight: context.biometrics.weight,
             bodyFatPercentage: context.biometrics.bodyFatPercentage,
             activityLevel: context.activity.dailyActivityLevel,
-            workoutDaysPerWeek: context.training.daysPerWeek,
+            workoutDaysPerWeek: context.training.daysPerWeek || 3,
+            sessionDuration: Number(sessionDurationMinutes) || 60,
           },
         });
 
@@ -157,28 +149,27 @@ export async function persistWeek(
           create: {
             user: { connect: { id: userId } },
             goalType: context.objective.primaryGoal,
-            targetWeight: context.biometrics.weight, // Placeholder
+            targetWeight: context.biometrics.weight,
             targetDate: context.objective.targetDate ? new Date(context.objective.targetDate) : undefined,
-            targetCalories: context.targets.calories.trainingDay || 0,
-            targetProteinG: context.targets.macros.protein || 0,
-            targetCarbsG: context.targets.macros.carbs || 0,
-            targetFatG: context.targets.macros.fat || 0,
-            targetFiberG: context.targets.macros.fiber || 30,
-            bmr: 0, // Placeholder - calcular si es necesario
-            tdee: 0, // Placeholder - calcular si es necesario
+            // Protección contra NaN
+            targetCalories: Math.round(context.targets.calories.trainingDay || 0),
+            targetProteinG: Math.round(context.targets.macros.protein || 0),
+            targetCarbsG: Math.round(context.targets.macros.carbs || 0),
+            targetFatG: Math.round(context.targets.macros.fat || 0),
+            targetFiberG: Math.round(context.targets.macros.fiber || 30),
+            bmr: 0,
+            tdee: 0,
             dietType: context.nutrition.dietType,
             allergies: context.nutrition.allergies?.join(', ') || '',
           },
           update: {
-            targetCalories: context.targets.calories.trainingDay || 0,
-            targetProteinG: context.targets.macros.protein || 0,
-            targetCarbsG: context.targets.macros.carbs || 0,
-            targetFatG: context.targets.macros.fat || 0,
-            targetFiberG: context.targets.macros.fiber || 30,
+            targetCalories: Math.round(context.targets.calories.trainingDay || 0),
+            targetProteinG: Math.round(context.targets.macros.protein || 0),
+            targetCarbsG: Math.round(context.targets.macros.carbs || 0),
+            targetFatG: Math.round(context.targets.macros.fat || 0),
+            targetFiberG: Math.round(context.targets.macros.fiber || 30),
           },
         });
-
-        console.log('[persistWeek] User profile and goals updated');
       }
     });
 
