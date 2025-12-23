@@ -1,0 +1,105 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-04",
+      "dayOfWeek": "sábado",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostadas de aguacate y huevo",
+            "calories": 550,
+            "protein": 25,
+            "carbs": 50,
+            "fat": 28,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo",
+                "amount": 2,
+                "unit": "unidad"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de pollo y lentejas",
+            "calories": 750,
+            "protein": 60,
+            "carbs": 90,
+            "fat": 18,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Lentejas cocidas",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Vegetales mixtos",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con batata",
+            "calories": 700,
+            "protein": 55,
+            "carbs": 80,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

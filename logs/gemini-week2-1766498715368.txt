@@ -1,0 +1,28 @@
+=== GEMINI RESPONSE ===
+Model: gemini-2.5-flash
+Week: 2
+Phase: base
+Duration: 18662ms
+Length: 398 chars
+Timestamp: 2025-12-23T14:05:15.369Z
+
+=== JSON START ===
+{
+  "weekNumber": 2,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises
+=== JSON END ===

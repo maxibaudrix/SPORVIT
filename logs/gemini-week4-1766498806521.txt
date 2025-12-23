@@ -1,0 +1,536 @@
+=== GEMINI RESPONSE ===
+Model: gemini-flash-latest
+Week: 4
+Phase: base
+Duration: 13653ms
+Length: 13268 chars
+Timestamp: 2025-12-23T14:06:46.522Z
+
+=== JSON START ===
+{
+  "weekNumber": 4,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con peso corporal",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 15,
+            "rest": 60
+          },
+          {
+            "name": "Flexiones de rodillas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Avena y huevo",
+            "calories": 650,
+            "protein": 40,
+            "carbs": 75,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Avena",
+                "amount": 70,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo entero",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Leche desnatada",
+                "amount": 200,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Arroz con pollo y aguacate",
+            "calories": 1050,
+            "protein": 70,
+            "carbs": 120,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco cocido",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pescado al horno y patata",
+            "calories": 750,
+            "protein": 50,
+            "carbs": 80,
+            "fat": 25,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Filete de merluza",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Patata cocida",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 15,
+                "unit": "ml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 248,
+        "targetFat": 70,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostadas de pavo",
+            "calories": 550,
+            "protein": 35,
+            "carbs": 60,
+            "fat": 18,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Claras de huevo",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pechuga de pavo",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Lentejas estofadas",
+            "calories": 900,
+            "protein": 60,
+            "carbs": 110,
+            "fat": 25,
+            "fiber": 15,
+            "ingredients": [
+              {
+                "name": "Lentejas cocidas",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Carne de ternera magra",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Verduras variadas",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:30",
+            "name": "Ensalada de atún",
+            "calories": 650,
+            "protein": 55,
+            "carbs": 50,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Atún en aceite (escurrido)",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pasta integral cocida",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate y lechuga",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-31",
+      "dayOfWeek": "miércoles",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Remo con mancuernas (unilateral)",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press militar con mancuernas (sentado)",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Batido de frutas y proteína",
+            "calories": 600,
+            "protein": 45,
+            "carbs": 80,
+            "fat": 15,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Proteína de suero",
+                "amount": 30,
+                "unit": "g"
+              },
+              {
+                "name": "Plátano",
+                "amount": 1,
+                "unit": "unidad"
+              },
+              {
+                "name": "Leche de almendra",
+                "amount": 300,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pasta con boloñesa de pavo",
+            "calories": 1100,
+            "protein": 75,
+            "carbs": 140,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pasta integral",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Carne picada de pavo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate natural",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Tortilla de patata y espinacas",
+            "calories": 700,
+            "protein": 45,
+            "carbs": 70,
+            "fat": 30,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Huevo entero",
+                "amount": 4,
+                "unit": "unidad"
+              },
+              {
+                "name": "Patata cocida",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-01",
+      "dayOfWeek": "jueves",
+      "dayNumber": 4,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 248,
+        "targetFat": 70,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "09:00",
+            "name": "Yogur con frutos secos",
+            "calories": 500,
+            "protein": 40,
+            "carbs": 50,
+            "fat": 15,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogur griego 0%",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Miel",
+                "amount": 10,
+                "unit": "g"
+              },
+              {
+                "name": "Nueces",
+                "amount": 30,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "14:00",
+            "name": "Wrap de pollo y verduras",
+            "calories": 950,
+            "protein": 70,
+            "carbs": 100,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Tortilla de trigo integral",
+                "amount": 2,
+                "unit": "unidad"
+              },
+              {
+                "name": "Tiras de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Pimiento y cebolla",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "21:00",
+            "name": "Salmón a la plancha con boniato",
+            "calories": 700,
+            "protein": 50,
+            "carbs": 70,
+            "fat": 25,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Filete de salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Boniato cocido",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-02",
+      "dayOfWeek": "viernes",
+      "dayNumber": 5,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Zancadas estáticas",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Fondos en silla (tríceps)",
+            "muscleGroup": "tríceps",
+            "sets": 3,
+            "reps": 15,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostadas de aguacate y huevo",
+            "calories": 650,
+            "protein": 35,
+            "carbs": 70,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pan de masa madre",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo poché",
+                "amount": 2,
+                "unit": "unidad"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Garbanzos con arroz",
+            "calories": 1050,
+            "protein": 60,
+            "carbs": 150,
+            "fat": 2
+=== JSON END ===

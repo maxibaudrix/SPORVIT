@@ -1,0 +1,243 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-31",
+      "dayOfWeek": "miércoles",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Press Militar con barra",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 10,
+            "rest": 75
+          },
+          {
+            "name": "Remo con barra (Pendlay)",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 10,
+            "rest": 75
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostada y huevos revueltos",
+            "calories": 850,
+            "protein": 55,
+            "carbs": 100,
+            "fat": 25,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Huevo",
+                "amount": 4,
+                "unit": "unidades"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Arroz con pollo y vegetales",
+            "calories": 950,
+            "protein": 60,
+            "carbs": 110,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 15,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón y batata",
+            "calories": 914,
+            "protein": 57,
+            "carbs": 113,
+            "fat": 26,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-01",
+      "dayOfWeek": "jueves",
+      "dayNumber": 4,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "phase": "base",
+        "focus": "recovery",
+        "duration": 0,
+        "intensity": "low",
+        "exercises": [],
+        "warmup": {
+          "duration": 0
+        },
+        "cooldown": {
+          "duration": 0
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Panqueques de avena proteicos",
+            "calories": 780,
+            "protein": 50,
+            "carbs": 105,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Avena",
+                "amount": 80,
+                "unit": "g"
+              },
+              {
+                "name": "Claras de huevo",
+                "amount": 200,
+                "unit": "ml"
+              },
+              {
+                "name": "Miel",
+                "amount": 30,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de garbanzos y atún",
+            "calories": 750,
+            "protein": 45,
+            "carbs": 115,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Garbanzos",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Atún en agua",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pasta integral con carne magra",
+            "calories": 814,
+            "protein": 77,
+            "carbs": 103,
+            "fat": 36,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Pasta integral",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Carne molida magra",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 100,
+                "unit": "ml"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

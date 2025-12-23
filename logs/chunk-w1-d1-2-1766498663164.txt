@@ -1,0 +1,229 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con barra",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press de banca con mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Avena Post-entreno",
+            "calories": 650,
+            "protein": 40,
+            "carbs": 75,
+            "fat": 15,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Avena",
+                "amount": 70,
+                "unit": "g"
+              },
+              {
+                "name": "Proteína de suero",
+                "amount": 30,
+                "unit": "g"
+              },
+              {
+                "name": "Plátano",
+                "amount": 1,
+                "unit": "unidad"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pollo y arroz",
+            "calories": 1000,
+            "protein": 60,
+            "carbs": 120,
+            "fat": 25,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 250,
+                "unit": "g cocido"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón y batata",
+            "calories": 1064,
+            "protein": 72,
+            "carbs": 128,
+            "fat": 41,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 250,
+        "targetFat": 70,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Huevos revueltos",
+            "calories": 700,
+            "protein": 35,
+            "carbs": 50,
+            "fat": 30,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Huevo entero",
+                "amount": 4,
+                "unit": "unidades"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 2,
+                "unit": "rebanadas"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de atún",
+            "calories": 800,
+            "protein": 57,
+            "carbs": 60,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Atún en lata",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Lechuga",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 1,
+                "unit": "cda"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Carne magra y quinoa",
+            "calories": 844,
+            "protein": 80,
+            "carbs": 140,
+            "fat": 20,
+            "fiber": 16,
+            "ingredients": [
+              {
+                "name": "Solomillo de cerdo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa",
+                "amount": 200,
+                "unit": "g cocida"
+              },
+              {
+                "name": "Pimientos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

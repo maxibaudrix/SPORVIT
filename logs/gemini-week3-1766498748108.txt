@@ -1,0 +1,178 @@
+=== GEMINI RESPONSE ===
+Model: gemini-2.5-flash
+Week: 3
+Phase: base
+Duration: 18114ms
+Length: 4834 chars
+Timestamp: 2025-12-23T14:05:48.109Z
+
+=== JSON START ===
+{
+  "weekNumber": 3,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con barra",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Flexiones",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60
+          }
+        ],
+        "warmup": {"duration": 5},
+        "cooldown": {"duration": 5}
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Avena proteica",
+            "calories": 700,
+            "protein": 45,
+            "carbs": 90,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {"name": "Avena", "amount": 80, "unit": "g"},
+              {"name": "Proteína en polvo", "amount": 30, "unit": "g"},
+              {"name": "Leche", "amount": 250, "unit": "ml"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pollo con arroz y verduras",
+            "calories": 1000,
+            "protein": 60,
+            "carbs": 130,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Pechuga de pollo", "amount": 180, "unit": "g"},
+              {"name": "Arroz blanco", "amount": 120, "unit": "g"},
+              {"name": "Brócoli", "amount": 150, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con batata y espárragos",
+            "calories": 1014,
+            "protein": 67,
+            "carbs": 103,
+            "fat": 31,
+            "fiber": 12,
+            "ingredients": [
+              {"name": "Salmón", "amount": 150, "unit": "g"},
+              {"name": "Batata", "amount": 200, "unit": "g"},
+              {"name": "Espárragos", "amount": 150, "unit": "g"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 172,
+        "targetCarbs": 220,
+        "targetFat": 70,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Huevos revueltos con pan integral",
+            "calories": 600,
+            "protein": 40,
+            "carbs": 50,
+            "fat": 30,
+            "fiber": 7,
+            "ingredients": [
+              {"name": "Huevos", "amount": 3, "unit": "unidades"},
+              {"name": "Pan integral", "amount": 80, "unit": "g"},
+              {"name": "Aguacate", "amount": 50, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Ensalada de atún",
+            "calories": 800,
+            "protein": 60,
+            "carbs": 70,
+            "fat": 30,
+            "fiber": 8,
+            "ingredients": [
+              {"name": "Atún en lata", "amount": 150, "unit": "g"},
+              {"name": "Lechuga", "amount": 100, "unit": "g"},
+              {"name": "Garbanzos", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pavo con quinoa y espinacas",
+            "calories": 944,
+            "protein": 72,
+            "carbs": 100,
+            "fat": 10,
+            "fiber": 15,
+            "ingredients": [
+              {"name": "Pechuga de pavo", "amount": 180, "unit": "g"},
+              {"name": "Quinoa", "amount": 100, "unit": "g"},
+              {"name": "Espinacas", "amount": 200, "unit": "g"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-31",
+      "dayOfWeek": "miércoles",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps":
+=== JSON END ===

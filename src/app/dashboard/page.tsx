@@ -7,9 +7,9 @@ import { usePlanGenerationStatus } from '@/hooks/usePlanGenerationStatus';
 import { DayEvent } from '@/types/calendar';
 import { getWeekStart } from '@/lib/utils/calendar';
 import { Loader2 } from 'lucide-react'; // Asegúrate de tener lucide-react instalado
-// Importa tus componentes aquí
-// import WeeklyCalendar from '@/components/dashboard/WeeklyCalendar';
-// import WeekStatusIndicator from '@/components/dashboard/WeekStatusIndicator';
+
+import WeeklyCalendar from '@/components/ui/layout/dashboard/calendar/WeeklyCalendar';
+import { WeekStatusIndicator } from '@/components/dashboard/WeekStatusIndicator';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
