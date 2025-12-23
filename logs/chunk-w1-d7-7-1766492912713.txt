@@ -1,0 +1,118 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-04",
+      "dayOfWeek": "sábado",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "phase": "base",
+        "focus": "recovery",
+        "duration": 0,
+        "intensity": "low",
+        "exercises": [],
+        "warmup": {
+          "duration": 0
+        },
+        "cooldown": {
+          "duration": 0
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2366,
+        "targetProtein": 172,
+        "targetCarbs": 268,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tortilla de huevos y espinacas",
+            "calories": 550,
+            "protein": 35,
+            "carbs": 30,
+            "fat": 30,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Huevos",
+                "amount": 3,
+                "unit": "unidades"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 60,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Ensalada de pollo y aguacate",
+            "calories": 780,
+            "protein": 55,
+            "carbs": 40,
+            "fat": 45,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo a la plancha",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 80,
+                "unit": "g"
+              },
+              {
+                "name": "Mezcla de hojas verdes",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón al horno con patata dulce",
+            "calories": 736,
+            "protein": 50,
+            "carbs": 110,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Patata dulce",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

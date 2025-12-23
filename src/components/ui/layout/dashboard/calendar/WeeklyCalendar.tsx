@@ -38,10 +38,12 @@ export default function WeeklyCalendar({
     userId,
   });
 
-  // ✅ MODIFICADO: Refetch solo cuando cambia la semana, NO cuando cambia refetch
+  // Refetch when week changes
+  // Note: refetch is intentionally NOT in dependencies to avoid infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     refetch();
-  }, [state.currentWeek, state.currentYear]); // ✅ Removido refetch de las dependencias
+  }, [state.currentWeek, state.currentYear]);
 
   if (isLoading) {
     return <LoadingState />;
@@ -49,6 +51,10 @@ export default function WeeklyCalendar({
 
   if (error) {
     return <ErrorState error={error} onRetry={refetch} />;
+  }
+
+  if (!weekPlan) {
+    return <EmptyState />;
   }
 
   return (
@@ -62,7 +68,7 @@ export default function WeeklyCalendar({
 
       <div className="flex-1 overflow-x-auto overflow-y-auto">
         <div className="flex min-w-max">
-          {weekPlan?.days.map((dayPlan) => (
+          {weekPlan.days.map((dayPlan) => (
             <DayColumn
               key={dayPlan.date.toISOString()}
               dayPlan={dayPlan}
@@ -109,6 +115,34 @@ function ErrorState({ error, onRetry }: { error: string; onRetry: () => void }) 
           className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
         >
           Reintentar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex items-center justify-center h-full min-h-[500px]">
+      <div className="flex flex-col items-center gap-4 max-w-md text-center">
+        <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center">
+          <span className="text-3xl">📅</span>
+        </div>
+        
+        <div>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            Aún no tienes un plan
+          </h3>
+          <p className="text-sm text-slate-400">
+            Completa el onboarding para generar tu plan personalizado de entrenamiento y nutrición.
+          </p>
+        </div>
+
+        <button
+          onClick={() => window.location.href = '/onboarding'}
+          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+        >
+          Ir al Onboarding
         </button>
       </div>
     </div>

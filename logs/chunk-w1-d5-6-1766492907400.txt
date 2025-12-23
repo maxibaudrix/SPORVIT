@@ -1,0 +1,230 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-02",
+      "dayOfWeek": "viernes",
+      "dayNumber": 5,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Press Militar con Barra",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          },
+          {
+            "name": "Remo con Mancuerna (unilateral)",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2739,
+        "targetProtein": 172,
+        "targetCarbs": 328,
+        "targetFat": 82,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostadas de huevo y aguacate",
+            "calories": 650,
+            "protein": 40,
+            "carbs": 80,
+            "fat": 20,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo entero",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Bowl de pollo y arroz",
+            "calories": 1100,
+            "protein": 70,
+            "carbs": 140,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco cocido",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 15,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón con batata",
+            "calories": 989,
+            "protein": 62,
+            "carbs": 108,
+            "fat": 32,
+            "fiber": 13,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Batata (camote)",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-03",
+      "dayOfWeek": "sábado",
+      "dayNumber": 6,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2366,
+        "targetProtein": 160,
+        "targetCarbs": 250,
+        "targetFat": 75,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur griego con frutos rojos",
+            "calories": 600,
+            "protein": 35,
+            "carbs": 60,
+            "fat": 25,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Yogur griego natural",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Frutos rojos congelados",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Miel",
+                "amount": 15,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada completa de atún",
+            "calories": 850,
+            "protein": 60,
+            "carbs": 100,
+            "fat": 25,
+            "fiber": 9,
+            "ingredients": [
+              {
+                "name": "Atún en lata (agua)",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Garbanzos cocidos",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Mezcla de hojas verdes",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Solomillo de cerdo con espárragos",
+            "calories": 916,
+            "protein": 65,
+            "carbs": 90,
+            "fat": 25,
+            "fiber": 15,
+            "ingredients": [
+              {
+                "name": "Solomillo de cerdo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos verdes",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Patata cocida",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

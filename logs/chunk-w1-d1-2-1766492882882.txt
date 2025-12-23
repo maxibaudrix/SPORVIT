@@ -1,0 +1,258 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con barra",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press de banca con mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2739,
+        "targetProtein": 172,
+        "targetCarbs": 328,
+        "targetFat": 82,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Avena con proteína",
+            "calories": 600,
+            "protein": 35,
+            "carbs": 70,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Avena",
+                "amount": 80,
+                "unit": "g"
+              },
+              {
+                "name": "Proteína de suero",
+                "amount": 30,
+                "unit": "g"
+              },
+              {
+                "name": "Leche",
+                "amount": 250,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Bowl de pollo y quinoa",
+            "calories": 1000,
+            "protein": 65,
+            "carbs": 130,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa cocida",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Pimiento rojo",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con patata",
+            "calories": 1139,
+            "protein": 72,
+            "carbs": 128,
+            "fat": 32,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Patata cocida",
+                "amount": 350,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "phase": "base",
+        "focus": "recovery",
+        "duration": 0,
+        "intensity": "low",
+        "exercises": [
+          {
+            "name": "Caminata ligera",
+            "muscleGroup": "cuerpo_completo",
+            "sets": 1,
+            "reps": 30,
+            "rest": 0
+          },
+          {
+            "name": "Estiramiento dinámico",
+            "muscleGroup": "cuerpo_completo",
+            "sets": 1,
+            "reps": 10,
+            "rest": 0
+          }
+        ],
+        "warmup": {
+          "duration": 0
+        },
+        "cooldown": {
+          "duration": 0
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2366,
+        "targetProtein": 172,
+        "targetCarbs": 250,
+        "targetFat": 70,
+        "targetFiber": 28,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur griego con fruta",
+            "calories": 550,
+            "protein": 30,
+            "carbs": 60,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogur griego 0%",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Bayas mixtas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Miel",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de atún",
+            "calories": 850,
+            "protein": 60,
+            "carbs": 100,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Atún en lata (agua)",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Lechuga romana",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Carne magra y verduras",
+            "calories": 966,
+            "protein": 82,
+            "carbs": 90,
+            "fat": 25,
+            "fiber": 15,
+            "ingredients": [
+              {
+                "name": "Carne molida magra",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Calabacín",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 15,
+                "unit": "ml"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
