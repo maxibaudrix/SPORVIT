@@ -2,10 +2,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { WeekPlan, DayEvent } from '@/types/calendar';
+import { DayEvent } from '@/types/calendar';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
-import { getWeekStart } from '@/lib/utils/calendar';
 import WeekSelector from './WeekSelector';
 import DayColumn from './DayColumn';
 import { Loader2 } from 'lucide-react';
@@ -22,20 +21,18 @@ export default function WeeklyCalendar({
   onAddEvent,
 }: WeeklyCalendarProps) {
   const {
-    state,
     getCurrentDate,
     goToNextWeek,
     goToPreviousWeek,
     goToToday,
   } = useCalendarState();
 
-  // Get the start of the current week
-  const weekStartDate = getWeekStart(getCurrentDate());
+  const weekStartDate = getCurrentDate();
 
-  // Fetch weekly plan
-  const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({
-    weekStartDate,
-    userId,
+  // ✅ Pasar AMBOS: userId Y weekStartDate
+  const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({ 
+    userId, 
+    weekStartDate 
   });
 
   // Refetch when week changes
@@ -43,7 +40,7 @@ export default function WeeklyCalendar({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     refetch();
-  }, [state.currentWeek, state.currentYear]);
+  }, [weekStartDate]);
 
   if (isLoading) {
     return <LoadingState />;

@@ -44,12 +44,13 @@ export default function Step6ReviewPage() {
   const [startDate, setStartDate] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // ✅ OBTENER DATOS DEL STORE (sin variable store)
+  // ✅ OBTENER DATOS Y SETTERS DEL STORE
   const biometrics = useOnboardingStore((state) => state.biometrics);
   const goal = useOnboardingStore((state) => state.goal);
   const activity = useOnboardingStore((state) => state.activity);
   const training = useOnboardingStore((state) => state.training);
   const diet = useOnboardingStore((state) => state.diet);
+  const saveStartDateToStore = useOnboardingStore((state) => state.setStartDate);
 
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
@@ -150,81 +151,69 @@ export default function Step6ReviewPage() {
       alert('Por favor selecciona una fecha de inicio');
       return;
     }
-    if (!hasCompleteData) {
-      alert('Faltan datos del onboarding. Por favor completa todos los pasos.');
-      return;
-    }
+    
+    // ✅ Guardar en el store CON EL NOMBRE RENOMBRADO
+    saveStartDateToStore(startDate);
     
     setIsGenerating(true);
 
+    // Construir el payload
+    const planningPayload = {
+      biometrics: {
+        age: biometrics!.age,
+        gender: biometrics!.gender,
+        weight: biometrics!.weight,
+        height: biometrics!.height,
+        bodyFatPercentage: biometrics!.bodyFatPercentage,
+      },
+      objective: {
+        primaryGoal: goal!.goalType,
+        targetTimeline: goal!.targetTimeline || calculations.targetTimeline,
+        targetWeight: goal!.targetWeight,
+      },
+      activity: {
+        activityLevel: activity!.activityLevel,
+        dailySteps: activity!.sittingHours || '',
+        workType: activity!.workType || '',
+      },
+      training: {
+        experienceLevel: training!.trainingLevel,
+        trainingFrequency: training!.trainingFrequency,
+        trainingTypes: training!.trainingTypes,
+        sessionDuration: training!.sessionDuration,
+        intensity: training!.intensity,
+      },
+      nutrition: {
+        dietType: diet!.dietType,
+        allergies: diet!.allergies || [],
+        intolerances: diet!.excludedIngredients || [],
+      },
+      calculations,
+      startDate, // ISO string
+    };
+
+    console.log('[Step 6] Sending payload to backend:', planningPayload);
+
     try {
-      const planningPayload = {
-        biometrics: {
-          age: biometrics!.age, 
-          gender: biometrics!.gender,
-          weight: biometrics!.weight, 
-          height: biometrics!.height,
-          bodyFatPercentage: biometrics!.bodyFatPercentage,
-        },
-        objective: {
-          goalType: goal!.goalType, 
-          targetWeight: goal!.targetWeight,
-          goalSpeed: goal!.goalSpeed,
-          targetTimeline: goal!.targetTimeline || 4,
-        },
-        activity: {
-          activityLevel: activity!.activityLevel,
-          sittingHours: activity!.sittingHours,
-          workType: activity!.workType,
-          availableDays: activity!.availableDays, // ✅ AÑADIR
-          preferredTimes: activity!.preferredTimes, // ✅ AÑADIR
-        },
-        training: {
-          trainingLevel: training!.trainingLevel,
-          trainingFrequency: training!.trainingFrequency,
-          trainingTypes: training!.trainingTypes,
-          sessionDuration: training!.sessionDuration,
-          intensity: training!.intensity,
-        },
-        nutrition: {  // ✅ CAMBIAR "diet" a "nutrition"
-          dietType: diet!.dietType,
-          mealsPerDay: 4, // ✅ AÑADIR (puedes leerlo del formulario si existe)
-          allergies: diet!.allergies || [],
-          intolerances: [], // ✅ AÑADIR si existe en el formulario
-          excludedFoods: diet!.excludedIngredients || [],
-          cookingFrequency: 'regularly', // ✅ AÑADIR (puedes leerlo del formulario si existe)
-        },
-        startDate, 
-        calculations,
-      };
-
-      console.log('[Step 6] Sending payload to backend:', planningPayload);
-
-      // ✅ LLAMADA REAL AL BACKEND
       const response = await fetch('/api/planning/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(planningPayload),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Error al generar el plan');
+        throw new Error('Failed to generate plan');
       }
 
-      console.log('[Step 6] Plan generation response:', data);
+      const result = await response.json();
+      console.log('[Step 6] Plan generation response:', result);
 
-      // Mostrar mensaje de éxito
-      if (data.message) {
-        alert(`✅ ${data.message}`);
+      if (result.success) {
+        router.push('/dashboard');
       }
-
-      router.push(data.redirectTo || '/dashboard');
-
-    } catch (error: any) {
+    } catch (error) {
       console.error('[Step 6] Error:', error);
-      alert(`❌ Error al generar el plan:\n${error.message}`);
+      alert('Error al generar el plan. Por favor intenta de nuevo.');
     } finally {
       setIsGenerating(false);
     }

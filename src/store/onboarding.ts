@@ -9,74 +9,170 @@ import {
   TrainingData,
   DietData,
   ActivityData,
+  OnboardingData, // ✅ IMPORTAR
 } from '@/types/onboarding';
 
 interface OnboardingStore {
-  // ✅ Datos directos (sin data wrapper)
+  // Estado interno
+  data: OnboardingData;
+  currentStep: number;
+
+  // GETTERS (computed properties)
   biometrics?: BiometricsData;
   goal?: GoalData;
   activity?: ActivityData;
   training?: TrainingData;
+  lifestyle?: any;
   diet?: DietData;
+  startDate?: string;
+  calculatedMacros?: OnboardingData['calculatedMacros'];
 
-  // Actions
+  // ACTIONS
   setBiometrics: (data: BiometricsData) => void;
   setGoal: (data: GoalData) => void;
   setActivity: (data: ActivityData) => void;
   setTraining: (data: TrainingData) => void;
+  setLifestyle: (data: any) => void;
   setDiet: (data: DietData) => void;
+  setStartDate: (date: string) => void;
+  setCalculatedMacros: (macros: OnboardingData['calculatedMacros']) => void;
   
-  reset: () => void;
+  // Navigation
+  nextStep: () => void;
+  prevStep: () => void;
+  setStep: (step: number) => void;
+  
+  // Reset
+  resetOnboarding: () => void;
 }
+
+const initialState: OnboardingData = {
+  biometrics: undefined,
+  goal: undefined,
+  activity: undefined,
+  training: undefined,
+  lifestyle: undefined,
+  diet: undefined,
+  startDate: undefined,
+  calculatedMacros: undefined,
+};
 
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
-    (set) => ({
-      // Estado inicial
-      biometrics: undefined,
-      goal: undefined,
-      activity: undefined,
-      training: undefined,
-      diet: undefined,
+    (set, get) => ({
+      // Estado base
+      data: initialState,
+      currentStep: 1,
 
-      // Setters
+      // GETTERS DERIVADOS
+      get biometrics() {
+        return get().data.biometrics;
+      },
+      get goal() {
+        return get().data.goal;
+      },
+      get activity() {
+        return get().data.activity;
+      },
+      get training() {
+        return get().data.training;
+      },
+      get lifestyle() {
+        return get().data.lifestyle;
+      },
+      get diet() {
+        return get().data.diet;
+      },
+      get startDate() {
+        return get().data.startDate;
+      },
+      get calculatedMacros() {
+        return get().data.calculatedMacros;
+      },
+
+      // SETTERS
       setBiometrics: (biometrics) => {
         console.log('[Store] Saving biometrics:', biometrics);
-        set({ biometrics });
-        console.log('[Store] After save:', useOnboardingStore.getState());
+        set((state) => ({
+          data: { ...state.data, biometrics },
+        }));
+        console.log('[Store] After save:', get());
       },
 
       setGoal: (goal) => {
         console.log('[Store] Saving goal:', goal);
-        set({ goal });
+        set((state) => ({
+          data: { ...state.data, goal },
+        }));
       },
 
       setActivity: (activity) => {
         console.log('[Store] Saving activity:', activity);
-        set({ activity });
+        set((state) => ({
+          data: { ...state.data, activity },
+        }));
       },
 
       setTraining: (training) => {
         console.log('[Store] Saving training:', training);
-        set({ training });
+        set((state) => ({
+          data: { ...state.data, training },
+        }));
       },
+
+      setLifestyle: (lifestyle) =>
+        set((state) => ({
+          data: { ...state.data, lifestyle },
+        })),
 
       setDiet: (diet) => {
         console.log('[Store] Saving diet:', diet);
-        set({ diet });
+        set((state) => ({
+          data: { ...state.data, diet },
+        }));
       },
 
-      reset: () => set({
-        biometrics: undefined,
-        goal: undefined,
-        activity: undefined,
-        training: undefined,
-        diet: undefined,
-      }),
+      setStartDate: (startDate) => {
+        console.log('[Store] Saving startDate:', startDate);
+        set((state) => ({
+          data: { ...state.data, startDate },
+        }));
+      },
+
+      setCalculatedMacros: (calculatedMacros) =>
+        set((state) => ({
+          data: { ...state.data, calculatedMacros },
+        })),
+
+      // NAVEGACIÓN
+      nextStep: () =>
+        set((state) => ({
+          currentStep: Math.min(state.currentStep + 1, 6),
+        })),
+
+      prevStep: () =>
+        set((state) => ({
+          currentStep: Math.max(state.currentStep - 1, 1),
+        })),
+
+      setStep: (step) =>
+        set({
+          currentStep: step,
+        }),
+
+      // RESET
+      resetOnboarding: () =>
+        set({
+          data: initialState,
+          currentStep: 1,
+        }),
     }),
     {
       name: 'onboarding-storage',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        data: state.data, // Solo persistir data
+      }),
     }
   )
 );

@@ -79,12 +79,11 @@ export interface DietData {
 export interface OnboardingData {
   biometrics?: BiometricsData;
   goal?: GoalData;
-  activity?: ActivityData;       // ✅ agregado
+  activity?: ActivityData;
   training?: TrainingData;
   lifestyle?: LifestyleData;
   diet?: DietData;
-  
-
+  startDate?: string; // ✅ AGREGAR
   calculatedMacros?: {
     bmr: number;
     tdee: number;
