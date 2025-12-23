@@ -42,12 +42,16 @@ export function useWeeklyPlan({
     setError(null);
 
     try {
-      // Usamos una fecha base estable para las funciones de ayuda
-      const startDateObj = getWeekStart(new Date(startDateISO + 'T12:00:00'));
-      
-      const response = await fetch(
-        `/api/dashboard/weekly-plan?startDate=${startDateISO}`
-      );
+    const startDate = getWeekStart(weekStartDate);
+    const startDateISO = formatDateISO(startDate);
+    
+    // 🔍 LOGS DESPUÉS de declarar las variables
+    console.log('🔍 [useWeeklyPlan] Fetching plan for:', startDateISO);
+    console.log('🔍 [useWeeklyPlan] weekStartDate:', weekStartDate);
+    
+    const response = await fetch(
+      `/api/dashboard/weekly-plan?startDate=${startDateISO}`
+    );
 
       if (!response.ok) {
         throw new Error('Error al cargar el plan semanal');
@@ -59,10 +63,10 @@ export function useWeeklyPlan({
       let finalPlan: WeekPlan;
 
       if (!data.days || Object.keys(data.days).length === 0) {
-        finalPlan = createEmptyWeekPlan(startDateObj);
+        finalPlan = createEmptyWeekPlan(startDate);
       } else {
         // ✅ 3. Aquí es donde se define 'plan' correctamente
-        finalPlan = transformApiDataToWeekPlan(data, startDateObj);
+        finalPlan = transformApiDataToWeekPlan(data, startDate);
       }
       
       setWeekPlan(finalPlan);

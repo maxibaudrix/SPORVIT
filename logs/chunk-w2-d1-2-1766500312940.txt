@@ -1,0 +1,258 @@
+{
+  "weekNumber": 2,
+  "startDate": "2026-01-05",
+  "endDate": "2026-01-11",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-05",
+      "dayOfWeek": "lunes",
+      "dayNumber": 8,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano",
+            "muscleGroup": "isquiotibiales",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          },
+          {
+            "name": "Press de Banca con Mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Revuelto con Tostada",
+            "calories": 700,
+            "protein": 40,
+            "carbs": 90,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Huevo",
+                "amount": 3,
+                "unit": "unidades"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Bowl de Pollo y Arroz",
+            "calories": 1000,
+            "protein": 65,
+            "carbs": 120,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón con Batata",
+            "calories": 1014,
+            "protein": 67,
+            "carbs": 113,
+            "fat": 31,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-06",
+      "dayOfWeek": "martes",
+      "dayNumber": 9,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          },
+          {
+            "name": "Sentadilla Copa",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 15,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Parfait de Yogur",
+            "calories": 700,
+            "protein": 45,
+            "carbs": 95,
+            "fat": 17,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Granola",
+                "amount": 60,
+                "unit": "g"
+              },
+              {
+                "name": "Plátano",
+                "amount": 1,
+                "unit": "unidad"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Sándwich de Pavo y Queso",
+            "calories": 950,
+            "protein": 55,
+            "carbs": 115,
+            "fat": 25,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pavo en lonchas",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Pan de centeno",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Queso bajo en grasa",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Ternera con Pasta",
+            "calories": 1064,
+            "protein": 72,
+            "carbs": 113,
+            "fat": 39,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Carne magra",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Pasta integral",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Pimientos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -37,6 +37,9 @@ export async function GET(request: Request) {
     endDate.setDate(endDate.getDate() + 7);
     endDate.setHours(23, 59, 59, 999);
 
+    console.log('📅 [API] Fetching weekly plan for:', startDateParam);
+    console.log('📅 [API] Date range:', startDate, 'to', endDate);
+
     // Fetch workouts for the week
     const workouts = await prisma.workout.findMany({
       where: {
@@ -50,6 +53,7 @@ export async function GET(request: Request) {
         date: 'asc',
       },
     });
+    console.log('💪 [API] Found workouts:', workouts.length);
 
     // Fetch meals for the week
     const meals = await prisma.meal.findMany({
@@ -64,7 +68,7 @@ export async function GET(request: Request) {
         date: 'asc',
       },
     });
-
+    console.log('🍽️ [API] Found meals:', meals.length);
     // Group by date
     const daysByDate: Record<string, { workouts: any[]; meals: any[] }> = {};
     
@@ -124,7 +128,7 @@ export async function GET(request: Request) {
       (startDate.getTime() - new Date(startDate.getFullYear(), 0, 1).getTime()) / 
       (7 * 24 * 60 * 60 * 1000)
     );
-
+    console.log('📦 [API] Returning days:', Object.keys(daysByDate));
     return NextResponse.json({
       success: true,
       weekNumber,

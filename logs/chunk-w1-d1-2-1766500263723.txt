@@ -1,0 +1,230 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2025-12-29",
+      "dayOfWeek": "lunes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con barra",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Press de banca",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2714,
+        "targetProtein": 172,
+        "targetCarbs": 323,
+        "targetFat": 81,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Huevos y tostadas",
+            "calories": 700,
+            "protein": 40,
+            "carbs": 70,
+            "fat": 30,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Huevos",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 2,
+                "unit": "rebanadas"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Pollo y arroz",
+            "calories": 1100,
+            "protein": 70,
+            "carbs": 140,
+            "fat": 35,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de Pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 150,
+                "unit": "g cocido"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón y batata",
+            "calories": 914,
+            "protein": 62,
+            "carbs": 113,
+            "fat": 16,
+            "fiber": 13,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 160,
+        "targetCarbs": 250,
+        "targetFat": 75,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur con fruta",
+            "calories": 600,
+            "protein": 40,
+            "carbs": 70,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Plátano",
+                "amount": 1,
+                "unit": "unidad"
+              },
+              {
+                "name": "Miel",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de atún",
+            "calories": 700,
+            "protein": 45,
+            "carbs": 60,
+            "fat": 30,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Atún enlatado",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Lechuga",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 15,
+                "unit": "ml"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pavo con pasta",
+            "calories": 1044,
+            "protein": 75,
+            "carbs": 120,
+            "fat": 25,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Pavo molido",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Pasta integral",
+                "amount": 100,
+                "unit": "g seco"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

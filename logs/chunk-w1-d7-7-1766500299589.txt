@@ -1,0 +1,104 @@
+{
+  "weekNumber": 1,
+  "startDate": "2025-12-29",
+  "endDate": "2026-01-04",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-04",
+      "dayOfWeek": "domingo",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 2344,
+        "targetProtein": 170,
+        "targetCarbs": 240,
+        "targetFat": 75,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Omelette de espinacas y queso",
+            "calories": 550,
+            "protein": 45,
+            "carbs": 30,
+            "fat": 30,
+            "fiber": 4,
+            "ingredients": [
+              {
+                "name": "Huevo",
+                "amount": 4,
+                "unit": "unidad"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Queso fresco",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de pollo y aguacate",
+            "calories": 850,
+            "protein": 65,
+            "carbs": 80,
+            "fat": 35,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Lechuga",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con batata",
+            "calories": 944,
+            "protein": 60,
+            "carbs": 130,
+            "fat": 10,
+            "fiber": 11,
+            "ingredients": [
+              {
+                "name": "Filete de salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 300,
+                "unit": "g"
+              },
+              {
+                "name": "Aceite de oliva",
+                "amount": 10,
+                "unit": "ml"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
