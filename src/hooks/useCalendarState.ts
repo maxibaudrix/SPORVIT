@@ -22,10 +22,27 @@ export function useCalendarState() {
     };
   });
 
-  // Current week start date
+  // ✅ CORRECTO: Retorna la fecha de la semana seleccionada en el estado
   const getCurrentDate = useCallback(() => {
-    return getCurrentWeekInfo().startDate;
-  }, []);
+    // Calcular fecha basada en state.currentWeek y state.currentYear
+    const year = state.currentYear;
+    const week = state.currentWeek;
+    
+    // Calcular primer día del año
+    const firstDay = new Date(year, 0, 1);
+    const daysToAdd = (week - 1) * 7;
+    
+    // Calcular inicio de la semana seleccionada
+    const weekStart = new Date(firstDay);
+    weekStart.setDate(firstDay.getDate() + daysToAdd);
+    
+    // Ajustar al lunes (día 1)
+    const dayOfWeek = weekStart.getDay();
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    weekStart.setDate(weekStart.getDate() + diff);
+    
+    return weekStart;
+  }, [state.currentWeek, state.currentYear]);
 
   // Navigate to next week
   const goToNextWeek = useCallback(() => {
