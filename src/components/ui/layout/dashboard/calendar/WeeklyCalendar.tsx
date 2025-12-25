@@ -1,10 +1,10 @@
-//src\components\ui\layout\dashboard\calendar\WeeklyCalendar.tsx
 'use client';
 
 import { useEffect } from 'react';
-import { DayEvent } from '@/types/calendar';
+import { WeekPlan, DayEvent } from '@/types/calendar';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
+import { getWeekStart } from '@/lib/utils/calendar';
 import WeekSelector from './WeekSelector';
 import DayColumn from './DayColumn';
 import { Loader2 } from 'lucide-react';
@@ -27,12 +27,14 @@ export default function WeeklyCalendar({
     goToToday,
   } = useCalendarState();
 
-  const weekStartDate = getCurrentDate();
+  // 🚨 HARDCODED TEMPORALMENTE - Semana del 29 de diciembre 2025
+  const weekStartDate = new Date('2025-12-29T00:00:00');
+  console.log('🚨 [WeeklyCalendar] FECHA HARDCODEADA:', weekStartDate.toISOString());
 
-  // ✅ Pasar AMBOS: userId Y weekStartDate
-  const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({ 
-    userId, 
-    weekStartDate 
+  // Fetch weekly plan
+  const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({
+    weekStartDate,
+    userId,
   });
 
   // Refetch when week changes
@@ -56,6 +58,7 @@ export default function WeeklyCalendar({
 
   return (
     <div className="flex flex-col h-full">
+      {/* Week selector */}
       <WeekSelector
         currentDate={weekStartDate}
         onPreviousWeek={goToPreviousWeek}
@@ -63,6 +66,7 @@ export default function WeeklyCalendar({
         onToday={goToToday}
       />
 
+      {/* Calendar grid */}
       <div className="flex-1 overflow-x-auto overflow-y-auto">
         <div className="flex min-w-max">
           {weekPlan.days.map((dayPlan) => (

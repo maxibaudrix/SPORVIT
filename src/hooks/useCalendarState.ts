@@ -23,58 +23,20 @@ interface CalendarState {
 }
 
 export const useCalendarState = create<CalendarState>((set, get) => {
-  // INICIALIZAR desde localStorage si existe un plan
-  const initializeFromPlan = () => {
-    if (typeof window === 'undefined') {
-      const now = getCurrentWeekInfo();
-      return {
-        currentWeek: now.weekNumber,
-        currentYear: now.year,
-        currentMonth: now.month,
-      };
-    }
-
-    try {
-      // Buscar la fecha de inicio del plan en localStorage
-      const onboardingData = localStorage.getItem('onboarding-storage');
-      if (onboardingData) {
-        const parsed = JSON.parse(onboardingData);
-        const startDate = parsed?.state?.startDate;
-        
-        if (startDate) {
-          const planStartDate = new Date(startDate);
-          const weekInfo = getCurrentWeekInfo(planStartDate);
-          
-          console.log('📅 [CalendarState] Inicializando desde plan:', {
-            startDate,
-            weekNumber: weekInfo.weekNumber,
-            year: weekInfo.year,
-          });
-          
-          return {
-            currentWeek: weekInfo.weekNumber,
-            currentYear: weekInfo.year,
-            currentMonth: planStartDate.getMonth() + 1,
-          };
-        }
-      }
-    } catch (error) {
-      console.error('Error inicializando calendario:', error);
-    }
-
-    // Fallback: semana actual
-    const now = getCurrentWeekInfo();
-    return {
-      currentWeek: now.weekNumber,
-      currentYear: now.year,
-      currentMonth: now.month,
-    };
-  };
-
-  const initial = initializeFromPlan();
+  // 🚨 HARDCODED TEMPORALMENTE - Fecha del plan generado
+  const planStartDate = new Date('2025-12-29');
+  const initialWeekInfo = getCurrentWeekInfo(planStartDate);
+  
+  console.log('🚨 [CalendarState] Inicializado con fecha hardcodeada:', {
+    startDate: '2025-12-29',
+    weekNumber: initialWeekInfo.weekNumber,
+    year: initialWeekInfo.year,
+  });
 
   return {
-    ...initial,
+    currentWeek: initialWeekInfo.weekNumber,
+    currentYear: initialWeekInfo.year,
+    currentMonth: 12,
     selectedDate: null,
 
     setSelectedDate: (date) => set({ selectedDate: date }),
@@ -83,7 +45,6 @@ export const useCalendarState = create<CalendarState>((set, get) => {
       const { currentWeek, currentYear } = get();
       const nextWeek = currentWeek + 1;
       
-      // Si pasamos la semana 52/53, ir al año siguiente
       if (nextWeek > 52) {
         set({ 
           currentWeek: 1, 
@@ -104,7 +65,6 @@ export const useCalendarState = create<CalendarState>((set, get) => {
       const { currentWeek, currentYear } = get();
       const prevWeek = currentWeek - 1;
       
-      // Si bajamos de semana 1, ir al año anterior
       if (prevWeek < 1) {
         set({ 
           currentWeek: 52, 
@@ -145,7 +105,7 @@ export const useCalendarState = create<CalendarState>((set, get) => {
       
       // Calcular la fecha del lunes de la semana seleccionada
       const jan4 = new Date(currentYear, 0, 4);
-      const jan4Day = jan4.getDay() || 7; // domingo = 7
+      const jan4Day = jan4.getDay() || 7;
       const weekStart = new Date(jan4);
       weekStart.setDate(jan4.getDate() - jan4Day + 1 + (currentWeek - 1) * 7);
       

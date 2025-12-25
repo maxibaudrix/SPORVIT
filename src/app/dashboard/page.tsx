@@ -6,7 +6,7 @@ import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
 import { usePlanGenerationStatus } from '@/hooks/usePlanGenerationStatus';
 import { DayEvent } from '@/types/calendar';
 import { getWeekStart } from '@/lib/utils/calendar';
-import { Loader2 } from 'lucide-react'; // Asegúrate de tener lucide-react instalado
+import { Loader2 } from 'lucide-react';
 
 import WeeklyCalendar from '@/components/ui/layout/dashboard/calendar/WeeklyCalendar';
 import { WeekStatusIndicator } from '@/components/dashboard/WeekStatusIndicator';
@@ -16,19 +16,19 @@ export default function DashboardPage() {
   const [selectedEvent, setSelectedEvent] = useState<DayEvent | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // ✅ 1. Memorizar la fecha de inicio de la semana actual
+  // 1. Memorizar la fecha de inicio de la semana actual
   const currentWeekStart = useMemo(() => {
     return getWeekStart(new Date());
   }, []);
 
-  // ✅ 2. Hook de status de generación (Polling)
+  // 2. Hook de status de generación (Polling)
   const { 
     status: planStatus, 
     loading: statusLoading, 
     error: statusError 
   } = usePlanGenerationStatus();
 
-  // ✅ 3. Hook del plan semanal
+  // 3. Hook del plan semanal
   const { 
     weekPlan, 
     isLoading: planLoading, 
@@ -50,11 +50,9 @@ export default function DashboardPage() {
     setSelectedDate(date);
   };
 
-  // ============================================
-  // RENDERIZADO CONDICIONAL (Dentro de la función)
-  // ============================================
+  // --- RENDERIZADO CONDICIONAL ---
 
-  // 1. Estado de carga inicial de la sesión o el status
+  // Estado de carga inicial
   if (statusLoading || !session?.user?.id) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -66,7 +64,7 @@ export default function DashboardPage() {
     );
   }
 
-  // 2. Estado de error
+  // Estado de error
   if (statusError) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -81,7 +79,7 @@ export default function DashboardPage() {
     );
   }
 
-  // 3. Si no hay plan activo
+  // Si no hay plan activo
   if (!planStatus) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -96,7 +94,7 @@ export default function DashboardPage() {
     );
   }
 
-  // 4. CONTENIDO PRINCIPAL
+  // --- CONTENIDO PRINCIPAL ---
   return (
     <div className="h-full flex flex-col bg-slate-950 min-h-screen">
       {/* Banner de generación en progreso */}
@@ -127,23 +125,17 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Main content area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Calendario */}
+        {/* Calendario principal */}
         <div className="flex-1 overflow-y-auto">
-          {/* Aquí va tu componente de Calendario, asegúrate de pasarle el userId correctamente */}
-          {/* <WeeklyCalendar 
+          <WeeklyCalendar 
               userId={session.user.id} 
               onEventClick={handleEventClick} 
               onAddEvent={handleAddEvent} 
-          /> */}
-          <div className="p-8 text-white">
-            Calendario Semanal para: {session.user.id}
-            {/* ... resto de tu UI ... */}
-          </div>
+          />
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar con status de semanas */}
         <aside className="w-80 border-l border-slate-800 bg-slate-900/50 p-4 overflow-y-auto hidden lg:block">
           <div className="space-y-6">
             <h3 className="text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">
@@ -151,9 +143,12 @@ export default function DashboardPage() {
             </h3>
             <div className="space-y-2">
               {planStatus.weeks.map((week) => (
-                <div key={week.weekNumber} className="text-slate-300 text-sm">
-                   Semana {week.weekNumber}: {week.status}
-                </div>
+                <WeekStatusIndicator 
+                  key={week.weekNumber}
+                  weekNumber={week.weekNumber}
+                  status={week.status}
+                  error={week.error}
+                />
               ))}
             </div>
             

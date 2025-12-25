@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     }
 
     // Parse start date and calculate end date (7 days)
-    const startDate = new Date(startDateParam);
+    const startDate = new Date(startDateParam + 'T12:00:00');
     startDate.setHours(0, 0, 0, 0);
     
     const endDate = new Date(startDate);
