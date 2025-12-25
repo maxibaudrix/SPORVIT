@@ -27,22 +27,13 @@ export default function WeeklyCalendar({
     goToToday,
   } = useCalendarState();
 
-  // 🚨 HARDCODED TEMPORALMENTE - Semana del 29 de diciembre 2025
-  const weekStartDate = new Date('2025-12-29T00:00:00');
-  console.log('🚨 [WeeklyCalendar] FECHA HARDCODEADA:', weekStartDate.toISOString());
+  const weekStartDate = getCurrentDate();
 
   // Fetch weekly plan
   const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({
     weekStartDate,
     userId,
   });
-
-  // Refetch when week changes
-  // Note: refetch is intentionally NOT in dependencies to avoid infinite loop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    refetch();
-  }, [weekStartDate]);
 
   if (isLoading) {
     return <LoadingState />;

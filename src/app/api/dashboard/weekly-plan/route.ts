@@ -35,7 +35,6 @@ export async function GET(request: Request) {
     
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 7);
-    endDate.setHours(23, 59, 59, 999);
 
     console.log('📅 [API] Fetching weekly plan for:', startDateParam);
     console.log('📅 [API] Date range:', startDate, 'to', endDate);
