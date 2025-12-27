@@ -1,0 +1,466 @@
+[
+  {
+    "exercise_id": "twists-rusos",
+    "name": "Twists rusos",
+    "tipo": [
+      "core"
+    ],
+    "descripcion": "Ejercicio de rotación del torso que fortalece los músculos oblicuos del abdomen y mejora la estabilidad y rotación del core.",
+    "musculos_trabajados": [
+      "oblicuos",
+      "core"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "twists-rusos-core-principiante"
+  },
+  {
+    "exercise_id": "dominadas",
+    "name": "Dominadas",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Ejercicio de tracción vertical colgándote de una barra, elevando el cuerpo hasta superar la barbilla. Fortalece espalda, dorsales, bíceps y hombros.",
+    "musculos_trabajados": [
+      "espalda",
+      "bíceps",
+      "hombros"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "dominadas-fuerza-principiante"
+  },
+  {
+    "exercise_id": "sentadillas",
+    "name": "Sentadillas",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Bajada controlada de la cadera como si te sentaras en una silla. Trabaja principalmente cuádriceps, glúteos, isquiotibiales y core.",
+    "musculos_trabajados": [
+      "cuádriceps",
+      "glúteos",
+      "core"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "sentadillas-fuerza-principiante"
+  },
+  {
+    "exercise_id": "burpees",
+    "name": "Burpees",
+    "tipo": [
+      "fuerza",
+      "cardio"
+    ],
+    "descripcion": "Ejercicio full-body explosivo que combina sentadilla, plancha, flexión y salto vertical. Excelente para cardio y fuerza total.",
+    "musculos_trabajados": [],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "burpees-fuerza-cardio-principiante"
+  },
+  {
+    "exercise_id": "trote-ligero",
+    "name": "Trote ligero",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Carrera suave a bajo ritmo para mejorar la resistencia cardiovascular sin alta intensidad. Ideal para calentamiento o recuperación activa.",
+    "musculos_trabajados": [],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "trote-ligero-cardio-principiante"
+  },
+  {
+    "exercise_id": "press-de-hombros",
+    "name": "Press de hombros",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Elevación de peso por encima de la cabeza. Fortalece hombros, deltoides y tríceps.",
+    "musculos_trabajados": [
+      "hombros",
+      "tríceps"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "press-de-hombros-fuerza-principiante"
+  },
+  {
+    "exercise_id": "planchas",
+    "name": "Planchas",
+    "tipo": [
+      "core"
+    ],
+    "descripcion": "Mantener posición isométrica en antebrazos o manos. Fortalece todo el core.",
+    "musculos_trabajados": [
+      "core"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "planchas-core-principiante"
+  },
+  {
+    "exercise_id": "fondos-de-triceps",
+    "name": "Fondos de tríceps",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Bajada y subida del cuerpo apoyado en paralelas o banco. Enfocado en tríceps, pecho y hombros.",
+    "musculos_trabajados": [
+      "tríceps",
+      "pecho"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "fondos-de-triceps-fuerza-principiante"
+  },
+  {
+    "exercise_id": "caminata-rapida",
+    "name": "Caminata rápida",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Caminar a paso acelerado para elevar el ritmo cardíaco.",
+    "musculos_trabajados": [],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "caminata-rapida-cardio-principiante"
+  },
+  {
+    "exercise_id": "prensa-de-piernas",
+    "name": "Prensa de piernas",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Empuje de una plataforma con las piernas. Trabaja cuádriceps y glúteos.",
+    "musculos_trabajados": [
+      "cuádriceps",
+      "glúteos"
+    ],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "prensa-de-piernas-fuerza-intermedio"
+  },
+  {
+    "exercise_id": "kettlebell-swings",
+    "name": "Kettlebell Swings",
+    "tipo": [
+      "potencia",
+      "cardio"
+    ],
+    "descripcion": "Balanceo explosivo con empuje de cadera. Mejora potencia y fuerza.",
+    "musculos_trabajados": [],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "kettlebell-swings-potencia-cardio-intermedio"
+  },
+  {
+    "exercise_id": "remo-con-mancuernas",
+    "name": "Remo con mancuernas",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Tirón horizontal para fortalecer la espalda.",
+    "musculos_trabajados": [
+      "espalda",
+      "bíceps"
+    ],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "remo-con-mancuernas-fuerza-intermedio"
+  },
+  {
+    "exercise_id": "zancadas",
+    "name": "Zancadas",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Paso adelante alternando piernas. Trabaja piernas y estabilidad.",
+    "musculos_trabajados": [
+      "piernas",
+      "glúteos"
+    ],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "zancadas-fuerza-intermedio"
+  },
+  {
+    "exercise_id": "flexiones",
+    "name": "Flexiones",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Empuje del cuerpo desde el suelo. Trabaja pecho, hombros y tríceps.",
+    "musculos_trabajados": [
+      "pecho",
+      "hombros",
+      "tríceps"
+    ],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "flexiones-fuerza-intermedio"
+  },
+  {
+    "exercise_id": "jumping-jacks",
+    "name": "Jumping jacks",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Saltos abriendo y cerrando brazos y piernas.",
+    "musculos_trabajados": [],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "jumping-jacks-cardio-intermedio"
+  },
+  {
+    "exercise_id": "bici-30-min-con-cambios-de-intensidad",
+    "name": "Bici 30 min con cambios de intensidad",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Ciclismo alternando ritmos altos y bajos.",
+    "musculos_trabajados": [],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "bici-30-min-con-cambios-de-intensidad-cardio-intermedio"
+  },
+  {
+    "exercise_id": "caminar",
+    "name": "Caminar",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Actividad básica de bajo impacto.",
+    "musculos_trabajados": [],
+    "dificultad": "avanzado",
+    "video_url": null,
+    "slug": "caminar-cardio-avanzado"
+  },
+  {
+    "exercise_id": "correr",
+    "name": "Correr",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Carrera a ritmo moderado.",
+    "musculos_trabajados": [],
+    "dificultad": "avanzado",
+    "video_url": null,
+    "slug": "correr-cardio-avanzado"
+  },
+  {
+    "exercise_id": "rodillas-altas",
+    "name": "Rodillas altas",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Carrera en el sitio elevando las rodillas.",
+    "musculos_trabajados": [],
+    "dificultad": "avanzado",
+    "video_url": null,
+    "slug": "rodillas-altas-cardio-avanzado"
+  },
+  {
+    "exercise_id": "saltar-la-cuerda",
+    "name": "Saltar la cuerda",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Saltos continuos con cuerda.",
+    "musculos_trabajados": [],
+    "dificultad": "avanzado",
+    "video_url": null,
+    "slug": "saltar-la-cuerda-cardio-avanzado"
+  },
+  {
+    "exercise_id": "abdominales",
+    "name": "Abdominales",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "abdominales--"
+  },
+  {
+    "exercise_id": "peso-muerto",
+    "name": "Peso muerto",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Levantamiento desde el suelo manteniendo espalda neutra.",
+    "musculos_trabajados": [
+      "cadena posterior"
+    ],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "peso-muerto-fuerza-intermedio"
+  },
+  {
+    "exercise_id": "escaladores-de-montana-mountain-climbers",
+    "name": "Escaladores de montaña (Mountain climbers)",
+    "tipo": [
+      "core",
+      "cardio"
+    ],
+    "descripcion": "Ejercicio dinámico en plancha llevando rodillas al pecho.",
+    "musculos_trabajados": [],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "escaladores-de-montana-mountain-climbers-core-cardio-intermedio"
+  },
+  {
+    "exercise_id": "trote-con-intervalos",
+    "name": "Trote con intervalos",
+    "tipo": [
+      "cardio"
+    ],
+    "descripcion": "Trote alternando intensidades.",
+    "musculos_trabajados": [],
+    "dificultad": "intermedio",
+    "video_url": null,
+    "slug": "trote-con-intervalos-cardio-intermedio"
+  },
+  {
+    "exercise_id": "press-de-banca",
+    "name": "Press de banca",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Empuje horizontal desde el pecho.",
+    "musculos_trabajados": [
+      "pecho",
+      "hombros",
+      "tríceps"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "press-de-banca-fuerza-principiante"
+  },
+  {
+    "exercise_id": "curl-de-biceps",
+    "name": "Curl de biceps",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "curl-de-biceps--"
+  },
+  {
+    "exercise_id": "sentadillas-con-peso-corporal",
+    "name": "Sentadillas con peso corporal",
+    "tipo": [
+      "fuerza"
+    ],
+    "descripcion": "Sentadillas usando solo el peso corporal.",
+    "musculos_trabajados": [
+      "piernas",
+      "core"
+    ],
+    "dificultad": "principiante",
+    "video_url": null,
+    "slug": "sentadillas-con-peso-corporal-fuerza-principiante"
+  },
+  {
+    "exercise_id": "ciclismo",
+    "name": "Ciclismo",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "ciclismo--"
+  },
+  {
+    "exercise_id": "caminata-rapida-con-inclinacion",
+    "name": "Caminata rápida con inclinación",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "caminata-rapida-con-inclinacion--"
+  },
+  {
+    "exercise_id": "bici-ligera",
+    "name": "Bici ligera",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "bici-ligera--"
+  },
+  {
+    "exercise_id": "bici-60-min-con-series-de-fuerza",
+    "name": "Bici 60 min con series de fuerza",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "bici-60-min-con-series-de-fuerza--"
+  },
+  {
+    "exercise_id": "bici-suave",
+    "name": "Bici suave",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "bici-suave--"
+  },
+  {
+    "exercise_id": "trote-moderado",
+    "name": "Trote moderado",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "trote-moderado--"
+  },
+  {
+    "exercise_id": "caminata-en-pendiente",
+    "name": "Caminata en pendiente",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "caminata-en-pendiente--"
+  },
+  {
+    "exercise_id": "bici-con-intervalos",
+    "name": "Bici con intervalos",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "bici-con-intervalos--"
+  },
+  {
+    "exercise_id": "intervalos-de-sprint",
+    "name": "Intervalos de sprint",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "intervalos-de-sprint--"
+  },
+  {
+    "exercise_id": "caminata-rapida-con-cuestas",
+    "name": "Caminata rápida con cuestas",
+    "tipo": [],
+    "descripcion": "Ejercicio para entrenamiento físico.",
+    "musculos_trabajados": [],
+    "dificultad": "",
+    "video_url": null,
+    "slug": "caminata-rapida-con-cuestas--"
+  }
+]
