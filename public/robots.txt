@@ -1,0 +1,15 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Páginas importantes
+Allow: /timer
+Allow: /dashboard
+Allow: /calculator
+
+# Sitemap
+Sitemap: https://sporvit.com/sitemap.xml
+Sitemap: https://sporvit.com/sitemap-calculators.xml
+
+# Crawl delay (opcional, para no saturar el servidor)
+Crawl-delay: 1

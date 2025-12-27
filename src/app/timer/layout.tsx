@@ -1,79 +1,46 @@
-// src/app/timer/page.tsx
+// src/app/timer/layout.tsx
 import { Metadata } from 'next';
-import TrainingTimer from '@/components/training/TrainingTimer';
-import TimerErrorBoundary from '@/components/training/TimerErrorBoundary';
+import { Header } from '@/components/ui/layout/public/Header';
+import { AppFooter } from '@/components/ui/layout/dashboard/AppFooter';
 
 export const metadata: Metadata = {
   title: 'Cronómetro de Entrenamiento HIIT, Tabata & AMRAP | Sporvit',
   description: 'Temporizador fitness profesional con modos HIIT, Tabata, EMOM y AMRAP. Mantén la pantalla activa, sonidos personalizables y sin anuncios. Gratis.',
-  keywords: [
-    'cronometro entrenamiento',
-    'timer HIIT',
-    'tabata timer',
-    'temporizador fitness',
-    'AMRAP timer',
-    'EMOM timer',
-    'cronometro gym',
-    'temporizador crossfit',
-    'timer deportivo',
-    'cronometro intervals'
-  ],
+  keywords: 'cronometro entrenamiento, timer HIIT, tabata timer, temporizador fitness, AMRAP timer, EMOM timer, cronometro gym',
   
   openGraph: {
     title: 'Cronómetro de Entrenamiento Profesional | Sporvit',
     description: 'Timer fitness con Wake Lock, sonidos y modos HIIT, Tabata, EMOM. Perfecto para el gym.',
-    images: [
-      {
-        url: '/og-timer.png',
-        width: 1200,
-        height: 630,
-        alt: 'Sporvit Timer - Cronómetro Fitness',
-      }
-    ],
+    images: ['/og-timer.png'],
     type: 'website',
     locale: 'es_ES',
-    siteName: 'Sporvit',
   },
   
   twitter: {
     card: 'summary_large_image',
-    title: 'Timer Fitness Profesional | Sporvit',
-    description: 'Cronómetro HIIT, Tabata y más - Gratis y sin anuncios',
+    title: 'Timer Fitness Profesional',
+    description: 'Cronómetro HIIT, Tabata y más - Gratis',
     images: ['/og-timer.png'],
-    creator: '@sporvit',
   },
   
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
   
   alternates: {
     canonical: 'https://sporvit.com/timer',
   },
-
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false, // Prevenir zoom accidental en gym
-  },
-
-  themeColor: '#10b981',
-  manifest: '/manifest.json',
 };
 
-export default function TimerPage() {
+export default function TimerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
-      {/* Schema.org JSON-LD para Rich Snippets */}
+      {/* Schema.org para SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -82,30 +49,13 @@ export default function TimerPage() {
             "@type": "WebApplication",
             "name": "Sporvit Timer",
             "applicationCategory": "HealthApplication",
-            "operatingSystem": "Web Browser",
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "EUR"
             },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.8",
-              "ratingCount": "2847"
-            },
-            "description": "Temporizador profesional para entrenamientos HIIT, Tabata, EMOM y AMRAP con Wake Lock y sonidos personalizables",
-            "featureList": [
-              "Modo HIIT personalizable",
-              "Timer Tabata clásico (20/10)",
-              "EMOM (Every Minute On the Minute)",
-              "AMRAP (As Many Rounds As Possible)",
-              "Cronómetro libre",
-              "Wake Lock (pantalla siempre activa)",
-              "Sonidos y vibración",
-              "Modo pantalla completa",
-              "Sin anuncios"
-            ],
-            "screenshot": "https://sporvit.com/screenshots/timer.png"
+            "operatingSystem": "Web Browser",
+            "description": "Temporizador profesional para entrenamientos HIIT, Tabata, EMOM y AMRAP"
           })
         }}
       />
@@ -141,9 +91,16 @@ export default function TimerPage() {
         }}
       />
 
-      <TimerErrorBoundary>
-        <TrainingTimer />
-      </TimerErrorBoundary>
+      {/* Header */}
+      <Header />
+      
+      {/* Main content con padding para no superponerse */}
+      <main className="pt-20 pb-16">
+        {children}
+      </main>
+      
+      {/* Footer */}
+      <AppFooter/>
     </>
   );
 }

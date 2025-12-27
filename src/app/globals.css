@@ -20,6 +20,12 @@
   
   /* Si usas variables para efectos como 'ring' (opcional) */
   --ring: 16 185 129; /* Color de enfoque (primary) */
+
+  /* ✅ NUEVO: Safe area insets para iOS notch */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
 }
 
 body {
@@ -27,6 +33,25 @@ body {
   background: rgb(var(--background));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* ✅ NUEVO: Prevenir pull-to-refresh en móvil */
+  overscroll-behavior-y: contain;
+}
+
+/* ✅ NUEVO: Safe area utilities para iOS */
+.pt-safe {
+  padding-top: var(--safe-top);
+}
+
+.pb-safe {
+  padding-bottom: var(--safe-bottom);
+}
+
+.pl-safe {
+  padding-left: var(--safe-left);
+}
+
+.pr-safe {
+  padding-right: var(--safe-right);
 }
 
 /* ============================================
@@ -76,6 +101,12 @@ body {
   .slide-in-from-right {
     animation-name: slideInFromRight;
   }
+
+  /* ✅ NUEVO: GPU acceleration para animaciones */
+  .gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+  }
 }
 
 @keyframes fadeIn {
@@ -109,6 +140,27 @@ body {
   }
 }
 
+/* ✅ NUEVO: Loading skeleton animation */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.4) 25%,
+    rgba(51, 65, 85, 0.6) 50%,
+    rgba(30, 41, 59, 0.4) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
 /* ============================================
    UTILIDADES CUSTOM
    ============================================ */
@@ -128,4 +180,128 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ✅ NUEVO: Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ============================================
+   ✅ NUEVO: RESPONSIVE TYPOGRAPHY
+   ============================================ */
+@media (max-width: 640px) {
+  /* Mobile portrait */
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  /* Tablet */
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop */
+  html {
+    font-size: 16px;
+  }
+}
+
+/* ✅ NUEVO: Mobile landscape optimization */
+@media (orientation: landscape) and (max-height: 500px) {
+  body {
+    font-size: 12px;
+  }
+  
+  /* Ocultar elementos no críticos en landscape móvil */
+  .hide-on-mobile-landscape {
+    display: none;
+  }
+}
+
+/* ============================================
+   ✅ NUEVO: ACCESIBILIDAD
+   ============================================ */
+
+/* Touch target size (mínimo 44x44 según Apple HIG) */
+button,
+a,
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Disable text selection en elementos interactivos */
+button,
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Focus visible para accesibilidad */
+:focus-visible {
+  outline: 2px solid rgb(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ✅ NUEVO: Reducir motion para usuarios con preferencias de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   ✅ NUEVO: TAP HIGHLIGHT
+   ============================================ */
+* {
+  -webkit-tap-highlight-color: rgba(16, 185, 129, 0.1);
+}
+
+/* ✅ NUEVO: Prevent zoom on input focus (iOS) */
+input,
+select,
+textarea {
+  font-size: 16px; /* iOS no hace zoom si es >= 16px */
+}
+
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ============================================
+   ✅ NUEVO: PRINT STYLES
+   ============================================ */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
 }
