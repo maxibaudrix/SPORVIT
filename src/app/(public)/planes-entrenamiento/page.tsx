@@ -5,29 +5,26 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Search, Filter, Calendar, TrendingUp, Users,
-  Star, ArrowRight, Sparkles, Loader2, Target
+  Star, ArrowRight, Sparkles, Loader2, Target, CheckCircle2, Dumbbell
 } from 'lucide-react';
 import { 
-  filterPlans, 
+  filterPrograms,
   getAllObjetivos, 
-  getAllNiveles, 
-  getAllDuraciones,
+  getAllNiveles,
   getCatalogStats,
-  type TrainingPlan 
+  type ProgramaPlan 
 } from '@/lib/data/trainingPlans';
 
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
 
-/**
- * Normaliza textos de filtros para mejor visualización
- */
 function normalizeText(text: string): string {
   const map: Record<string, string> = {
     'salud_general': 'Salud General',
     'ganancia_muscular': 'Ganancia Muscular',
     'perdida_peso': 'Pérdida de Peso',
+    'perdida_grasa': 'Pérdida de Grasa',
     'resistencia': 'Resistencia',
     'fuerza': 'Fuerza',
     'hipertrofia': 'Hipertrofia',
@@ -51,43 +48,47 @@ function normalizeText(text: string): string {
 // PAGE COMPONENT
 // ============================================
 export default function PlanesEntrenamientoHub() {
-  const [plans, setPlans] = useState<TrainingPlan[]>([]);
+  const [programs, setPrograms] = useState<ProgramaPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedObjetivo, setSelectedObjetivo] = useState<string>('todos');
   const [selectedNivel, setSelectedNivel] = useState<string>('todos');
-  const [selectedDuracion, setSelectedDuracion] = useState<string>('todos');
 
-  // Cargar datos al montar
   useEffect(() => {
-    const loadPlans = async () => {
+    const loadPrograms = async () => {
       setLoading(true);
       try {
-        const allPlans = filterPlans({});
-        setPlans(allPlans);
+        const allPrograms = filterPrograms({});
+        setPrograms(allPrograms);
       } catch (error) {
-        console.error('Error loading plans:', error);
+        console.error('Error loading programs:', error);
       } finally {
         setLoading(false);
       }
     };
-    loadPlans();
+    loadPrograms();
   }, []);
 
-  // Obtener opciones de filtros
   const objetivos = ['todos', ...getAllObjetivos()];
   const niveles = ['todos', ...getAllNiveles()];
-  const duraciones = ['todos', ...getAllDuraciones().map(d => `${d}`)];
 
-  // Filtrado de planes
-  const filteredPlans = useMemo(() => {
-    return filterPlans({
-      query: searchQuery,
+  const filteredPrograms = useMemo(() => {
+    let filtered = filterPrograms({
       objetivo: selectedObjetivo !== 'todos' ? selectedObjetivo : undefined,
-      nivel: selectedNivel !== 'todos' ? selectedNivel : undefined,
-      duracion: selectedDuracion !== 'todos' ? parseInt(selectedDuracion) : undefined
+      nivel: selectedNivel !== 'todos' ? selectedNivel : undefined
     });
-  }, [searchQuery, selectedObjetivo, selectedNivel, selectedDuracion]);
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(prog => 
+        prog.meta.title.toLowerCase().includes(query) ||
+        prog.meta.description.toLowerCase().includes(query) ||
+        prog.metadata.objetivo.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, selectedObjetivo, selectedNivel]);
 
   const stats = getCatalogStats();
 
@@ -103,7 +104,6 @@ export default function PlanesEntrenamientoHub() {
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
-        {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -112,25 +112,24 @@ export default function PlanesEntrenamientoHub() {
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6 backdrop-blur-sm">
             <Sparkles className="w-4 h-4" />
-            {stats.totalPlanes}+ Planes de Entrenamiento Gratuitos
+            {stats.totalProgramas}+ Programas Completos de Entrenamiento
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-b from-white via-slate-200 to-slate-500 bg-clip-text text-transparent leading-tight">
-            Encuentra tu Plan de
-            <br />Entrenamiento Perfecto
+            Programas de Entrenamiento
+            <br />Completos y Progresivos
           </h1>
 
           <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Planes profesionales diseñados por expertos. Filtrados por objetivo, nivel y duración. 
-            100% gratis.
+            Planes estructurados de 4 semanas diseñados por expertos. 
+            Progresión garantizada de principio a fin.
           </p>
 
-          {/* Search Bar */}
           <div className="max-w-2xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar por nombre o palabra clave..."
+              placeholder="Buscar programas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-slate-900/50 backdrop-blur-sm border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all"
@@ -143,8 +142,8 @@ export default function PlanesEntrenamientoHub() {
       <section className="border-y border-slate-800/50 py-8 bg-slate-900/30 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <StatBadge icon={<TrendingUp className="w-5 h-5" />} value={`${stats.totalPlanes}+`} label="Planes" />
-            <StatBadge icon={<Target className="w-5 h-5" />} value={`${stats.totalEjerciciosUnicos}+`} label="Ejercicios" />
+            <StatBadge icon={<Target className="w-5 h-5" />} value={`${stats.totalProgramas}+`} label="Programas" />
+            <StatBadge icon={<Dumbbell className="w-5 h-5" />} value={`${stats.totalEjerciciosUnicos}+`} label="Ejercicios" />
             <StatBadge icon={<Star className="w-5 h-5" />} value="4.8/5" label="Rating" />
             <StatBadge icon={<Users className="w-5 h-5" />} value="15K+" label="Usuarios" />
           </div>
@@ -157,15 +156,12 @@ export default function PlanesEntrenamientoHub() {
           {/* Sidebar Filters */}
           <aside className="lg:col-span-1">
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col overflow-hidden">
-              {/* Header (Fijo) */}
               <div className="flex items-center gap-2 p-6 pb-4 border-b border-slate-700/50">
                 <Filter className="w-5 h-5 text-emerald-400" />
                 <h2 className="font-bold text-white">Filtros</h2>
               </div>
 
-              {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-6 pt-4 space-y-6 custom-scrollbar">
-                {/* Objetivo */}
                 <FilterGroup
                   label="Objetivo"
                   options={objetivos}
@@ -173,30 +169,19 @@ export default function PlanesEntrenamientoHub() {
                   onChange={setSelectedObjetivo}
                 />
 
-                {/* Nivel */}
                 <FilterGroup
                   label="Nivel"
                   options={niveles}
                   selected={selectedNivel}
                   onChange={setSelectedNivel}
                 />
-
-                {/* Duración */}
-                <FilterGroup
-                  label="Duración (semanas)"
-                  options={duraciones}
-                  selected={selectedDuracion}
-                  onChange={setSelectedDuracion}
-                />
               </div>
 
-              {/* Footer (Fijo) */}
               <div className="p-6 pt-4 border-t border-slate-700/50 bg-slate-900/50">
                 <button
                   onClick={() => {
                     setSelectedObjetivo('todos');
                     setSelectedNivel('todos');
-                    setSelectedDuracion('todos');
                     setSearchQuery('');
                   }}
                   className="w-full px-4 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium transition-all hover:shadow-lg border border-slate-700"
@@ -207,25 +192,24 @@ export default function PlanesEntrenamientoHub() {
             </div>
           </aside>
 
-          {/* Plans Grid */}
+          {/* Programs Grid */}
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-white">
-                {filteredPlans.length} planes encontrados
+                {filteredPrograms.length} programas encontrados
               </h2>
             </div>
 
-            {filteredPlans.length === 0 ? (
+            {filteredPrograms.length === 0 ? (
               <div className="text-center py-20 bg-gradient-to-br from-slate-800/30 to-slate-900/30 rounded-2xl border border-slate-800">
                 <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8 text-slate-600" />
                 </div>
-                <p className="text-slate-400 mb-4 text-lg">No se encontraron planes con esos filtros.</p>
+                <p className="text-slate-400 mb-4 text-lg">No se encontraron programas con esos filtros.</p>
                 <button
                   onClick={() => {
                     setSelectedObjetivo('todos');
                     setSelectedNivel('todos');
-                    setSelectedDuracion('todos');
                     setSearchQuery('');
                   }}
                   className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
@@ -234,9 +218,9 @@ export default function PlanesEntrenamientoHub() {
                 </button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                {filteredPlans.map((plan) => (
-                  <PlanCard key={plan.id} plan={plan} />
+              <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredPrograms.map((program) => (
+                  <ProgramCard key={program.id} program={program} />
                 ))}
               </div>
             )}
@@ -250,7 +234,7 @@ export default function PlanesEntrenamientoHub() {
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-3xl blur-2xl"></div>
           <div className="relative bg-gradient-to-br from-emerald-900/30 to-teal-900/30 border border-emerald-500/30 rounded-3xl p-12 text-center backdrop-blur-sm">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-              ¿Ningún plan se ajusta a ti?
+              ¿Ningún programa se ajusta a ti?
             </h2>
             <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
               Crea un plan 100% personalizado basado en tu edad, peso, objetivo y disponibilidad con nuestra IA.
@@ -317,47 +301,27 @@ function FilterGroup({
   );
 }
 
-function PlanCard({ plan }: { plan: TrainingPlan }) {
-  // Mejorar el título del plan
-  const formatTitle = (title: string) => {
-    return title
-      .replace(/_/g, ' ')
-      .replace(/pérdida_grasa/gi, 'Pérdida de Grasa')
-      .replace(/ganancia_muscular/gi, 'Ganancia Muscular')
-      .replace(/salud_general/gi, 'Salud General')
-      .replace(/\s+-\s+Semana\s+\d+/i, '')
-      .replace(/\(intermedio\)/gi, '')
-      .replace(/\(principiante\)/gi, '')
-      .replace(/\(avanzado\)/gi, '')
-      .trim();
-  };
-
-  // Extraer número de semana si existe
-  const weekMatch = plan.meta.title.match(/Semana\s+(\d+)/i);
-  const weekNumber = weekMatch ? parseInt(weekMatch[1]) : null;
-
+function ProgramCard({ program }: { program: ProgramaPlan }) {
   return (
     <Link
-      href={`/plan/${plan.slug}`}
-      className="group relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1"
+      href={`/plan/${program.slug}`}
+      className="group relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1 overflow-hidden"
     >
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-teal-500/0 group-hover:from-emerald-500/5 group-hover:to-teal-500/5 rounded-2xl transition-all duration-300"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-teal-500/0 group-hover:from-emerald-500/5 group-hover:to-teal-500/5 transition-all duration-300"></div>
       
-      <div className="relative">
+      <div className="relative p-6">
+        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full">
-              {normalizeText(plan.metadata.objetivo)}
+              {normalizeText(program.metadata.objetivo)}
             </span>
             <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium rounded-full">
-              {normalizeText(plan.metadata.nivel)}
+              {normalizeText(program.metadata.nivel)}
             </span>
-            {weekNumber && (
-              <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium rounded-full">
-                Semana {weekNumber}
-              </span>
-            )}
+            <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium rounded-full">
+              {program.metadata.duracion_total_semanas} Semanas
+            </span>
           </div>
           <div className="flex items-center gap-1 text-xs text-amber-400">
             <Star className="w-4 h-4 fill-amber-400" />
@@ -365,24 +329,42 @@ function PlanCard({ plan }: { plan: TrainingPlan }) {
           </div>
         </div>
 
-        <h3 className="text-xl font-bold mb-3 group-hover:text-emerald-400 transition-colors line-clamp-2 text-white leading-tight">
-          {formatTitle(plan.meta.title)}
+        {/* Title */}
+        <h3 className="text-xl font-bold mb-3 group-hover:text-emerald-400 transition-colors text-white leading-tight">
+          {program.meta.title}
         </h3>
 
+        {/* Description */}
         <p className="text-sm text-slate-400 mb-6 line-clamp-2 leading-relaxed">
-          {plan.meta.description}
+          {program.meta.description}
         </p>
 
+        {/* Program Structure */}
+        <div className="bg-slate-950/50 rounded-xl p-4 mb-6 border border-slate-800">
+          <h4 className="text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider">Estructura del Programa:</h4>
+          <div className="space-y-2">
+            {program.semanas.slice(0, 4).map((semana) => (
+              <div key={semana.numero} className="flex items-center gap-2 text-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span className="text-slate-300">
+                  <span className="text-emerald-400 font-medium">Semana {semana.numero}:</span> {semana.titulo}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer Stats */}
         <div className="flex items-center justify-between pt-4 border-t border-slate-700/50">
           <div className="flex items-center gap-4 text-xs text-slate-500">
             <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {plan.metadata.duracion_semanas} sem
+              <Dumbbell className="w-3.5 h-3.5" />
+              {program.stats.totalEjercicios} ejercicios
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              {plan.metadata.dias_por_semana}d/sem
+              <Calendar className="w-3.5 h-3.5" />
+              {program.metadata.dias_por_semana}d/sem
             </span>
           </div>
           <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
@@ -390,42 +372,4 @@ function PlanCard({ plan }: { plan: TrainingPlan }) {
       </div>
     </Link>
   );
-}
-
-// ============================================
-// GLOBAL STYLES (Add to globals.css or use CSS-in-JS)
-// ============================================
-// Custom scrollbar styles - Add this to your global CSS or create a <style> tag
-const customScrollbarStyles = `
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgb(15 23 42 / 0.3);
-    border-radius: 10px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgb(71 85 105 / 0.5);
-    border-radius: 10px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgb(100 116 139 / 0.7);
-  }
-  
-  /* Firefox */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(71 85 105 / 0.5) rgb(15 23 42 / 0.3);
-  }
-`;
-
-// Inject styles (if not using globals.css)
-if (typeof document !== 'undefined' && !document.getElementById('custom-scrollbar-styles')) {
-  const styleSheet = document.createElement("style");
-  styleSheet.id = 'custom-scrollbar-styles';
-  styleSheet.textContent = customScrollbarStyles;
-  document.head.appendChild(styleSheet);
 }
