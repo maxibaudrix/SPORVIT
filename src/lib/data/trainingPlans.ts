@@ -1,8 +1,13 @@
 // src/lib/data/trainingPlans.ts
 
-import normalized from '@/data/training_templates_es_normalized.json';
-import web from '@/data/training_templates_es_4weeks_web.json';
-import exerciseCatalog from '@/data/exercise_catalog.json';
+import normalizedData from '@/../data/training_templates_es_normalized.json';
+import webData from '@/../data/training_templates_es_4weeks_web.json';
+import exerciseCatalogData from '@/../data/exercise_catalog.json';
+
+// Type assertion para que TypeScript reconozca la estructura
+const normalized = normalizedData as any[];
+const web = webData as any[];
+const exerciseCatalog = exerciseCatalogData as any[];
 
 // ============================================
 // TYPES

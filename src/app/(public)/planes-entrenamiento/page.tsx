@@ -1,88 +1,72 @@
-// app/planes-entrenamiento/page.tsx
+// src/app/(public)/planes-entrenamiento/page.tsx
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Search, Filter, Calendar, TrendingUp, Users,
-  Star, ArrowRight, Sparkles, ChevronDown 
+  Star, ArrowRight, Sparkles, Loader2
 } from 'lucide-react';
-
-// ============================================
-// TYPES
-// ============================================
-interface TrainingPlan {
-  id: string;
-  slug: string;
-  metadata: {
-    objetivo: string;
-    nivel: string;
-    duracion_semanas: number;
-    dias_por_semana: number;
-    equipo: string[];
-    tags: string[];
-  };
-  meta: {
-    title: string;
-    description: string;
-  };
-}
-
-// ============================================
-// MOCK DATA (reemplazar con fetch real)
-// ============================================
-const MOCK_PLANS: TrainingPlan[] = [
-  {
-    id: "tpl_88ab2c77_wk1",
-    slug: "plan-resistencia-principiante-semana-1",
-    metadata: {
-      objetivo: "resistencia",
-      nivel: "principiante",
-      duracion_semanas: 4,
-      dias_por_semana: 5,
-      equipo: ["peso corporal"],
-      tags: ["cardio", "resistencia"]
-    },
-    meta: {
-      title: "Plan de Resistencia para Principiantes - 4 Semanas",
-      description: "Plan completo de 4 semanas para mejorar tu resistencia cardiovascular desde cero."
-    }
-  },
-  // ... más planes (cargar dinámicamente)
-];
+import { 
+  filterPlans, 
+  getAllObjetivos, 
+  getAllNiveles, 
+  getAllDuraciones,
+  getCatalogStats,
+  type TrainingPlan 
+} from '@/lib/data/trainingPlans';
 
 // ============================================
 // PAGE COMPONENT
 // ============================================
 export default function PlanesEntrenamientoHub() {
+  const [plans, setPlans] = useState<TrainingPlan[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedObjetivo, setSelectedObjetivo] = useState<string>('todos');
   const [selectedNivel, setSelectedNivel] = useState<string>('todos');
   const [selectedDuracion, setSelectedDuracion] = useState<string>('todos');
 
-  // Filtros disponibles
-  const objetivos = ['todos', 'resistencia', 'fuerza', 'perdida-peso', 'hipertrofia', 'definicion'];
-  const niveles = ['todos', 'principiante', 'intermedio', 'avanzado'];
-  const duraciones = ['todos', '4-semanas', '8-semanas', '12-semanas'];
+  // Cargar datos al montar
+  useEffect(() => {
+    const loadPlans = async () => {
+      setLoading(true);
+      try {
+        const allPlans = filterPlans({}); // Sin filtros = todos
+        setPlans(allPlans);
+      } catch (error) {
+        console.error('Error loading plans:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPlans();
+  }, []);
+
+  // Obtener opciones de filtros
+  const objetivos = ['todos', ...getAllObjetivos()];
+  const niveles = ['todos', ...getAllNiveles()];
+  const duraciones = ['todos', ...getAllDuraciones().map(d => `${d}`)];
 
   // Filtrado de planes
   const filteredPlans = useMemo(() => {
-    return MOCK_PLANS.filter(plan => {
-      const matchesSearch = plan.meta.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           plan.meta.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesObjetivo = selectedObjetivo === 'todos' || plan.metadata.objetivo === selectedObjetivo;
-      const matchesNivel = selectedNivel === 'todos' || plan.metadata.nivel === selectedNivel;
-      
-      let matchesDuracion = true;
-      if (selectedDuracion !== 'todos') {
-        const weeks = parseInt(selectedDuracion.split('-')[0]);
-        matchesDuracion = plan.metadata.duracion_semanas === weeks;
-      }
-
-      return matchesSearch && matchesObjetivo && matchesNivel && matchesDuracion;
+    return filterPlans({
+      query: searchQuery,
+      objetivo: selectedObjetivo !== 'todos' ? selectedObjetivo : undefined,
+      nivel: selectedNivel !== 'todos' ? selectedNivel : undefined,
+      duracion: selectedDuracion !== 'todos' ? parseInt(selectedDuracion) : undefined
     });
   }, [searchQuery, selectedObjetivo, selectedNivel, selectedDuracion]);
+
+  const stats = getCatalogStats();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -91,7 +75,7 @@ export default function PlanesEntrenamientoHub() {
         <div className="container mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4" />
-            1,800+ Planes de Entrenamiento Gratuitos
+            {stats.totalPlanes}+ Planes de Entrenamiento Gratuitos
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-b from-white via-slate-200 to-slate-500 bg-clip-text text-transparent">
@@ -122,8 +106,8 @@ export default function PlanesEntrenamientoHub() {
       <section className="bg-slate-900/50 border-b border-slate-800 py-8">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <StatBadge icon={<TrendingUp className="w-5 h-5" />} value="1,800+" label="Planes" />
-            <StatBadge icon={<Users className="w-5 h-5" />} value="50K+" label="Usuarios" />
+            <StatBadge icon={<TrendingUp className="w-5 h-5" />} value={`${stats.totalPlanes}+`} label="Planes" />
+            <StatBadge icon={<Users className="w-5 h-5" />} value={`${stats.totalEjerciciosUnicos}+`} label="Ejercicios" />
             <StatBadge icon={<Star className="w-5 h-5" />} value="4.8/5" label="Rating" />
             <StatBadge icon={<Calendar className="w-5 h-5" />} value="100%" label="Gratis" />
           </div>
@@ -159,7 +143,7 @@ export default function PlanesEntrenamientoHub() {
 
               {/* Duración */}
               <FilterGroup
-                label="Duración"
+                label="Duración (semanas)"
                 options={duraciones}
                 selected={selectedDuracion}
                 onChange={setSelectedDuracion}
@@ -186,7 +170,6 @@ export default function PlanesEntrenamientoHub() {
               <h2 className="text-2xl font-bold">
                 {filteredPlans.length} planes encontrados
               </h2>
-              {/* Sort Dropdown - TODO */}
             </div>
 
             {filteredPlans.length === 0 ? (
@@ -197,6 +180,7 @@ export default function PlanesEntrenamientoHub() {
                     setSelectedObjetivo('todos');
                     setSelectedNivel('todos');
                     setSelectedDuracion('todos');
+                    setSearchQuery('');
                   }}
                   className="text-emerald-400 hover:text-emerald-300 font-medium"
                 >

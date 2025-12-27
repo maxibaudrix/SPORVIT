@@ -1,4 +1,4 @@
-// app/plan/[slug]/page.tsx
+// app/(public)/plan/[slug]/page.tsx
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -6,65 +6,20 @@ import {
   Calendar, Clock, TrendingUp, Users, Dumbbell, 
   CheckCircle2, ArrowRight, Star, ChevronDown 
 } from 'lucide-react';
-
-// ============================================
-// TYPES
-// ============================================
-interface Exercise {
-  ejercicio: string;
-  series?: number;
-  repeticiones?: number;
-  descanso_seg?: number;
-  duracion_min?: number;
-  descripcion: string;
-}
-
-interface TrainingPlan {
-  id: string;
-  slug: string;
-  metadata: {
-    objetivo: string;
-    nivel: string;
-    duracion_semanas: number;
-    dias_por_semana: number;
-    equipo: string[];
-    tags: string[];
-  };
-  plan: {
-    [key: string]: Exercise[];
-  };
-  meta: {
-    title: string;
-    description: string;
-  };
-  resumen_semana?: string;
-}
-
-// ============================================
-// DATA LOADING
-// ============================================
-async function getPlanBySlug(slug: string): Promise<TrainingPlan | null> {
-  // En producción, cargar desde JSON o DB
-  const plans = await import('@/data/training_templates_es_normalized.json');
-  return plans.default.find((p: TrainingPlan) => p.slug === slug) || null;
-}
-
-async function getSimilarPlans(currentPlan: TrainingPlan): Promise<TrainingPlan[]> {
-  const allPlans = await import('@/data/training_templates_es_normalized.json');
-  return allPlans.default
-    .filter((p: TrainingPlan) => 
-      p.metadata.objetivo === currentPlan.metadata.objetivo &&
-      p.slug !== currentPlan.slug
-    )
-    .slice(0, 3);
-}
+import { 
+  getPlanBySlug, 
+  getSimilarPlans,
+  getAllPlans,
+  type TrainingPlan,
+  type Exercise
+} from '@/lib/data/trainingPlans';
 
 // ============================================
 // STATIC GENERATION
 // ============================================
 export async function generateStaticParams() {
-  const plans = await import('@/data/training_templates_es_normalized.json');
-  return plans.default.map((plan: TrainingPlan) => ({
+  const plans = getAllPlans();
+  return plans.map((plan) => ({
     slug: plan.slug
   }));
 }
@@ -73,7 +28,7 @@ export async function generateStaticParams() {
 // METADATA (SEO)
 // ============================================
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const plan = await getPlanBySlug(params.slug);
+  const plan = getPlanBySlug(params.slug);
   
   if (!plan) {
     return {
@@ -92,7 +47,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       type: 'article',
       url: `https://sporvit.com/plan/${plan.slug}`,
       images: [{
-        url: `/og-images/plan-${plan.id}.png`, // Auto-generar después
+        url: `/og-images/plan-${plan.id}.png`,
         width: 1200,
         height: 630,
         alt: plan.meta.title
@@ -112,14 +67,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // ============================================
 // PAGE COMPONENT
 // ============================================
-export default async function PlanDetailPage({ params }: { params: { slug: string } }) {
-  const plan = await getPlanBySlug(params.slug);
+export default function PlanDetailPage({ params }: { params: { slug: string } }) {
+  const plan = getPlanBySlug(params.slug);
   
   if (!plan) {
     notFound();
   }
 
-  const similarPlans = await getSimilarPlans(plan);
+  const similarPlans = getSimilarPlans(plan, 3);
 
   // Structured Data (JSON-LD)
   const structuredData = {
@@ -133,7 +88,7 @@ export default async function PlanDetailPage({ params }: { params: { slug: strin
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.8",
-      "reviewCount": "127" // Mock data
+      "reviewCount": "127"
     }
   };
 
