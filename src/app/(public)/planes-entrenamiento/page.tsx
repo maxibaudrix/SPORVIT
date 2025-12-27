@@ -156,48 +156,54 @@ export default function PlanesEntrenamientoHub() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar Filters */}
           <aside className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 sticky top-24 space-y-6">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col overflow-hidden">
+              {/* Header (Fijo) */}
+              <div className="flex items-center gap-2 p-6 pb-4 border-b border-slate-700/50">
                 <Filter className="w-5 h-5 text-emerald-400" />
                 <h2 className="font-bold text-white">Filtros</h2>
               </div>
 
-              {/* Objetivo */}
-              <FilterGroup
-                label="Objetivo"
-                options={objetivos}
-                selected={selectedObjetivo}
-                onChange={setSelectedObjetivo}
-              />
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-6 pt-4 space-y-6 custom-scrollbar">
+                {/* Objetivo */}
+                <FilterGroup
+                  label="Objetivo"
+                  options={objetivos}
+                  selected={selectedObjetivo}
+                  onChange={setSelectedObjetivo}
+                />
 
-              {/* Nivel */}
-              <FilterGroup
-                label="Nivel"
-                options={niveles}
-                selected={selectedNivel}
-                onChange={setSelectedNivel}
-              />
+                {/* Nivel */}
+                <FilterGroup
+                  label="Nivel"
+                  options={niveles}
+                  selected={selectedNivel}
+                  onChange={setSelectedNivel}
+                />
 
-              {/* Duración */}
-              <FilterGroup
-                label="Duración (semanas)"
-                options={duraciones}
-                selected={selectedDuracion}
-                onChange={setSelectedDuracion}
-              />
+                {/* Duración */}
+                <FilterGroup
+                  label="Duración (semanas)"
+                  options={duraciones}
+                  selected={selectedDuracion}
+                  onChange={setSelectedDuracion}
+                />
+              </div>
 
-              {/* Reset Button */}
-              <button
-                onClick={() => {
-                  setSelectedObjetivo('todos');
-                  setSelectedNivel('todos');
-                  setSelectedDuracion('todos');
-                  setSearchQuery('');
-                }}
-                className="w-full px-4 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium transition-all hover:shadow-lg border border-slate-700"
-              >
-                Limpiar Filtros
-              </button>
+              {/* Footer (Fijo) */}
+              <div className="p-6 pt-4 border-t border-slate-700/50 bg-slate-900/50">
+                <button
+                  onClick={() => {
+                    setSelectedObjetivo('todos');
+                    setSelectedNivel('todos');
+                    setSelectedDuracion('todos');
+                    setSearchQuery('');
+                  }}
+                  className="w-full px-4 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium transition-all hover:shadow-lg border border-slate-700"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
             </div>
           </aside>
 
@@ -312,6 +318,24 @@ function FilterGroup({
 }
 
 function PlanCard({ plan }: { plan: TrainingPlan }) {
+  // Mejorar el título del plan
+  const formatTitle = (title: string) => {
+    return title
+      .replace(/_/g, ' ')
+      .replace(/pérdida_grasa/gi, 'Pérdida de Grasa')
+      .replace(/ganancia_muscular/gi, 'Ganancia Muscular')
+      .replace(/salud_general/gi, 'Salud General')
+      .replace(/\s+-\s+Semana\s+\d+/i, '')
+      .replace(/\(intermedio\)/gi, '')
+      .replace(/\(principiante\)/gi, '')
+      .replace(/\(avanzado\)/gi, '')
+      .trim();
+  };
+
+  // Extraer número de semana si existe
+  const weekMatch = plan.meta.title.match(/Semana\s+(\d+)/i);
+  const weekNumber = weekMatch ? parseInt(weekMatch[1]) : null;
+
   return (
     <Link
       href={`/plan/${plan.slug}`}
@@ -329,6 +353,11 @@ function PlanCard({ plan }: { plan: TrainingPlan }) {
             <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium rounded-full">
               {normalizeText(plan.metadata.nivel)}
             </span>
+            {weekNumber && (
+              <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium rounded-full">
+                Semana {weekNumber}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1 text-xs text-amber-400">
             <Star className="w-4 h-4 fill-amber-400" />
@@ -337,7 +366,7 @@ function PlanCard({ plan }: { plan: TrainingPlan }) {
         </div>
 
         <h3 className="text-xl font-bold mb-3 group-hover:text-emerald-400 transition-colors line-clamp-2 text-white leading-tight">
-          {plan.meta.title}
+          {formatTitle(plan.meta.title)}
         </h3>
 
         <p className="text-sm text-slate-400 mb-6 line-clamp-2 leading-relaxed">
@@ -361,4 +390,42 @@ function PlanCard({ plan }: { plan: TrainingPlan }) {
       </div>
     </Link>
   );
+}
+
+// ============================================
+// GLOBAL STYLES (Add to globals.css or use CSS-in-JS)
+// ============================================
+// Custom scrollbar styles - Add this to your global CSS or create a <style> tag
+const customScrollbarStyles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgb(15 23 42 / 0.3);
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(71 85 105 / 0.5);
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(100 116 139 / 0.7);
+  }
+  
+  /* Firefox */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(71 85 105 / 0.5) rgb(15 23 42 / 0.3);
+  }
+`;
+
+// Inject styles (if not using globals.css)
+if (typeof document !== 'undefined' && !document.getElementById('custom-scrollbar-styles')) {
+  const styleSheet = document.createElement("style");
+  styleSheet.id = 'custom-scrollbar-styles';
+  styleSheet.textContent = customScrollbarStyles;
+  document.head.appendChild(styleSheet);
 }
