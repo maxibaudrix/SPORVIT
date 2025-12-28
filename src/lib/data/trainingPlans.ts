@@ -400,7 +400,11 @@ export function getBaseSlug(slug: string): string {
     .replace(/[-_]semana[-_]\d+/i, '')
     .replace(/[-_]week[-_]\d+/i, '')
     .replace(/[-_]sem[-_]\d+/i, '')
-    .replace(/[-_]s\d+$/i, '');
+    .replace(/[-_]s\d+$/i, '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  
+    .replace(/[^a-z0-9-]/gi, '-')  
+    .replace(/-+/g, '-')  
+    .toLowerCase();  
 }
 
 /**
@@ -556,7 +560,7 @@ export function groupPlansIntoPrograms(): ProgramaPlan[] {
 
     // Mapeo de nombres amigables para objetivos
     const objetivoNames: Record<string, string> = {
-      'perdida_grasa': 'Pérdida de Grasa',
+      'pérdida_grasa': 'Pérdida de Grasa',
       'perdida_peso': 'Pérdida de Peso',
       'ganancia_muscular': 'Ganancia Muscular',
       'salud_general': 'Salud General',

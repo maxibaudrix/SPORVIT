@@ -8,7 +8,7 @@ import { Metadata } from 'next';
 import { 
   Calendar, Clock, TrendingUp, Users, Dumbbell, 
   CheckCircle2, ArrowRight, Star, ChevronDown, ArrowLeft,
-  Target, Zap, Award
+  Target, Zap, Award, X
 } from 'lucide-react';
 import { 
   getProgramBySlug,
@@ -50,6 +50,7 @@ function normalizeText(text: string): string {
 // ============================================
 export default function ProgramDetailPage({ params }: { params: { slug: string } }) {
   const [activeWeek, setActiveWeek] = useState(1);
+  const [activeDay, setActiveDay] = useState<string | null>(null);
   
   const program = getProgramBySlug(params.slug);
   
@@ -59,6 +60,12 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
 
   const similarPrograms = getSimilarPrograms(program, 3);
   const currentWeek = program.semanas.find(s => s.numero === activeWeek);
+
+  // Reset activeDay when changing weeks
+  const handleWeekChange = (weekNumber: number) => {
+    setActiveWeek(weekNumber);
+    setActiveDay(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -155,15 +162,15 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
                   {program.semanas.map((semana) => (
                     <button
                       key={semana.numero}
-                      onClick={() => setActiveWeek(semana.numero)}
+                      onClick={() => handleWeekChange(semana.numero)}
                       className={`flex-shrink-0 px-6 py-3 rounded-lg font-medium transition-all ${
                         activeWeek === semana.numero
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-lg'
                           : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 border border-slate-700/50'
                       }`}
                     >
-                      <div className="text-sm">Semana {semana.numero}</div>
-                      <div className="text-xs opacity-75 mt-0.5">{semana.titulo}</div>
+                      <div className="text-sm leading-tight">Semana {semana.numero}</div>
+                      <div className="text-xs opacity-75 mt-1.5 leading-tight">{semana.titulo}</div>
                     </button>
                   ))}
                 </div>
@@ -181,16 +188,27 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
                     </p>
                   </div>
 
-                  {/* Days Accordion */}
-                  <div className="space-y-4">
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 mb-6">
                     {Object.entries(currentWeek.plan).map(([day, exercises]) => (
-                      <DayAccordion 
+                      <DayCard 
                         key={day} 
                         day={day} 
-                        exercises={exercises as Exercise[]} 
+                        exercises={exercises as Exercise[]}
+                        isActive={activeDay === day}
+                        onClick={() => exercises.length > 0 && setActiveDay(day)}
                       />
                     ))}
                   </div>
+
+                  {/* Expanded Day Details */}
+                  {activeDay && currentWeek.plan[activeDay] && (
+                    <DayDetailsExpanded 
+                      day={activeDay}
+                      exercises={currentWeek.plan[activeDay] as Exercise[]}
+                      onClose={() => setActiveDay(null)}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -231,7 +249,7 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Equipment Card */}
-            <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 sticky top-24">
+            <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50">
               <h3 className="font-bold mb-4 flex items-center gap-2 text-white">
                 <Dumbbell className="w-5 h-5 text-emerald-400" />
                 Equipo Necesario
@@ -291,20 +309,35 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50">
                 <h3 className="font-bold mb-4 text-white">Programas Similares</h3>
                 <div className="space-y-3">
-                  {similarPrograms.map((similar) => (
-                    <Link 
-                      key={similar.slug}
-                      href={`/plan/${similar.slug}`}
-                      className="block p-3 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition-colors border border-slate-700/50"
-                    >
-                      <h4 className="font-medium text-sm mb-1 line-clamp-2 text-white">
-                        {similar.meta.title}
-                      </h4>
-                      <p className="text-xs text-slate-400 capitalize">
-                        {similar.metadata.duracion_total_semanas} semanas • {normalizeText(similar.metadata.nivel)}
-                      </p>
-                    </Link>
-                  ))}
+                  {similarPrograms.map((similar) => {
+                    // Limpiar título igual que en el programa principal
+                    const cleanTitle = similar.meta.title
+                      .replace(/[-_]?\s*semana\s*\d+/gi, '')
+                      .replace(/\s*-\s*$/gi, '')
+                      .replace(/\(.*?\)/g, '') // Remover paréntesis con nivel
+                      .replace(/pérdida_grasa/gi, 'Pérdida de Grasa')
+                      .replace(/perdida_grasa/gi, 'Pérdida de Grasa')
+                      .replace(/perdida_peso/gi, 'Pérdida de Peso')
+                      .replace(/ganancia_muscular/gi, 'Ganancia Muscular')
+                      .replace(/salud_general/gi, 'Salud General')
+                      .replace(/_/g, ' ')
+                      .trim();
+
+                    return (
+                      <Link 
+                        key={similar.slug}
+                        href={`/plan/${similar.slug}`}
+                        className="block p-3 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition-colors border border-slate-700/50"
+                      >
+                        <h4 className="font-medium text-sm mb-1 line-clamp-2 text-white leading-tight">
+                          {cleanTitle}
+                        </h4>
+                        <p className="text-xs text-slate-400 capitalize">
+                          {similar.metadata.duracion_total_semanas} semanas • {normalizeText(similar.metadata.nivel)}
+                        </p>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -328,7 +361,17 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-function DayAccordion({ day, exercises }: { day: string; exercises: Exercise[] }) {
+function DayCard({ 
+  day, 
+  exercises, 
+  isActive, 
+  onClick 
+}: { 
+  day: string; 
+  exercises: Exercise[]; 
+  isActive: boolean;
+  onClick: () => void;
+}) {
   const dayNames: Record<string, string> = {
     lunes: 'Lunes',
     martes: 'Martes',
@@ -341,59 +384,213 @@ function DayAccordion({ day, exercises }: { day: string; exercises: Exercise[] }
     domingo: 'Domingo'
   };
 
-  if (exercises.length === 0) {
-    return (
-      <div className="bg-slate-900/30 rounded-xl p-4 border border-slate-800">
-        <div className="flex items-center justify-between">
-          <h3 className="font-bold text-white">{dayNames[day.toLowerCase()] || day}</h3>
-          <span className="text-sm text-slate-500 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            Descanso
-          </span>
-        </div>
-      </div>
-    );
-  }
+  const dayShortNames: Record<string, string> = {
+    lunes: 'LUN',
+    martes: 'MAR',
+    miercoles: 'MIÉ',
+    miércoles: 'MIÉ',
+    jueves: 'JUE',
+    viernes: 'VIE',
+    sabado: 'SÁB',
+    sábado: 'SÁB',
+    domingo: 'DOM'
+  };
+
+  // Determinar tipo de entrenamiento e icono
+  const getWorkoutInfo = () => {
+    if (exercises.length === 0) {
+      return {
+        icon: '💤',
+        type: 'Descanso',
+        color: 'from-slate-700/50 to-slate-800/50',
+        borderColor: 'border-slate-700/30'
+      };
+    }
+
+    const types = exercises.flatMap(ex => ex.tipo || []);
+    const hasCardio = types.some(t => t.toLowerCase().includes('cardio'));
+    const hasFuerza = types.some(t => t.toLowerCase().includes('fuerza'));
+    
+    if (hasFuerza && hasCardio) {
+      return {
+        icon: '🔥',
+        type: 'Mixto',
+        color: 'from-orange-900/30 to-red-900/30',
+        borderColor: 'border-orange-500/30'
+      };
+    } else if (hasFuerza) {
+      return {
+        icon: '💪',
+        type: 'Fuerza',
+        color: 'from-blue-900/30 to-indigo-900/30',
+        borderColor: 'border-blue-500/30'
+      };
+    } else if (hasCardio) {
+      return {
+        icon: '🏃',
+        type: 'Cardio',
+        color: 'from-emerald-900/30 to-teal-900/30',
+        borderColor: 'border-emerald-500/30'
+      };
+    }
+
+    return {
+      icon: '🎯',
+      type: 'Entrenamiento',
+      color: 'from-purple-900/30 to-pink-900/30',
+      borderColor: 'border-purple-500/30'
+    };
+  };
+
+  const workoutInfo = getWorkoutInfo();
+  const totalDuration = exercises.reduce((sum, ex) => sum + (ex.duracion_min || 0), 0);
 
   return (
-    <details className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
-      <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-800/50 transition-colors">
-        <div>
-          <h3 className="font-bold text-white">{dayNames[day.toLowerCase()] || day}</h3>
-          <p className="text-sm text-slate-400">{exercises.length} ejercicios</p>
+    <button
+      onClick={onClick}
+      disabled={exercises.length === 0}
+      className={`relative bg-gradient-to-br ${workoutInfo.color} backdrop-blur-xl rounded-xl p-3 border ${
+        isActive ? 'border-emerald-500 shadow-lg shadow-emerald-500/20' : workoutInfo.borderColor
+      } transition-all duration-300 hover:scale-105 ${
+        exercises.length > 0 ? 'cursor-pointer hover:shadow-lg' : 'cursor-default opacity-75'
+      } text-left w-full min-h-[180px] flex flex-col`}
+    >
+      {/* Day Header */}
+      <div className="text-center mb-2">
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+          {dayShortNames[day.toLowerCase()] || day.substring(0, 3).toUpperCase()}
         </div>
-        <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform" />
-      </summary>
+        <div className="text-xs font-medium text-slate-300 truncate">
+          {dayNames[day.toLowerCase()] || day}
+        </div>
+      </div>
+
+      {/* Separator */}
+      <div className="h-px bg-slate-700/50 mb-2"></div>
+
+      {/* Icon */}
+      <div className="text-3xl text-center mb-1.5">{workoutInfo.icon}</div>
+
+      {/* Type */}
+      <div className="text-center mb-2">
+        <div className="text-[10px] font-bold text-white truncate">{workoutInfo.type}</div>
+      </div>
+
+      {/* Stats */}
+      {exercises.length > 0 && (
+        <div className="space-y-1 text-[10px] text-slate-400 mt-auto">
+          <div className="flex items-center justify-between">
+            <span className="truncate">Duración:</span>
+            <span className="font-bold text-emerald-400 ml-1">{totalDuration || '~45'} min</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="truncate">Ejercicios:</span>
+            <span className="font-bold text-emerald-400 ml-1">{exercises.length}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Active indicator */}
+      {isActive && exercises.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-emerald-500/50 text-center">
+          <span className="text-[10px] text-emerald-400 font-bold">● ACTIVO</span>
+        </div>
+      )}
       
-      <div className="p-4 pt-0 space-y-3">
+      {/* Ver detalles indicator */}
+      {!isActive && exercises.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-slate-700/50 text-center">
+          <span className="text-[10px] text-emerald-400 font-medium">Ver detalles →</span>
+        </div>
+      )}
+    </button>
+  );
+}
+
+function DayDetailsExpanded({ 
+  day, 
+  exercises, 
+  onClose 
+}: { 
+  day: string; 
+  exercises: Exercise[];
+  onClose: () => void;
+}) {
+  const dayNames: Record<string, string> = {
+    lunes: 'Lunes',
+    martes: 'Martes',
+    miercoles: 'Miércoles',
+    miércoles: 'Miércoles',
+    jueves: 'Jueves',
+    viernes: 'Viernes',
+    sabado: 'Sábado',
+    sábado: 'Sábado',
+    domingo: 'Domingo'
+  };
+
+  const totalDuration = exercises.reduce((sum, ex) => sum + (ex.duracion_min || 0), 0);
+
+  return (
+    <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl border border-emerald-500/30 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+      {/* Header */}
+      <div className="p-6 border-b border-slate-700/50 bg-slate-900/50">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              {dayNames[day.toLowerCase()] || day}
+            </h3>
+            <div className="flex items-center gap-4 text-sm text-slate-400">
+              <span className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                {totalDuration || '~45'} minutos
+              </span>
+              <span className="flex items-center gap-1">
+                <Dumbbell className="w-4 h-4" />
+                {exercises.length} ejercicios
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Exercises List */}
+      <div className="p-6 space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
         {exercises.map((exercise, i) => (
-          <div key={i} className="bg-slate-950/50 rounded-lg p-4 border border-slate-800">
-            <div className="flex items-start justify-between mb-2">
-              <h4 className="font-bold text-white">{exercise.ejercicio}</h4>
-              <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">#{i + 1}</span>
+          <div key={i} className="bg-slate-950/50 rounded-lg p-5 border border-slate-800">
+            <div className="flex items-start justify-between mb-3">
+              <h4 className="font-bold text-white text-lg">{exercise.ejercicio}</h4>
+              <span className="text-xs text-slate-500 bg-slate-800 px-3 py-1 rounded-full font-bold">
+                #{i + 1}
+              </span>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               {exercise.series && (
-                <div className="bg-slate-900/50 rounded px-3 py-2">
+                <div className="bg-slate-900/50 rounded-lg px-3 py-2">
                   <span className="text-slate-500 text-xs block mb-1">Series</span>
                   <span className="font-bold text-emerald-400">{exercise.series}</span>
                 </div>
               )}
               {exercise.repeticiones && (
-                <div className="bg-slate-900/50 rounded px-3 py-2">
+                <div className="bg-slate-900/50 rounded-lg px-3 py-2">
                   <span className="text-slate-500 text-xs block mb-1">Reps</span>
                   <span className="font-bold text-emerald-400">{exercise.repeticiones}</span>
                 </div>
               )}
               {exercise.descanso_seg && (
-                <div className="bg-slate-900/50 rounded px-3 py-2">
+                <div className="bg-slate-900/50 rounded-lg px-3 py-2">
                   <span className="text-slate-500 text-xs block mb-1">Descanso</span>
                   <span className="font-bold text-emerald-400">{exercise.descanso_seg}s</span>
                 </div>
               )}
               {exercise.duracion_min && (
-                <div className="bg-slate-900/50 rounded px-3 py-2">
+                <div className="bg-slate-900/50 rounded-lg px-3 py-2">
                   <span className="text-slate-500 text-xs block mb-1">Duración</span>
                   <span className="font-bold text-emerald-400">{exercise.duracion_min} min</span>
                 </div>
@@ -408,6 +605,6 @@ function DayAccordion({ day, exercises }: { day: string; exercises: Exercise[] }
           </div>
         ))}
       </div>
-    </details>
+    </div>
   );
 }

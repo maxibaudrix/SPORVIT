@@ -43,7 +43,9 @@ export default function CalculatorsHubPage() {
     { title: "Índice de Masa Libre de Grasa (FFMI)", icon: <Dumbbell />, href: "/calculators/ffmi", category: "Cuerpo", highlight: true },
     { title: "Índice de Masa Corporal (IMC)", icon: <Scale />, href: "/calculators/imc", category: "Cuerpo" },
     { title: "Porcentaje de Grasa Corporal (PGC)", icon: <Scale />, href: "/calculators/body-fat", category: "Cuerpo" },
+    { title: "Porcentaje de Grasa Corporal (Método Marina USA)", icon: <Scale />, href: "/calculators/navy-body-fat", category: "Cuerpo" },
     { title: "Masa Corporal Magra (LBM)", icon: <Scale />, href: "/calculators/lbm", category: "Cuerpo" },
+    { title: "Metabolismo Basal por Masa Magra", icon: <Scale />, href: "/calculators/katch-mcardle", category: "Cuerpo" },
 
     // Entrenamiento y Rendimiento
     { title: "VO2 Máx", icon: <Heart />, href: "/calculators/vo2max", category: "Rendimiento" },
@@ -59,6 +61,7 @@ export default function CalculatorsHubPage() {
     { title: "Fuerza Relativa", icon: <Dumbbell />, href: "/calculators/relative-strength", category: "Rendimiento" },
     { title: "Tapering Training", icon: <Activity />, href: "/calculators/tapering", category: "Rendimiento" },
     { title: "Progresión de Entrenamiento", icon: <Activity />, href: "/calculators/progression", category: "Rendimiento" },
+    { title: "Volumen de Entrenamiento Mensual", icon: <Dumbbell />, href: "/calculators/monthly-volume", category: "Rendimiento" },
 
     // Ciclismo / Otros
     { title: "Presión de Neumáticos", icon: <Bike />, href: "/calculators/tire-pressure", category: "Ciclismo" },
