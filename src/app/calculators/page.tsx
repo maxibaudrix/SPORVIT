@@ -33,7 +33,7 @@ export default function CalculatorsHubPage() {
     { title: "Nutricional para Triatlones", icon: <Activity />, href: "/calculators/triathlon-nutrition", category: "Nutrición" },
     { title: "Ingesta de Proteínas", icon: <Dumbbell />, href: "/calculators/protein", category: "Nutrición" },
     { title: "Déficit Calórico", icon: <Scale />, href: "/calculators/deficit", category: "Nutrición" },
-    { title: "Planificación Nutricional Competencias", icon: <Activity />, href: "/calculators/competition-nutrition", category: "Nutrición" },
+    { title: "Planificación Nutricional Competencias", icon: <Activity />, href: "/calculators/nutritional-planning", category: "Nutrición" },
     { title: "Hidratación para Competencias", icon: <Droplet />, href: "/calculators/competition-hydration", category: "Nutrición" },
     { title: "Macronutrientes por Dieta", icon: <ChefHat />, href: "/calculators/diet-macros", category: "Nutrición" },
     { title: "Carga de carbohidratos", icon: <ChefHat />, href: "/calculators/carb-loading", category: "Nutrición" },
@@ -46,6 +46,7 @@ export default function CalculatorsHubPage() {
     { title: "Porcentaje de Grasa Corporal (Método Marina USA)", icon: <Scale />, href: "/calculators/navy-body-fat", category: "Cuerpo" },
     { title: "Masa Corporal Magra (LBM)", icon: <Scale />, href: "/calculators/lbm", category: "Cuerpo" },
     { title: "Metabolismo Basal por Masa Magra", icon: <Scale />, href: "/calculators/katch-mcardle", category: "Cuerpo" },
+    { title: "Peso Ideal", icon: <Scale />, href: "/calculators/ideal-weight", category: "Cuerpo" },
 
     // Entrenamiento y Rendimiento
     { title: "VO2 Máx", icon: <Heart />, href: "/calculators/vo2max", category: "Rendimiento" },

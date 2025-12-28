@@ -224,22 +224,15 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold mb-3 text-white">¿Listo para empezar?</h3>
                     <p className="text-slate-300 mb-6">
-                      Accede a este programa completo y personaliza cada detalle según tus necesidades.
+                      Accede a tu dashboard y empieza este programa hoy mismo. El plan se cargará automáticamente en tu calendario.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <Link 
-                        href="/onboarding"
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2"
-                      >
-                        Empezar Gratis <ArrowRight className="w-5 h-5" />
-                      </Link>
-                      <Link 
-                        href="/onboarding"
-                        className="flex-1 px-6 py-3 bg-slate-800 border border-slate-700 rounded-xl font-bold hover:bg-slate-700 transition-all text-center"
-                      >
-                        Personalizar Plan
-                      </Link>
-                    </div>
+                    <Link 
+                      href="/login"
+                      className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all"
+                    >
+                      Empezar Gratis <ArrowRight className="w-5 h-5" />
+                    </Link>
+                    <p className="text-xs text-slate-400 mt-3">Sin tarjeta de crédito • Acceso inmediato</p>
                   </div>
                 </div>
               </div>
@@ -314,13 +307,14 @@ export default function ProgramDetailPage({ params }: { params: { slug: string }
                     const cleanTitle = similar.meta.title
                       .replace(/[-_]?\s*semana\s*\d+/gi, '')
                       .replace(/\s*-\s*$/gi, '')
-                      .replace(/\(.*?\)/g, '') // Remover paréntesis con nivel
+                      .replace(/\s*\(.*?\)\s*/g, '') // Remover paréntesis con nivel
                       .replace(/pérdida_grasa/gi, 'Pérdida de Grasa')
                       .replace(/perdida_grasa/gi, 'Pérdida de Grasa')
                       .replace(/perdida_peso/gi, 'Pérdida de Peso')
                       .replace(/ganancia_muscular/gi, 'Ganancia Muscular')
                       .replace(/salud_general/gi, 'Salud General')
                       .replace(/_/g, ' ')
+                      .replace(/\s+/g, ' ') // Normalizar espacios múltiples
                       .trim();
 
                     return (
