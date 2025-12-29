@@ -255,7 +255,7 @@ export default function RelativeStrengthCalculator() {
             El coeficiente Wilks es una fórmula matemática que intenta corregir la ventaja biológica que los pesos pesados tienen sobre los ligeros en términos de fuerza absoluta. Aunque el ratio simple es excelente para el día a día, en competición se usa Wilks para determinar quién es el "Mejor Levantador" de forma global. Utiliza esta calculadora como punto de partida para tu programación y busca mejorar tus números de forma progresiva y segura.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {["Protocolo Wilks", "Fuerza Proporcional", "A11Y Certified"].map((tag, i) => (
+            {["Protocolo Wilks", "Fuerza Proporcional", "Ratio Fuerza"].map((tag, i) => (
               <span key={i} className="px-4 py-2 bg-slate-950 border border-slate-800 rounded-full text-[10px] font-black text-emerald-500 uppercase tracking-widest">
                 {tag}
               </span>

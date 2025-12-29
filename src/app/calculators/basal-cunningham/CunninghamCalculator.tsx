@@ -136,9 +136,7 @@ export default function CunninghamCalculator() {
               <p>
                 La **Fórmula de Cunningham** elimina el ruido de la grasa corporal y se centra exclusivamente en el tejido metabólicamente activo: la **Masa Libre de Grasa (LBM)**. El músculo es un tejido costoso de mantener para el cuerpo humano, y Cunningham cuantifica ese gasto con una precisión quirúrgica mediante la ecuación:
               </p>
-              <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center font-mono text-indigo-400 text-xl my-4">
-                {"$$RMR = 500 + (22 \\times LBM\\text{ en kg})$$"}
-              </div>
+              
             </div>
             <div className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 flex flex-col justify-center space-y-4">
               <h3 className="text-xl font-bold text-indigo-400 italic mb-4 uppercase text-center">Ventajas para el Atleta</h3>

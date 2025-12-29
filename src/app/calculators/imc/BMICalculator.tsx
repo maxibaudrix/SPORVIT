@@ -216,7 +216,7 @@ export default function BMICalculator() {
             El IMC es un punto de partida, no un destino final. Si tu IMC es alto pero haces ejercicio regularmente y tienes una buena masa muscular, es probable que tu salud metabólica sea excelente. Por el contrario, existen personas con un IMC "normal" pero con un exceso de grasa abdominal (falsos delgados) que tienen riesgos elevados. Utiliza esta calculadora como un chequeo rápido, pero complementa siempre con medidas como el porcentaje de grasa corporal o el perímetro de cintura para una imagen real de tu salud.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {["Protocolo OMS", "Diagnóstico Básico", "A11Y & SEO Compliant"].map((tag, i) => (
+            {["Protocolo OMS", "Diagnóstico Básico", "IMC"].map((tag, i) => (
               <span key={i} className="px-4 py-2 bg-slate-950 border border-slate-800 rounded-full text-[10px] font-black text-emerald-500 uppercase tracking-widest">
                 {tag}
               </span>
