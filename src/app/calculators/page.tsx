@@ -37,7 +37,7 @@ export default function CalculatorsHubPage() {
     { title: "Hidratación para Competencias", icon: <Droplet />, href: "/calculators/competition-hydration", category: "Nutrición" },
     { title: "Macronutrientes por Dieta", icon: <ChefHat />, href: "/calculators/diet-macros", category: "Nutrición" },
     { title: "Carga de carbohidratos", icon: <ChefHat />, href: "/calculators/carb-loading", category: "Nutrición" },
-    { title: "Composición Nutricional", icon: <Calculator />, href: "/scanner", category: "Herramienta", badge: "App" },
+    { title: "Composición Nutricional", icon: <Calculator />, href: "calculators/nutrition", category: "Herramienta", badge: "App" },
 
     // Composición Corporal
     { title: "Índice de Masa Libre de Grasa (FFMI)", icon: <Dumbbell />, href: "/calculators/ffmi", category: "Cuerpo", highlight: true },
@@ -64,6 +64,11 @@ export default function CalculatorsHubPage() {
     { title: "Progresión de Entrenamiento", icon: <Activity />, href: "/calculators/progression", category: "Rendimiento" },
     { title: "Volumen de Entrenamiento Mensual", icon: <Dumbbell />, href: "/calculators/monthly-volume", category: "Rendimiento" },
     { title: "Velocidad Crítica de Nado (CSS)", icon: <Dumbbell />, href: "/calculators/css", category: "Rendimiento" },
+    { title: "Plan de Entrenamiento Running", icon: <Dumbbell />, href: "/calculators/plan-running", category: "Rendimiento" },
+    { title: "Estimador de FTP (Functional Threshold Power)", icon: <Dumbbell />, href: "/calculators/ftp", category: "Rendimiento" },
+    { title: "Metabolismo Basal: Fórmula de Cunningham", icon: <Dumbbell />, href: "/calculators/basal-cunningham", category: "Rendimiento" },
+    { title: "Wilks 2.0 / Puntos GL", icon: <Dumbbell />, href: "/calculators/wilkins", category: "Rendimiento" },
+
 
     // Ciclismo / Otros
     { title: "Presión de Neumáticos", icon: <Bike />, href: "/calculators/tire-pressure", category: "Ciclismo" },
