@@ -64,11 +64,14 @@ export default function CalculatorsHubPage() {
     { title: "Tapering Training", icon: <Activity />, href: "/calculators/tapering", category: "Rendimiento" },
     { title: "Progresión de Entrenamiento", icon: <Activity />, href: "/calculators/progression", category: "Rendimiento" },
     { title: "Volumen de Entrenamiento Mensual", icon: <Dumbbell />, href: "/calculators/monthly-volume", category: "Rendimiento" },
+    { title: "Volumen por Grupo Muscular", icon: <Dumbbell />, href: "/calculators/muscle-volume", category: "Rendimiento" },
     { title: "Velocidad Crítica de Nado (CSS)", icon: <Dumbbell />, href: "/calculators/css", category: "Rendimiento" },
     { title: "Plan de Entrenamiento Running", icon: <Dumbbell />, href: "/calculators/plan-running", category: "Rendimiento" },
     { title: "Estimador de FTP (Functional Threshold Power)", icon: <Dumbbell />, href: "/calculators/ftp", category: "Rendimiento" },
     { title: "Metabolismo Basal: Fórmula de Cunningham", icon: <Dumbbell />, href: "/calculators/basal-cunningham", category: "Rendimiento" },
     { title: "Wilks 2.0 / Puntos GL", icon: <Dumbbell />, href: "/calculators/wilkins", category: "Rendimiento" },
+    { title: "ACWR (Acute:Chronic Workload Ratio", icon: <Dumbbell />, href: "/calculators/acwr", category: "Rendimiento" },
+    { title: "Calculador de Predicción de Tiempos (Fórmula de Riegel", icon: <Dumbbell />, href: "/calculators/riegel", category: "Rendimiento" },
 
 
     // Ciclismo / Otros
