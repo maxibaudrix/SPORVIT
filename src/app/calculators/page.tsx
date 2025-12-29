@@ -63,6 +63,7 @@ export default function CalculatorsHubPage() {
     { title: "Tapering Training", icon: <Activity />, href: "/calculators/tapering", category: "Rendimiento" },
     { title: "Progresión de Entrenamiento", icon: <Activity />, href: "/calculators/progression", category: "Rendimiento" },
     { title: "Volumen de Entrenamiento Mensual", icon: <Dumbbell />, href: "/calculators/monthly-volume", category: "Rendimiento" },
+    { title: "Velocidad Crítica de Nado (CSS)", icon: <Dumbbell />, href: "/calculators/css", category: "Rendimiento" },
 
     // Ciclismo / Otros
     { title: "Presión de Neumáticos", icon: <Bike />, href: "/calculators/tire-pressure", category: "Ciclismo" },
