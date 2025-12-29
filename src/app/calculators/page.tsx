@@ -35,6 +35,7 @@ export default function CalculatorsHubPage() {
     { title: "Déficit Calórico", icon: <Scale />, href: "/calculators/deficit", category: "Nutrición" },
     { title: "Planificación Nutricional Competencias", icon: <Activity />, href: "/calculators/nutritional-planning", category: "Nutrición" },
     { title: "Hidratación para Competencias", icon: <Droplet />, href: "/calculators/competition-hydration", category: "Nutrición" },
+    { title: "Tasa de Sudoración", icon: <Droplet />, href: "/calculators/sweating", category: "Nutrición" },
     { title: "Macronutrientes por Dieta", icon: <ChefHat />, href: "/calculators/diet-macros", category: "Nutrición" },
     { title: "Carga de carbohidratos", icon: <ChefHat />, href: "/calculators/carb-loading", category: "Nutrición" },
     { title: "Composición Nutricional", icon: <Calculator />, href: "calculators/nutrition", category: "Herramienta", badge: "App" },

@@ -300,7 +300,7 @@ export default function CaloricDeficitCalculator() {
             La pérdida de peso no es lineal. Es común ver estancamientos de 1-2 semanas seguidos de una caída repentina. Esto suele deberse a la retención de agua (cortisol elevado) que enmascara la pérdida de grasa. No ajustes tus calorías a la baja inmediatamente; evalúa tu progreso con medidas corporales, fotos y cómo te queda la ropa antes de tomar decisiones drásticas. Recuerda: **el éxito en el déficit calórico es un maratón, no un sprint.**
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {["Protocolo Mifflin-St Jeor", "Pérdida de Grasa Científica", "Optimizado para A11Y"].map((tag, i) => (
+            {["Protocolo Mifflin-St Jeor", "Pérdida de Grasa Científica", "déficit Calorico"].map((tag, i) => (
               <span key={i} className="px-4 py-2 bg-slate-950 border border-slate-800 rounded-full text-[10px] font-black text-orange-400 uppercase tracking-widest">
                 {tag}
               </span>
