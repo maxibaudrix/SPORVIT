@@ -49,21 +49,21 @@ export function WeekStatusIndicator({ weekNumber, status, error }: Props) {
   const Icon = config.icon;
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${config.bg}`}>
+    <div className={`flex items-center gap-2 px-2 py-1.5 rounded-lg ${config.bg}`}>
       <Icon 
-        className={`w-4 h-4 ${config.color} ${'animate' in config && config.animate ? 'animate-spin' : ''}`}
+        className={`w-3 h-3 ${config.color} ${'animate' in config && config.animate ? 'animate-spin' : ''}`}
       />
-      <span className={`text-sm font-medium ${config.color}`}>
+      <span className={`text-[10px] font-medium ${config.color}`}>
         Semana {weekNumber}: {config.label}
       </span>
       {error && (
         <>
-          <span className="text-xs text-red-300 ml-2" title={error}>
-            ⚠️
+          <span className="text-[10px] text-red-300 ml-2" title={error}>
+          ⚠️
           </span>
           <button
             onClick={() => handleRetry(weekNumber)}
-            className="ml-auto text-xs px-2 py-1 bg-red-500/20 hover:bg-red-500/30 rounded text-red-300 transition-colors"
+            className="ml-auto text-[10px] px-1.5 py-0.5 bg-red-500/20 hover:bg-red-500/30 rounded text-red-300 transition-colors"
             title="Reintentar generación"
           >
             Reintentar

@@ -46,14 +46,16 @@ export interface WorkoutEvent extends CalendarEvent {
 
 // Meal Event
 export interface MealEvent extends CalendarEvent {
+  id: string;
   type: 'meal';
-  mealType: MealType;
-  title?: string;
+  date: Date;
+  mealType: string;
+  title?: string; // ⬅️ AÑADIR ESTA LÍNEA
   totalCalories: number;
   totalProteinG: number;
   totalCarbsG: number;
   totalFatG: number;
-  notes?: string;
+  totalFiberG?: number;
 }
 
 // Rest Day Event

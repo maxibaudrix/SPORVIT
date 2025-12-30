@@ -112,6 +112,7 @@ export async function GET(request: Request) {
           userId: meal.userId,
           date: meal.date,
           mealType: meal.mealType,
+          title: meal.notes || '',
           totalCalories: meal.totalCalories,
           totalProteinG: meal.totalProteinG,
           totalCarbsG: meal.totalCarbsG,

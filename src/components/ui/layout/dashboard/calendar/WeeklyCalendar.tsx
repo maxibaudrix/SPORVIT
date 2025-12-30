@@ -58,7 +58,7 @@ export default function WeeklyCalendar({
       />
 
       {/* Calendar grid */}
-      <div className="flex-1 overflow-x-auto overflow-y-auto">
+      <div className="grid grid-cols-7 gap-1">
         <div className="flex min-w-max">
           {weekPlan.days.map((dayPlan) => (
             <DayColumn

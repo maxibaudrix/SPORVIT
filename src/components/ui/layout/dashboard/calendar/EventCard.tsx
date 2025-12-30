@@ -65,7 +65,7 @@ function WorkoutCard({ event, onClick }: { event: WorkoutEvent; onClick: () => v
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold text-white truncate">
-            {event.title}
+            {translateWorkoutType(event.workoutType)}
           </h4>
           
           <div className="flex items-center gap-2 mt-1">
@@ -110,9 +110,16 @@ function MealCard({ event, onClick }: { event: MealEvent; onClick: () => void })
 
         {/* Content */}
         <div className="flex-1 min-w-0">
+          <div>
           <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wide">
             {getMealTypeLabel(event.mealType)}
           </h4>
+          {event.title && (
+            <p className="text-sm font-semibold text-white mt-1 truncate">
+              {event.title}
+            </p>
+          )}
+        </div>
           
           <div className="flex items-center gap-2 mt-1">
             <span className="text-sm font-semibold text-white">
@@ -150,7 +157,7 @@ function RestCard({ event, onClick }: { event: RestEvent; onClick: () => void })
         {/* Content */}
         <div className="flex-1">
           <h4 className="text-sm font-medium text-slate-400">
-            {event.title}
+            {event.title || 'Día de descanso'}
           </h4>
         </div>
       </div>
@@ -225,9 +232,15 @@ function getMealIcon(type: string) {
   const iconClass = "w-5 h-5";
   
   switch (type) {
-    case 'meal':
+    case 'breakfast':
+      return <Coffee className={iconClass} />;
+    case 'lunch':
+      return <Utensils className={iconClass} />;
+    case 'dinner':
       return <Utensils className={iconClass} />;
     case 'snack':
+    case 'snack_1':
+    case 'snack_2':
       return <Cookie className={iconClass} />;
     case 'pre_workout':
       return <Zap className={iconClass} />;
@@ -248,10 +261,30 @@ function getMealColor(type: string) {
 
 function getMealTypeLabel(type: string): string {
   const labels: Record<string, string> = {
-    meal: 'Comida',
-    snack: 'Snack',
-    pre_workout: 'Pre entreno',
-    post_workout: 'Post entreno',
+    'breakfast': 'Desayuno',
+    'lunch': 'Almuerzo',
+    'dinner': 'Cena',
+    'snack': 'Snack',
+    'snack_1': 'Snack',
+    'snack_2': 'Snack',
+    'pre_workout': 'Pre-entreno',
+    'post_workout': 'Post-entreno',
   };
   return labels[type] || type;
+}
+
+function translateWorkoutType(type: string): string {
+  const translations: Record<string, string> = {
+    'strength': 'Fuerza',
+    'cardio': 'Cardio',
+    'running': 'Running',
+    'cycling': 'Ciclismo',
+    'swimming': 'Natación',
+    'hiit': 'HIIT',
+    'yoga': 'Yoga',
+    'stretching': 'Estiramientos',
+    'rest': 'Descanso',
+    'active_recovery': 'Recuperación activa',
+  };
+  return translations[type] || type;
 }

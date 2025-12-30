@@ -26,7 +26,7 @@ export default function DayColumn({
 
   return (
     <div className={`
-      flex-1 min-w-[200px] 
+      flex-1 min-w-0
       border-r border-slate-800 last:border-r-0
       ${isCurrentDay ? 'bg-emerald-950/10' : ''}
     `}>

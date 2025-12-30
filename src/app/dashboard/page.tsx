@@ -272,28 +272,36 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Sidebar con status de semanas */}
-        <aside className="w-80 border-l border-slate-800 bg-slate-900/50 p-4 overflow-y-auto hidden lg:block">
-          <div className="space-y-6">
-            <h3 className="text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">
-              Estado de Semanas
-            </h3>
-            <div className="space-y-2">
-              {planStatus.weeks.map((week) => (
-                <WeekStatusIndicator 
-                  key={week.weekNumber}
-                  weekNumber={week.weekNumber}
-                  status={week.status}
-                  error={week.error}
-                />
-              ))}
-            </div>
-            
-            <div className="pt-6 border-t border-slate-800">
-              <h3 className="text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">Resumen</h3>
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Generadas</span>
-                <span className="text-emerald-400 font-bold">{planStatus.generatedWeeks}</span>
+        {/* Sidebar debajo del calendario */}
+        <aside className="border-t border-slate-800 bg-slate-900/50 p-4 max-h-64 overflow-y-auto">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Columna 1: Estado de Semanas */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                  Estado de Semanas
+                </h3>
+                <div className="space-y-1">
+                  {planStatus.weeks.map((week) => (
+                    <WeekStatusIndicator 
+                      key={week.weekNumber}
+                      weekNumber={week.weekNumber}
+                      status={week.status}
+                      error={week.error}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Columna 2: Resumen */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                  Resumen
+                </h3>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-400">Generadas</span>
+                  <span className="text-emerald-400 font-bold">{planStatus.generatedWeeks}</span>
+                </div>
               </div>
             </div>
           </div>

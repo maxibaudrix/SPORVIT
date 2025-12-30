@@ -300,6 +300,7 @@ model Meal {
 
   date     DateTime
   mealType String // breakfast, lunch, dinner, snack
+  name     String? 
 
   // Totals
   totalCalories Int
