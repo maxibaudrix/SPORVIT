@@ -77,6 +77,15 @@ export function formatDateRange(start: Date, end: Date): string {
   return `${formatDateShort(start)} - ${formatDateShort(end)}`;
 }
 
+export function formatDateLong(date: Date): string {
+  return date.toLocaleDateString('es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+
 /**
  * Get day name in Spanish
  */

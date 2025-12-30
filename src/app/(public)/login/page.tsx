@@ -4,13 +4,18 @@
 import React, { useState } from 'react';
 import {
     Mail, Lock, Eye, EyeOff, Dumbbell, AlertCircle, 
-    Loader, ArrowRight, Chrome
+    Loader, ArrowRight, Chrome, FileText
 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const SporvitLogin = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    
+    // 🆕 Capturar el parámetro plan de la URL
+    const planSlug = searchParams.get('plan');
+    
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -46,9 +51,13 @@ const SporvitLogin = () => {
                 return;
             }
 
-            // Login exitoso - redirigir al dashboard
-            router.push('/dashboard');
-            } catch (err) {
+            // 🆕 Login exitoso - redirigir con o sin plan
+            if (planSlug) {
+                router.push(`/dashboard?loadPlan=${planSlug}`);
+            } else {
+                router.push('/dashboard');
+            }
+        } catch (err) {
             setError('Error al iniciar sesión. Intenta de nuevo.');
             setIsLoading(false);
         }
@@ -59,8 +68,13 @@ const SporvitLogin = () => {
         setError('');
         
         try {
+            // 🆕 Si hay plan, pasarlo en el callbackUrl
+            const callbackUrl = planSlug 
+                ? `/dashboard?loadPlan=${planSlug}`
+                : '/dashboard';
+            
             await signIn('google', {
-                callbackUrl: '/dashboard',
+                callbackUrl,
             });
         } catch (err) {
             setError('Error al iniciar sesión con Google');
@@ -85,6 +99,23 @@ const SporvitLogin = () => {
                     <h1 className="text-3xl font-bold mb-2">Bienvenido de nuevo</h1>
                     <p className="text-slate-400">Inicia sesión para continuar tu progreso</p>
                 </div>
+
+                {/* 🆕 Banner de plan seleccionado */}
+                {planSlug && (
+                    <div className="mb-6 p-4 bg-gradient-to-br from-emerald-900/30 to-teal-900/30 border border-emerald-500/30 rounded-xl animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <FileText className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <div>
+                                <h3 className="text-white font-semibold mb-1">Programa seleccionado</h3>
+                                <p className="text-sm text-slate-300">
+                                    Inicia sesión para cargar tu programa de entrenamiento en el calendario
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Main Card */}
                 <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 shadow-2xl">
@@ -212,7 +243,10 @@ const SporvitLogin = () => {
                 <div className="text-center mt-6">
                     <p className="text-slate-400">
                         ¿No tienes cuenta?{' '}
-                        <a href="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+                        <a 
+                            href={planSlug ? `/register?plan=${planSlug}` : '/register'} 
+                            className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
+                        >
                             Regístrate gratis
                         </a>
                     </p>

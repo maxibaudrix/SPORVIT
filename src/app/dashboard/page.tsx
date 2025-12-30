@@ -1,20 +1,33 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
 import { usePlanGenerationStatus } from '@/hooks/usePlanGenerationStatus';
 import { DayEvent } from '@/types/calendar';
 import { getWeekStart } from '@/lib/utils/calendar';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle2, X } from 'lucide-react';
+import { getProgramBySlug, type ProgramaPlan } from '@/lib/data/trainingPlans';
 
 import WeeklyCalendar from '@/components/ui/layout/dashboard/calendar/WeeklyCalendar';
+import DailyDetailPanel from '@/components/ui/layout/dashboard/DailyDetailPanel';
 import { WeekStatusIndicator } from '@/components/dashboard/WeekStatusIndicator';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const [selectedEvent, setSelectedEvent] = useState<DayEvent | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDayEvents, setSelectedDayEvents] = useState<DayEvent[]>([]);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+  // 🆕 Estados para carga de plan desde URL
+  const [loadingPlan, setLoadingPlan] = useState(false);
+  const [loadedProgram, setLoadedProgram] = useState<ProgramaPlan | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // 1. Memorizar la fecha de inicio de la semana actual
   const currentWeekStart = useMemo(() => {
@@ -39,26 +52,116 @@ export default function DashboardPage() {
     userId: session?.user?.id 
   });
 
-  // Handlers
+  // 🆕 4. Efecto para cargar plan desde URL (?loadPlan=slug)
+  useEffect(() => {
+    const planSlug = searchParams.get('loadPlan');
+    
+    if (planSlug && !loadingPlan && !loadedProgram && session?.user?.id) {
+      setLoadingPlan(true);
+      
+      const loadPlan = async () => {
+        try {
+          // Obtener el programa por slug
+          const program = getProgramBySlug(planSlug);
+          
+          if (program) {
+            setLoadedProgram(program);
+            
+            // 🔥 Guardar en base de datos
+            const response = await fetch('/api/user/load-plan', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                userId: session.user.id,
+                programSlug: planSlug,
+                programData: program 
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error('Error guardando plan');
+            }
+
+            const result = await response.json();
+            console.log('✅ Plan guardado en DB:', result);
+            
+            // Limpiar el query param después de cargar
+            router.replace('/dashboard', { scroll: false });
+          } else {
+            console.error('❌ Programa no encontrado:', planSlug);
+            router.replace('/dashboard', { scroll: false });
+          }
+        } catch (error) {
+          console.error('❌ Error cargando programa:', error);
+          router.replace('/dashboard', { scroll: false });
+        } finally {
+          setLoadingPlan(false);
+        }
+      };
+
+      loadPlan();
+    }
+  }, [searchParams, router, loadingPlan, loadedProgram, session?.user?.id]);
+
+  // 🆕 5. Mostrar mensaje de éxito cuando se carga un plan
+  useEffect(() => {
+    if (loadedProgram && !loadingPlan) {
+      setShowSuccessMessage(true);
+      
+      // Auto-ocultar después de 5 segundos
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [loadedProgram, loadingPlan]);
+
+  // Handlers para DailyDetailPanel
   const handleEventClick = (event: DayEvent) => {
     setSelectedEvent(event);
     setSelectedDate(event.date);
+    // TODO: Fetch all events for this day
+    setSelectedDayEvents([event]);
+    setIsPanelOpen(true);
   };
 
   const handleAddEvent = (date: Date) => {
     setSelectedEvent(null);
     setSelectedDate(date);
+    // TODO: Fetch all events for this day
+    setSelectedDayEvents([]);
+    setIsPanelOpen(true);
+  };
+
+  // Navigate to previous/next day
+  const handlePreviousDay = () => {
+    if (!selectedDate) return;
+    const prevDay = new Date(selectedDate);
+    prevDay.setDate(prevDay.getDate() - 1);
+    setSelectedDate(prevDay);
+    // TODO: Fetch events for new date
+  };
+
+  const handleNextDay = () => {
+    if (!selectedDate) return;
+    const nextDay = new Date(selectedDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    setSelectedDate(nextDay);
+    // TODO: Fetch events for new date
   };
 
   // --- RENDERIZADO CONDICIONAL ---
 
-  // Estado de carga inicial
-  if (statusLoading || !session?.user?.id) {
+  // Estado de carga inicial o cargando plan
+  if (statusLoading || !session?.user?.id || loadingPlan) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
         <div className="text-center">
           <Loader2 className="animate-spin h-12 w-12 text-emerald-500 mx-auto mb-4" />
-          <p className="text-slate-400">Cargando tu perfil...</p>
+          <p className="text-slate-400">
+            {loadingPlan ? 'Cargando tu programa de entrenamiento...' : 'Cargando tu perfil...'}
+          </p>
         </div>
       </div>
     );
@@ -96,7 +199,41 @@ export default function DashboardPage() {
 
   // --- CONTENIDO PRINCIPAL ---
   return (
-    <div className="h-full flex flex-col bg-slate-950 min-h-screen">
+    <div className="h-full flex flex-col bg-slate-950 min-h-screen relative">
+      
+      {/* 🆕 Success Toast - Esquina superior derecha */}
+      {showSuccessMessage && loadedProgram && (
+        <div className="fixed top-24 right-6 z-50 animate-in slide-in-from-right-4 fade-in duration-300">
+          <div className="bg-gradient-to-br from-emerald-900/95 to-teal-900/95 backdrop-blur-xl border border-emerald-500/50 rounded-xl p-4 shadow-2xl shadow-emerald-500/20 max-w-sm">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-start justify-between mb-1">
+                  <h4 className="font-bold text-white">¡Programa cargado!</h4>
+                  <button
+                    onClick={() => setShowSuccessMessage(false)}
+                    className="text-slate-400 hover:text-white transition-colors"
+                    aria-label="Cerrar"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  {loadedProgram.meta.title} está listo en tu calendario.
+                </p>
+                <div className="flex items-center gap-3 mt-2 text-xs text-emerald-400">
+                  <span>📅 {loadedProgram.metadata.duracion_total_semanas} semanas</span>
+                  <span>•</span>
+                  <span>💪 {loadedProgram.stats.totalEjercicios} ejercicios</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Banner de generación en progreso */}
       {!planStatus.isComplete && (
         <div className="bg-blue-900/20 border-b border-blue-500/30 px-6 py-4">
@@ -129,9 +266,9 @@ export default function DashboardPage() {
         {/* Calendario principal */}
         <div className="flex-1 overflow-y-auto">
           <WeeklyCalendar 
-              userId={session.user.id} 
-              onEventClick={handleEventClick} 
-              onAddEvent={handleAddEvent} 
+            userId={session.user.id} 
+            onEventClick={handleEventClick} 
+            onAddEvent={handleAddEvent} 
           />
         </div>
 
@@ -162,6 +299,18 @@ export default function DashboardPage() {
           </div>
         </aside>
       </div>
+
+      {/* Daily Detail Panel */}
+      {selectedDate && (
+        <DailyDetailPanel
+          date={selectedDate}
+          events={selectedDayEvents}
+          isOpen={isPanelOpen}
+          onClose={() => setIsPanelOpen(false)}
+          onPreviousDay={handlePreviousDay}
+          onNextDay={handleNextDay}
+        />
+      )}
     </div>
   );
 }

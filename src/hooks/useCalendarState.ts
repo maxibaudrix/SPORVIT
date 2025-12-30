@@ -2,7 +2,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { getCurrentWeekInfo, getCurrentWeekDates } from '@/lib/calendar';
+import { getCurrentWeekInfo, getWeekInfoForDate, getWeekDays } from '@/lib/utils/calendar';
 
 interface CalendarState {
   currentWeek: number;
@@ -25,7 +25,7 @@ interface CalendarState {
 export const useCalendarState = create<CalendarState>((set, get) => {
   // 🚨 HARDCODED TEMPORALMENTE - Fecha del plan generado
   const planStartDate = new Date('2025-12-29');
-  const initialWeekInfo = getCurrentWeekInfo(planStartDate);
+  const initialWeekInfo = getWeekInfoForDate(planStartDate);
   
   console.log('🚨 [CalendarState] Inicializado con fecha hardcodeada:', {
     startDate: '2025-12-29',
@@ -83,11 +83,12 @@ export const useCalendarState = create<CalendarState>((set, get) => {
 
     goToToday: () => {
       const now = getCurrentWeekInfo();
+      const today = new Date();
       set({
         currentWeek: now.weekNumber,
         currentYear: now.year,
-        currentMonth: now.month,
-        selectedDate: new Date(),
+        currentMonth: today.getMonth() + 1,  // ✅ Calcular desde Date
+        selectedDate: today,
       });
     },
 
@@ -113,7 +114,7 @@ export const useCalendarState = create<CalendarState>((set, get) => {
     },
 
     getWeekDates: () => {
-      return getCurrentWeekDates(get().getCurrentDate());
+      return getWeekDays(get().getCurrentDate());
     },
   };
 });
