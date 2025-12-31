@@ -1,4 +1,4 @@
-// app/dashboard/subscription/page.tsx
+// src/app/dashboard/subscription/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,314 +6,207 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
   Crown, Check, X, CreditCard, Calendar, FileText,
-  Loader2, Sparkles, Zap, TrendingUp
+  Loader2, Zap, Star, ShieldCheck
 } from 'lucide-react';
-
+import { AccountTabs } from '@/components/ui/layout/dashboard/AccountTabs';
 
 export default function SubscriptionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [billingHistory, setBillingHistory] = useState([]);
+  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'annual'
   const [currentPlan, setCurrentPlan] = useState('free');
-  const [billingCycle, setBillingCycle] = useState('monthly');
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
-    } else if (status === 'authenticated') {
-      loadSubscriptionData();
+    if (status === 'unauthenticated') router.push('/auth/signin');
+    else if (status === 'authenticated') {
+      // Simulación de carga de datos
+      setTimeout(() => setLoading(false), 800);
     }
   }, [status]);
 
-  const loadSubscriptionData = async () => {
-    try {
-      const res = await fetch('/api/user/subscription');
-      const data = await res.json();
-      setCurrentPlan(data.plan);
-      setBillingHistory(data.billingHistory || []);
-    } catch (error) {
-      console.error('Error loading subscription:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpgrade = async () => {
-    try {
-      const res = await fetch('/api/payments/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'premium', cycle: billingCycle })
-      });
-
-      const data = await res.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      alert('❌ Error al procesar el pago');
-    }
-  };
-
-  const handleCancelSubscription = async () => {
-    if (!confirm('¿Estás seguro de que quieres cancelar tu suscripción Premium?')) {
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/user/subscription/cancel', {
-        method: 'POST'
-      });
-
-      if (res.ok) {
-        alert('✅ Suscripción cancelada. Tu plan Premium estará activo hasta el final del período actual.');
-        loadSubscriptionData();
-      } else {
-        alert('❌ Error al cancelar suscripción');
-      }
-    } catch (error) {
-      console.error('Error canceling subscription:', error);
-      alert('❌ Error al cancelar suscripción');
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="h-[60vh] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
 
-  const pricingPlans = [
+  const plans = [
     {
-      name: 'Free',
+      name: 'Plan Free',
       price: 0,
-      cycle: 'Gratis para siempre',
-      description: 'Ideal para comenzar tu viaje fitness',
+      description: 'Lo esencial para empezar a entrenar.',
       features: [
-        'Plan de entrenamiento básico semanal',
-        'Plan nutricional simple',
-        'Tracking de progreso',
-        'Dashboard básico',
-        'Calculadoras fitness'
+        'Calendario de entrenamiento básico',
+        'Seguimiento de peso y medidas',
+        'Base de datos de ejercicios',
+        'Acceso a la comunidad'
       ],
-      limitations: [
-        'Generación AI de planes',
-        'Recetas avanzadas',
-        'Adaptación automática',
-        'Soporte prioritario',
-        'Exportar datos'
+      notIncluded: [
+        'IA Personal Coach',
+        'Planes nutricionales personalizados',
+        'Análisis avanzado de progreso',
+        'Sincronización con Apple/Google Health'
       ],
-      cta: currentPlan === 'free' ? 'Plan Actual' : 'Cambiar a Free',
-      current: currentPlan === 'free'
+      buttonText: currentPlan === 'free' ? 'Plan Actual' : 'Cambiar a Free',
+      highlight: false
     },
     {
-      name: 'Premium',
-      price: billingCycle === 'monthly' ? 12.99 : 119.99,
-      cycle: billingCycle === 'monthly' ? '/mes' : '/año',
-      description: 'Desbloquea todo el potencial de Sporvit',
-      badge: 'Más Popular',
+      name: 'Plan Premium',
+      price: billingCycle === 'monthly' ? 14.99 : 9.99,
+      description: 'Optimización total de tu físico con IA.',
       features: [
-        'Planes de entrenamiento completos con IA',
-        'Planes nutricionales avanzados',
-        'Adaptación automática semanal',
-        'Meal planner con recetas ilimitadas',
-        'IA Coach personal',
-        'Escáner de productos (próximamente)',
-        'Sincronización con wearables',
-        'Soporte prioritario',
-        'Exportar todos tus datos',
-        'Sin anuncios'
+        'Todo lo del Plan Free',
+        'IA Personal Coach 24/7',
+        'Macros y dietas personalizadas',
+        'Rutinas adaptativas dinámicas',
+        'Sincronización con Wearables',
+        'Soporte prioritario VIP'
       ],
-      limitations: [],
-      cta: currentPlan === 'premium' ? 'Plan Actual' : 'Upgrade a Premium',
-      current: currentPlan === 'premium',
+      notIncluded: [],
+      buttonText: currentPlan === 'premium' ? 'Plan Actual' : 'Pasar a Premium',
       highlight: true
     }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-3">
-            Elige tu Plan
-          </h1>
-          <p className="text-slate-400 text-lg">
-            Comienza gratis o desbloquea todas las funciones con Premium
-          </p>
+    <div className="p-4 lg:p-8 animate-in fade-in duration-500">
+      <div className="max-w-4xl mx-auto">
+        <AccountTabs />
 
-          {/* Billing Cycle Toggle */}
-          <div className="mt-8 inline-flex items-center gap-3 p-1 bg-slate-900 border border-slate-800 rounded-xl">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-white mb-3">Tu Suscripción</h1>
+          <p className="text-slate-400">Gestiona tu plan y accede a funciones avanzadas</p>
+          
+          {/* Selector de Ciclo de Facturación */}
+          <div className="mt-8 inline-flex items-center p-1 bg-slate-900 border border-slate-800 rounded-2xl">
             <button
               onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-emerald-500 text-white'
-                  : 'text-slate-400 hover:text-white'
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                billingCycle === 'monthly' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               Mensual
             </button>
             <button
               onClick={() => setBillingCycle('annual')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
-                billingCycle === 'annual'
-                  ? 'bg-emerald-500 text-white'
-                  : 'text-slate-400 hover:text-white'
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                billingCycle === 'annual' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               Anual
-              <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-bold rounded-full">
-                -23%
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                -30%
               </span>
             </button>
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          {pricingPlans.map((plan) => (
-            <div
+        {/* Grid de Planes */}
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {plans.map((plan) => (
+            <div 
               key={plan.name}
-              className={`relative bg-slate-900 rounded-3xl p-8 border transition-all ${
-                plan.highlight
-                  ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-105'
-                  : 'border-slate-800'
+              className={`relative flex flex-col p-8 rounded-3xl border transition-all duration-300 ${
+                plan.highlight 
+                ? 'bg-slate-900 border-emerald-500 shadow-2xl shadow-emerald-500/10 scale-105 z-10' 
+                : 'bg-slate-900/50 border-slate-800 opacity-90'
               }`}
             >
-              {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm font-bold rounded-full">
-                  {plan.badge}
+              {plan.highlight && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
+                  Recomendado
                 </div>
               )}
 
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-slate-400 text-sm mb-4">{plan.description}</p>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold text-white">{plan.price === 0 ? 'Gratis' : `€${plan.price}`}</span>
-                  {plan.price > 0 && (
-                    <span className="text-slate-400">{plan.cycle}</span>
-                  )}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                <p className="text-slate-400 text-sm h-10">{plan.description}</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-5xl font-black text-white">€{plan.price}</span>
+                  {plan.price > 0 && <span className="text-slate-500 font-medium">/mes</span>}
                 </div>
                 {billingCycle === 'annual' && plan.price > 0 && (
-                  <p className="text-xs text-emerald-400 mt-2">
-                    Ahorra €36 al año
-                  </p>
+                  <p className="text-emerald-500 text-xs font-bold mt-1">Facturado anualmente (€119.88)</p>
                 )}
               </div>
 
-              <button
-                onClick={() => !plan.current && (plan.name === 'Premium' ? handleUpgrade() : null)}
-                disabled={plan.current}
-                className={`w-full py-3 rounded-xl font-bold mb-6 transition-all ${
-                  plan.current
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                    : plan.highlight
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/25'
-                    : 'bg-slate-800 text-white hover:bg-slate-700'
-                }`}
-              >
-                {plan.cta}
-              </button>
-
-              <div className="space-y-3 mb-6">
-                {plan.features.map((feature, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-slate-300">{feature}</span>
+              <div className="flex-1 space-y-4 mb-8">
+                {plan.features.map((feature) => (
+                  <div key={feature} className="flex items-start gap-3 text-sm">
+                    <div className="mt-1 p-0.5 bg-emerald-500/20 rounded-full">
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    </div>
+                    <span className="text-slate-300">{feature}</span>
+                  </div>
+                ))}
+                {plan.notIncluded.map((feature) => (
+                  <div key={feature} className="flex items-start gap-3 text-sm opacity-40">
+                    <div className="mt-1 p-0.5 bg-slate-800 rounded-full">
+                      <X className="w-3.5 h-3.5 text-slate-500" />
+                    </div>
+                    <span className="text-slate-500">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              {plan.limitations.length > 0 && (
-                <div className="space-y-2 pt-4 border-t border-slate-800">
-                  {plan.limitations.map((limit, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <X className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-slate-500">{limit}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <button
+                className={`w-full py-4 rounded-2xl font-bold transition-all active:scale-95 ${
+                  plan.highlight
+                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/20'
+                  : 'bg-slate-800 hover:bg-slate-700 text-white'
+                } ${currentPlan === plan.name.toLowerCase().replace('plan ', '') ? 'opacity-50 cursor-default' : ''}`}
+              >
+                {plan.buttonText}
+              </button>
             </div>
           ))}
         </div>
 
-        {/* Current Subscription Details */}
-        {currentPlan === 'premium' && (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Crown className="w-5 h-5 text-emerald-400" />
-              Tu Suscripción Premium
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-slate-950 rounded-xl">
-                <p className="text-sm text-slate-400 mb-1">Estado</p>
-                <p className="text-lg font-bold text-emerald-400">Activa</p>
-              </div>
-              <div className="p-4 bg-slate-950 rounded-xl">
-                <p className="text-sm text-slate-400 mb-1">Próximo cobro</p>
-                <p className="text-lg font-bold text-white">15 Ene 2025</p>
-              </div>
-              <div className="p-4 bg-slate-950 rounded-xl">
-                <p className="text-sm text-slate-400 mb-1">Monto</p>
-                <p className="text-lg font-bold text-white">€{billingCycle === 'monthly' ? '12.99' : '119.99'}</p>
-              </div>
+        {/* Sección de Seguridad/Garantía */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {[
+            { icon: ShieldCheck, title: 'Pago Seguro', desc: 'Encriptación SSL de 256 bits' },
+            { icon: Zap, title: 'Acceso Instantáneo', desc: 'Funciones Premium al momento' },
+            { icon: Star, title: 'Sin Compromiso', desc: 'Cancela online en cualquier momento' },
+          ].map((item, i) => (
+            <div key={i} className="flex flex-col items-center text-center p-4">
+              <item.icon className="w-6 h-6 text-emerald-500 mb-2" />
+              <h4 className="text-white text-sm font-bold">{item.title}</h4>
+              <p className="text-slate-500 text-xs">{item.desc}</p>
             </div>
-            <button
-              onClick={handleCancelSubscription}
-              className="text-sm text-red-400 hover:text-red-300 font-medium"
-            >
-              Cancelar suscripción
-            </button>
-          </div>
-        )}
+          ))}
+        </div>
 
-        {/* Billing History */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-slate-400" />
-            Historial de Pagos
-          </h2>
+        {/* Historial de Facturación Corto */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <FileText className="w-5 h-5 text-emerald-500" />
+              Últimas Facturas
+            </h3>
+            <button className="text-xs text-emerald-500 hover:underline">Ver historial completo</button>
+          </div>
           
-          {billingHistory.length > 0 ? (
-            <div className="space-y-3">
-              {billingHistory.map((bill) => (
-                <div key={bill.id} className="flex items-center justify-between p-4 bg-slate-950 rounded-xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 text-emerald-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">{bill.description}</p>
-                      <p className="text-xs text-slate-500">{bill.date}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-white">€{bill.amount}</p>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      bill.status === 'paid'
-                        ? 'bg-emerald-500/10 text-emerald-400'
-                        : 'bg-yellow-500/10 text-yellow-400'
-                    }`}>
-                      {bill.status === 'paid' ? 'Pagado' : 'Pendiente'}
-                    </span>
-                  </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800/50">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-slate-900 rounded-lg">
+                  <CreditCard className="w-4 h-4 text-slate-400" />
                 </div>
-              ))}
+                <div>
+                  <p className="text-sm font-bold text-white">Sporvit Premium - Mensual</p>
+                  <p className="text-xs text-slate-500">12 de Octubre, 2025</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold text-white">€14.99</p>
+                <span className="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full uppercase">Pagado</span>
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <Calendar className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-              <p className="text-slate-500">No tienes historial de pagos</p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

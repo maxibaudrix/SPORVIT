@@ -262,7 +262,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Calendario principal */}
         <div className="flex-1 overflow-y-auto">
           <WeeklyCalendar 

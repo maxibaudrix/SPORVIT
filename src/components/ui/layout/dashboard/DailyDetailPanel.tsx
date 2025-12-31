@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Calendar, Dumbbell, Utensils, FileText } from 'lucide-react';
 import { DayEvent } from '@/types/calendar';
 import { formatDateLong, getDayName } from '@/lib/utils/calendar';
+import WorkoutDetail, { EmptyWorkoutState } from '@/components/dashboard/WorkoutDetail';
 
 interface DailyDetailPanelProps {
   date: Date;
@@ -188,73 +189,99 @@ function TabButton({ icon, label, count, active, onClick }: TabButtonProps) {
 // WORKOUTS TAB
 // ============================================
 function WorkoutsTab({ workouts, date }: { workouts: DayEvent[]; date: Date }) {
+  const [isAdding, setIsAdding] = useState(false);
+
+  // Handlers
+  const handleUpdate = async (workoutId: string, updates: any) => {
+    try {
+      const response = await fetch(`/api/dashboard/workout/${workoutId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) throw new Error('Error updating workout');
+
+      // TODO: Refetch events
+      console.log('✅ Workout updated');
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  };
+
+  const handleComplete = async (workoutId: string, completed: boolean) => {
+    try {
+      const response = await fetch(`/api/dashboard/workout/${workoutId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed }),
+      });
+
+      if (!response.ok) throw new Error('Error toggling completion');
+
+      // TODO: Refetch events
+      console.log('✅ Workout completion toggled');
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  };
+
+  const handleDelete = async (workoutId: string) => {
+    try {
+      const response = await fetch(`/api/dashboard/workout/${workoutId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Error deleting workout');
+
+      // TODO: Refetch events
+      console.log('🗑️ Workout deleted');
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  };
+
+  const handleAddWorkout = () => {
+    setIsAdding(true);
+    // TODO: Show add workout modal
+    console.log('Adding workout for:', date);
+  };
+
   if (workouts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-        <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4">
-          <Dumbbell className="w-8 h-8 text-slate-600" />
-        </div>
-        <h3 className="text-lg font-semibold text-white mb-2">
-          Sin entrenamientos
-        </h3>
-        <p className="text-slate-400 mb-6">
-          No hay entrenamientos programados para este día
-        </p>
-        <button className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">
-          Añadir Entrenamiento
-        </button>
-      </div>
+      <EmptyWorkoutState onAddWorkout={handleAddWorkout} />
     );
   }
 
   return (
     <div className="p-6 space-y-4">
-      {workouts.map((workout) => (
-        <div
-          key={workout.id}
-          className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition-colors"
-        >
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <h3 className="text-lg font-bold text-white">
-                {workout.type === 'workout' ? workout.title : 'Entrenamiento'}
-              </h3>
-              <div className="flex items-center gap-3 mt-1 text-sm text-slate-400">
-                {workout.type === 'workout' && (
-                  <>
-                    <span>{workout.durationMinutes} min</span>
-                    <span>•</span>
-                    <span>{workout.estimatedCalories} kcal</span>
-                  </>
-                )}
-              </div>
-            </div>
-            
-            {workout.type === 'workout' && workout.completed && (
-              <div className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full">
-                <span className="text-xs font-bold text-emerald-400">Completado</span>
-              </div>
-            )}
-          </div>
+      {workouts.map((workout) => {
+        // Convertir DayEvent a WorkoutData
+        const workoutData = {
+          id: workout.id,
+          date: workout.date,
+          workoutType: workout.type === 'workout' ? workout.workoutType : 'rest',
+          title: workout.type === 'workout' ? workout.title : 'Descanso',
+          description: workout.type === 'workout' ? workout.description : undefined,
+          durationMinutes: workout.type === 'workout' ? workout.durationMinutes : 0,
+          estimatedCalories: workout.type === 'workout' ? workout.estimatedCalories : 0,
+          completed: workout.type === 'workout' ? workout.completed : false,
+          completedAt: workout.type === 'workout' ? workout.completedAt : null,
+        };
 
-          {workout.type === 'workout' && workout.description && (
-            <p className="text-slate-400 text-sm mb-4">
-              {workout.description}
-            </p>
-          )}
-
-          <div className="flex gap-2">
-            <button className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-sm">
-              Ver Detalles
-            </button>
-            {workout.type === 'workout' && !workout.completed && (
-              <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors text-sm">
-                Empezar
-              </button>
-            )}
-          </div>
-        </div>
-      ))}
+        return (
+          <WorkoutDetail
+            key={workout.id}
+            workout={workoutData}
+            onUpdate={handleUpdate}
+            onComplete={handleComplete}
+            onDelete={handleDelete}
+          />
+        );
+      })}
     </div>
   );
 }

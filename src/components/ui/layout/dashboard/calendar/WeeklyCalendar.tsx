@@ -27,13 +27,20 @@ export default function WeeklyCalendar({
     goToToday,
   } = useCalendarState();
 
-  const weekStartDate = getCurrentDate();
+  // 🚨 HARDCODED TEMPORALMENTE - Semana del 29 de diciembre 2025
+  const weekStartDate = new Date('2025-12-29T00:00:00');
+  console.log('🚨 [WeeklyCalendar] FECHA HARDCODEADA:', weekStartDate.toISOString());
 
   // Fetch weekly plan
   const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({
     weekStartDate,
     userId,
   });
+
+  // Refetch deshabilitado temporalmente (usando fecha hardcodeada)
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   if (isLoading) {
     return <LoadingState />;
@@ -58,8 +65,8 @@ export default function WeeklyCalendar({
       />
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1">
-        <div className="flex min-w-max">
+      <div className="flex-1 overflow-y-auto">
+        <div className="grid grid-cols-7 h-full">
           {weekPlan.days.map((dayPlan) => (
             <DayColumn
               key={dayPlan.date.toISOString()}

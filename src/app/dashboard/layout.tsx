@@ -1,43 +1,35 @@
-// app/dashboard/layout.tsx
+'use client';
 
-import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
+import { usePathname } from 'next/navigation';
 import AuthSessionProvider from '@/components/providers/SessionProvider';
-import HeaderBar from '@/components/ui/layout/dashboard/HeaderBar';
+import { HeaderBar } from '@/components/ui/layout/dashboard/HeaderBar';
 import { AppFooter } from '@/components/ui/layout/dashboard/AppFooter';
 import TopMetricsBar from '@/components/ui/layout/dashboard/TopMetricsBar';
 import Sidebar from '@/components/ui/layout/dashboard/Sidebar';
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const session = await auth();
-
-  if (!session) {
-    redirect('/auth/signin');
-  }
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAccountSection = pathname.startsWith('/dashboard/profile') || 
+                           pathname.startsWith('/dashboard/settings') || 
+                           pathname.startsWith('/dashboard/subscription');
 
   return (
     <AuthSessionProvider>
-      <div className="min-h-screen bg-slate-950">
-        {/* Header Bar */}
+      <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col">
         <HeaderBar />
 
-        {/* Top Metrics Bar - Desktop only */}
-        <div className="hidden lg:block sticky top-16 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800">
-          <TopMetricsBar />
-        </div>
+        {!isAccountSection && (
+          <div className="hidden lg:block sticky top-16 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800">
+            <TopMetricsBar />
+          </div>
+        )}
 
-        {/* Main Layout: Sidebar + Content */}
-        <div className="flex">
-          {/* Sidebar - Desktop only */}
-          <aside className="hidden lg:block w-64 border-r border-slate-800 min-h-[calc(100vh-64px)] sticky top-16">
+        <div className="flex flex-1">
+          <aside className="hidden lg:block w-64 border-r border-slate-800 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
             <Sidebar />
           </aside>
 
-          {/* Main Content */}
+          {/* QUITAMOS EL "max-w-5xl mx-auto" DE AQUÍ */}
           <main className="flex-1 min-h-[calc(100vh-64px)]">
             {children}
           </main>

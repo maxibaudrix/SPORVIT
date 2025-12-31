@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { 
   Search, Bell, ChevronDown, User, Settings, CreditCard, 
-  LogOut, Download, Trash2, Target, Crown, Dumbbell
+  LogOut, Crown
 } from 'lucide-react';
-import {Logo} from '@/components/ui/Logo';
+import { Logo } from '@/components/ui/Logo';
 
 // ============================================
 // SEARCH BAR COMPONENT
@@ -17,7 +17,7 @@ const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen && inputRef.current) {
@@ -27,7 +27,7 @@ const SearchBar = () => {
 
   // Keyboard shortcut: Cmd/Ctrl + K
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setSearchOpen(true);
@@ -99,7 +99,7 @@ const SearchBar = () => {
               </div>
             ) : results.length > 0 ? (
               <div className="py-2 max-h-96 overflow-y-auto">
-                {results.map((result, i) => (
+                {results.map((result: any, i: number) => (
                   <Link
                     key={i}
                     href={result.url}
@@ -137,7 +137,7 @@ const SearchBar = () => {
 // ============================================
 const NotificationsBell = () => {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const NotificationsBell = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const markAsRead = async (id) => {
+  const markAsRead = async (id: string) => {
     try {
       await fetch(`/api/notifications/${id}/read`, { method: 'POST' });
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -248,7 +248,6 @@ const UserMenu = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [submenu, setSubmenu] = useState(null);
   
   if (!session?.user) return null;
 
@@ -256,42 +255,69 @@ const UserMenu = () => {
     name: session.user.name || 'Usuario',
     email: session.user.email || '',
     avatar: session.user.image || null,
-    plan: session.user.plan || 'free' // Viene del onboarding guardado en DB
+    plan: (session.user as any).plan || 'free'
   };
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/' });
   };
 
-  const MenuItem = ({ icon: Icon, label, href, onClick, badge, danger = false, hasSubmenu = false }) => {
-    const Component = href ? Link : 'button';
-    const props = href ? { href, onClick: () => setOpen(false) } : { onClick };
+  const MenuItem = ({ 
+    icon: Icon, 
+    label, 
+    href, 
+    onClick, 
+    badge, 
+    danger = false
+  }: {
+    icon: any;
+    label: string;
+    href?: string;
+    onClick?: () => void;
+    badge?: string;
+    danger?: boolean;
+  }) => {
+    if (href) {
+      return (
+        <Link
+          href={href}
+          onClick={() => setOpen(false)}
+          className={`w-full px-4 py-2.5 flex items-center gap-3 transition-colors text-left ${
+            danger 
+              ? 'hover:bg-red-500/10 text-red-400' 
+              : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+          }`}
+        >
+          <Icon className="w-5 h-5" />
+          <span className="flex-1">{label}</span>
+          {badge && (
+            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded">
+              {badge}
+            </span>
+          )}
+        </Link>
+      );
+    }
 
     return (
-      <Component
-        {...props}
-        // Si no hay href, nos aseguramos de no pasarlo o pasar un string vacío si es Link
-        href={props.href ?? undefined} 
+      <button
+        onClick={onClick}
         className={`w-full px-4 py-2.5 flex items-center gap-3 transition-colors text-left ${
           danger 
             ? 'hover:bg-red-500/10 text-red-400' 
             : 'hover:bg-slate-800 text-slate-300 hover:text-white'
         }`}
       >
-        {/* contenido */}
-      </Component>
+        <Icon className="w-5 h-5" />
+        <span className="flex-1">{label}</span>
+        {badge && (
+          <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded">
+            {badge}
+          </span>
+        )}
+      </button>
     );
-    };
-
-  const SubMenuItem = ({ label, href }) => (
-    <Link
-      href={href}
-      onClick={() => setOpen(false)}
-      className="w-full px-10 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-left block"
-    >
-      {label}
-    </Link>
-  );
+  };
 
   return (
     <div className="relative">
@@ -315,7 +341,7 @@ const UserMenu = () => {
 
       {open && (
         <>
-          <div className="fixed inset-0 z-30" onClick={() => { setOpen(false); setSubmenu(null); }} />
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
           <div className="absolute top-full right-0 mt-2 w-72 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-40">
             
             {/* Header con info usuario */}
@@ -337,59 +363,33 @@ const UserMenu = () => {
 
             {/* Menu Items */}
             <div className="py-2">
-              {/* Mi Perfil */}
               <MenuItem 
                 icon={User}
                 label="Mi Perfil"
-                onClick={() => setSubmenu(submenu === 'mi perfil' ? null : 'mi perfil')}
-                hasSubmenu href={undefined} badge={undefined}              />
-              {submenu === 'mi perfil' && (
-                <div className="bg-slate-950/50 py-1">
-                  <SubMenuItem label="Datos personales" href="/dashboard/profile" />
-                  <SubMenuItem label="Foto de perfil" href="/dashboard/profile#photo" />
-                  <SubMenuItem label="Biometría" href="/dashboard/profile#biometrics" />
-                </div>
-              )}
+                href="/dashboard/profile"
+              />
 
-              {/* Configuración */}
               <MenuItem 
                 icon={Settings}
                 label="Configuración"
-                onClick={() => setSubmenu(submenu === 'configuración' ? null : 'configuración')}
-                hasSubmenu href={undefined} badge={undefined}              />
-              {submenu === 'configuración' && (
-                <div className="bg-slate-950/50 py-1">
-                  <SubMenuItem label="Objetivos" href="/dashboard/settings/goals" />
-                  <SubMenuItem label="Preferencias" href="/dashboard/settings/preferences" />
-                  <SubMenuItem label="Privacidad" href="/dashboard/settings/privacy" />
-                </div>
-              )}
+                href="/dashboard/settings"
+              />
 
-              {/* Suscripción */}
               <MenuItem 
                 icon={user.plan === 'premium' ? Crown : CreditCard}
                 label="Suscripción"
-                onClick={() => setSubmenu(submenu === 'suscripción' ? null : 'suscripción')}
-                badge={user.plan === 'premium' ? 'Premium' : null}
-                hasSubmenu href={undefined}              />
-              {submenu === 'suscripción' && (
-                <div className="bg-slate-950/50 py-1">
-                  <SubMenuItem label="Plan actual" href="/dashboard/subscription" />
-                  {user.plan === 'free' && (
-                    <SubMenuItem label="Upgrade a Premium" href="/dashboard/subscription/upgrade" />
-                  )}
-                  <SubMenuItem label="Historial de pagos" href="/dashboard/subscription/billing" />
-                </div>
-              )}
+                href="/dashboard/subscription"
+                badge={user.plan === 'premium' ? 'Premium' : undefined}
+              />
 
               <div className="my-2 border-t border-slate-800" />
 
-              {/* Cerrar Sesión */}
               <MenuItem 
                 icon={LogOut}
                 label="Cerrar Sesión"
                 onClick={handleSignOut}
-                danger href={undefined} badge={undefined}              />
+                danger
+              />
             </div>
           </div>
         </>
@@ -401,14 +401,14 @@ const UserMenu = () => {
 // ============================================
 // MAIN HEADER COMPONENT
 // ============================================
-export default function HeaderBar() {
+export function HeaderBar() {
   return (
     <header className="sticky top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
       <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         
         {/* Logo - Left */}
-        <Link href="/dasboard" className="flex-shrink-0">
-          <Logo size="sm" />
+        <Link href="/dashboard" className="flex-shrink-0">
+          <Logo variant="symbol" className="w-8 h-8" />
         </Link>
 
         {/* Search Bar - Center (hidden on mobile) */}
