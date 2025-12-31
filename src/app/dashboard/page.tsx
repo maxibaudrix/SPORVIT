@@ -12,7 +12,8 @@ import { getProgramBySlug, type ProgramaPlan } from '@/lib/data/trainingPlans';
 
 import WeeklyCalendar from '@/components/ui/layout/dashboard/calendar/WeeklyCalendar';
 import DailyDetailPanel from '@/components/ui/layout/dashboard/DailyDetailPanel';
-import { WeekStatusIndicator } from '@/components/dashboard/WeekStatusIndicator';
+import { PlanGenerationToast } from '@/components/dashboard/PlanGenerationToast';
+import { WeekStatusDrawer } from '@/components/dashboard/WeekStatusDrawer';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -24,7 +25,7 @@ export default function DashboardPage() {
   const [selectedDayEvents, setSelectedDayEvents] = useState<DayEvent[]>([]);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-  // 🆕 Estados para carga de plan desde URL
+  // Estados para carga de plan desde URL
   const [loadingPlan, setLoadingPlan] = useState(false);
   const [loadedProgram, setLoadedProgram] = useState<ProgramaPlan | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -52,7 +53,7 @@ export default function DashboardPage() {
     userId: session?.user?.id 
   });
 
-  // 🆕 4. Efecto para cargar plan desde URL (?loadPlan=slug)
+  // 4. Efecto para cargar plan desde URL (?loadPlan=slug)
   useEffect(() => {
     const planSlug = searchParams.get('loadPlan');
     
@@ -61,13 +62,11 @@ export default function DashboardPage() {
       
       const loadPlan = async () => {
         try {
-          // Obtener el programa por slug
           const program = getProgramBySlug(planSlug);
           
           if (program) {
             setLoadedProgram(program);
             
-            // 🔥 Guardar en base de datos
             const response = await fetch('/api/user/load-plan', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -85,7 +84,6 @@ export default function DashboardPage() {
             const result = await response.json();
             console.log('✅ Plan guardado en DB:', result);
             
-            // Limpiar el query param después de cargar
             router.replace('/dashboard', { scroll: false });
           } else {
             console.error('❌ Programa no encontrado:', planSlug);
@@ -103,12 +101,11 @@ export default function DashboardPage() {
     }
   }, [searchParams, router, loadingPlan, loadedProgram, session?.user?.id]);
 
-  // 🆕 5. Mostrar mensaje de éxito cuando se carga un plan
+  // 5. Mostrar mensaje de éxito cuando se carga un plan
   useEffect(() => {
     if (loadedProgram && !loadingPlan) {
       setShowSuccessMessage(true);
       
-      // Auto-ocultar después de 5 segundos
       const timer = setTimeout(() => {
         setShowSuccessMessage(false);
       }, 5000);
@@ -121,7 +118,6 @@ export default function DashboardPage() {
   const handleEventClick = (event: DayEvent) => {
     setSelectedEvent(event);
     setSelectedDate(event.date);
-    // TODO: Fetch all events for this day
     setSelectedDayEvents([event]);
     setIsPanelOpen(true);
   };
@@ -129,18 +125,15 @@ export default function DashboardPage() {
   const handleAddEvent = (date: Date) => {
     setSelectedEvent(null);
     setSelectedDate(date);
-    // TODO: Fetch all events for this day
     setSelectedDayEvents([]);
     setIsPanelOpen(true);
   };
 
-  // Navigate to previous/next day
   const handlePreviousDay = () => {
     if (!selectedDate) return;
     const prevDay = new Date(selectedDate);
     prevDay.setDate(prevDay.getDate() - 1);
     setSelectedDate(prevDay);
-    // TODO: Fetch events for new date
   };
 
   const handleNextDay = () => {
@@ -148,12 +141,10 @@ export default function DashboardPage() {
     const nextDay = new Date(selectedDate);
     nextDay.setDate(nextDay.getDate() + 1);
     setSelectedDate(nextDay);
-    // TODO: Fetch events for new date
   };
 
   // --- RENDERIZADO CONDICIONAL ---
 
-  // Estado de carga inicial o cargando plan
   if (statusLoading || !session?.user?.id || loadingPlan) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -167,7 +158,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Estado de error
   if (statusError) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -182,7 +172,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Si no hay plan activo
   if (!planStatus) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -201,7 +190,7 @@ export default function DashboardPage() {
   return (
     <div className="h-full flex flex-col bg-slate-950 min-h-screen relative">
       
-      {/* 🆕 Success Toast - Esquina superior derecha */}
+      {/* Success Toast - Esquina superior derecha */}
       {showSuccessMessage && loadedProgram && (
         <div className="fixed top-24 right-6 z-50 animate-in slide-in-from-right-4 fade-in duration-300">
           <div className="bg-gradient-to-br from-emerald-900/95 to-teal-900/95 backdrop-blur-xl border border-emerald-500/50 rounded-xl p-4 shadow-2xl shadow-emerald-500/20 max-w-sm">
@@ -234,78 +223,29 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Banner de generación en progreso */}
-      {!planStatus.isComplete && (
-        <div className="bg-blue-900/20 border-b border-blue-500/30 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
-              <div>
-                <p className="text-white font-medium">Generando tu plan completo...</p>
-                <p className="text-slate-400 text-sm">
-                  {planStatus.generatedWeeks} de {planStatus.totalWeeks} semanas completadas
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-blue-400">
-                {Math.round((planStatus.generatedWeeks / planStatus.totalWeeks) * 100)}%
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-emerald-500 h-full transition-all duration-500"
-              style={{ width: `${(planStatus.generatedWeeks / planStatus.totalWeeks) * 100}%` }}
-            />
-          </div>
-        </div>
+      {/* Plan Generation Toast - Esquina inferior derecha */}
+      {planStatus && !planStatus.isComplete && (
+        <PlanGenerationToast
+          generatedWeeks={planStatus.generatedWeeks}
+          totalWeeks={planStatus.totalWeeks}
+        />
       )}
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Calendario principal */}
-        <div className="flex-1 overflow-y-auto">
-          <WeeklyCalendar 
-            userId={session.user.id} 
-            onEventClick={handleEventClick} 
-            onAddEvent={handleAddEvent} 
-          />
-        </div>
+      {/* Week Status Drawer - Esquina inferior izquierda */}
+      {planStatus && (
+        <WeekStatusDrawer
+          weeks={planStatus.weeks}
+          generatedWeeks={planStatus.generatedWeeks}
+        />
+      )}
 
-        {/* Sidebar debajo del calendario */}
-        <aside className="border-t border-slate-800 bg-slate-900/50 p-4 max-h-64 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Columna 1: Estado de Semanas */}
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
-                  Estado de Semanas
-                </h3>
-                <div className="space-y-1">
-                  {planStatus.weeks.map((week) => (
-                    <WeekStatusIndicator 
-                      key={week.weekNumber}
-                      weekNumber={week.weekNumber}
-                      status={week.status}
-                      error={week.error}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Columna 2: Resumen */}
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
-                  Resumen
-                </h3>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400">Generadas</span>
-                  <span className="text-emerald-400 font-bold">{planStatus.generatedWeeks}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
+      {/* Calendario principal - FULL WIDTH */}
+      <div className="flex-1 overflow-y-auto">
+        <WeeklyCalendar 
+          userId={session.user.id} 
+          onEventClick={handleEventClick} 
+          onAddEvent={handleAddEvent} 
+        />
       </div>
 
       {/* Daily Detail Panel */}

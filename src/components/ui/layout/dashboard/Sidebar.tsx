@@ -2,56 +2,73 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, Timer } from 'lucide-react';
+import { Calendar, Timer, ChevronDown, ChevronUp } from 'lucide-react';
 import MonthlyCalendarWidget from './MonthlyCalendarWidget';
 import TimerWidget from './TimerWidget';
 
 export default function Sidebar() {
+  const [showCalendar, setShowCalendar] = useState(true);
   const [showTimer, setShowTimer] = useState(false);
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Calendario Mensual */}
-      <div className="p-4 border-b border-slate-800">
-        <div className="flex items-center gap-2 mb-3">
-          <Calendar className="w-4 h-4 text-emerald-400" />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Vista Mensual
-          </h3>
-        </div>
-        <MonthlyCalendarWidget />
-      </div>
-
-      {/* Timer Section */}
-      <div className="p-4">
+    <div className="h-full flex flex-col bg-slate-950/50">
+      {/* Calendario Mensual - Colapsable */}
+      <div className="border-b border-slate-800/50">
         <button
-          onClick={() => setShowTimer(!showTimer)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-slate-900 hover:bg-slate-800 rounded-xl border border-slate-800 transition-colors group"
+          onClick={() => setShowCalendar(!showCalendar)}
+          className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-900/50 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <Timer className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm font-medium text-white">Timer</span>
+            <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+              Mes
+            </h3>
           </div>
-          <span className="text-xs text-slate-500 group-hover:text-slate-400">
-            {showTimer ? 'Ocultar' : 'Mostrar'}
-          </span>
+          {showCalendar ? (
+            <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
+          ) : (
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+          )}
+        </button>
+        {showCalendar && (
+          <div className="px-2 pb-3">
+            <MonthlyCalendarWidget />
+          </div>
+        )}
+      </div>
+
+      {/* Timer Section - Colapsable */}
+      <div className="border-b border-slate-800/50">
+        <button
+          onClick={() => setShowTimer(!showTimer)}
+          className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-900/50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Timer className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-medium text-white">Timer</span>
+          </div>
+          {showTimer ? (
+            <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
+          ) : (
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+          )}
         </button>
 
         {showTimer && (
-          <div className="mt-3">
+          <div className="px-2 pb-3">
             <TimerWidget />
           </div>
         )}
       </div>
 
-      {/* Info Section (opcional) */}
-      <div className="mt-auto p-4 border-t border-slate-800">
-        <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
-          <p className="text-xs text-emerald-400 font-medium mb-1">
-            💡 Tip del día
+      {/* Info Section Compacta */}
+      <div className="mt-auto p-3">
+        <div className="p-2 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+          <p className="text-[10px] text-emerald-400 font-medium mb-1">
+            💡 Tip
           </p>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Mantén consistencia en tus horarios de comida para mejores resultados.
+          <p className="text-[9px] text-slate-400 leading-tight">
+            Mantén horarios consistentes
           </p>
         </div>
       </div>

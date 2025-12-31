@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
-  Crown, Check, X, CreditCard, Calendar, FileText,
+  Crown, Check, X, CreditCard, FileText,
   Loader2, Zap, Star, ShieldCheck
 } from 'lucide-react';
 import { AccountTabs } from '@/components/ui/layout/dashboard/AccountTabs';
@@ -13,17 +13,27 @@ import { AccountTabs } from '@/components/ui/layout/dashboard/AccountTabs';
 export default function SubscriptionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  
+  // ESTADOS
   const [loading, setLoading] = useState(true);
-  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'annual'
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [currentPlan, setCurrentPlan] = useState('free');
+  
+  // Estado para el historial de facturas (Vacío por defecto)
+  const [billingHistory, setBillingHistory] = useState<any[]>([]);
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/auth/signin');
-    else if (status === 'authenticated') {
-      // Simulación de carga de datos
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    } else if (status === 'authenticated') {
+      // Aquí harías tu fetch real a la API:
+      // const res = await fetch('/api/user/subscription');
+      // const data = await res.json();
+      // setBillingHistory(data.invoices); 
+      
       setTimeout(() => setLoading(false), 800);
     }
-  }, [status]);
+  }, [status, router]);
 
   if (loading) {
     return (
@@ -47,8 +57,7 @@ export default function SubscriptionPage() {
       notIncluded: [
         'IA Personal Coach',
         'Planes nutricionales personalizados',
-        'Análisis avanzado de progreso',
-        'Sincronización con Apple/Google Health'
+        'Análisis avanzado de progreso'
       ],
       buttonText: currentPlan === 'free' ? 'Plan Actual' : 'Cambiar a Free',
       highlight: false
@@ -62,7 +71,6 @@ export default function SubscriptionPage() {
         'IA Personal Coach 24/7',
         'Macros y dietas personalizadas',
         'Rutinas adaptativas dinámicas',
-        'Sincronización con Wearables',
         'Soporte prioritario VIP'
       ],
       notIncluded: [],
@@ -105,7 +113,7 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Grid de Planes */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
           {plans.map((plan) => (
             <div 
               key={plan.name}
@@ -128,36 +136,30 @@ export default function SubscriptionPage() {
                   <span className="text-5xl font-black text-white">€{plan.price}</span>
                   {plan.price > 0 && <span className="text-slate-500 font-medium">/mes</span>}
                 </div>
-                {billingCycle === 'annual' && plan.price > 0 && (
-                  <p className="text-emerald-500 text-xs font-bold mt-1">Facturado anualmente (€119.88)</p>
-                )}
               </div>
 
               <div className="flex-1 space-y-4 mb-8">
                 {plan.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3 text-sm">
-                    <div className="mt-1 p-0.5 bg-emerald-500/20 rounded-full">
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
-                    </div>
+                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                     <span className="text-slate-300">{feature}</span>
                   </div>
                 ))}
                 {plan.notIncluded.map((feature) => (
                   <div key={feature} className="flex items-start gap-3 text-sm opacity-40">
-                    <div className="mt-1 p-0.5 bg-slate-800 rounded-full">
-                      <X className="w-3.5 h-3.5 text-slate-500" />
-                    </div>
+                    <X className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
                     <span className="text-slate-500">{feature}</span>
                   </div>
                 ))}
               </div>
 
               <button
-                className={`w-full py-4 rounded-2xl font-bold transition-all active:scale-95 ${
+                disabled={currentPlan === plan.name.toLowerCase().replace('plan ', '')}
+                className={`w-full py-4 rounded-2xl font-bold transition-all active:scale-95 disabled:opacity-50 disabled:cursor-default ${
                   plan.highlight
                   ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/20'
                   : 'bg-slate-800 hover:bg-slate-700 text-white'
-                } ${currentPlan === plan.name.toLowerCase().replace('plan ', '') ? 'opacity-50 cursor-default' : ''}`}
+                }`}
               >
                 {plan.buttonText}
               </button>
@@ -165,14 +167,14 @@ export default function SubscriptionPage() {
           ))}
         </div>
 
-        {/* Sección de Seguridad/Garantía */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        {/* Garantías de confianza */}
+        <div className="grid md:grid-cols-3 gap-6 mb-16 border-t border-slate-800/50 pt-12">
           {[
-            { icon: ShieldCheck, title: 'Pago Seguro', desc: 'Encriptación SSL de 256 bits' },
-            { icon: Zap, title: 'Acceso Instantáneo', desc: 'Funciones Premium al momento' },
-            { icon: Star, title: 'Sin Compromiso', desc: 'Cancela online en cualquier momento' },
+            { icon: ShieldCheck, title: 'Pago Seguro', desc: 'Encriptación SSL' },
+            { icon: Zap, title: 'Activación Real', desc: 'Acceso inmediato' },
+            { icon: Star, title: 'Sin Ataduras', desc: 'Cancela cuando quieras' },
           ].map((item, i) => (
-            <div key={i} className="flex flex-col items-center text-center p-4">
+            <div key={i} className="flex flex-col items-center text-center">
               <item.icon className="w-6 h-6 text-emerald-500 mb-2" />
               <h4 className="text-white text-sm font-bold">{item.title}</h4>
               <p className="text-slate-500 text-xs">{item.desc}</p>
@@ -180,34 +182,37 @@ export default function SubscriptionPage() {
           ))}
         </div>
 
-        {/* Historial de Facturación Corto */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <FileText className="w-5 h-5 text-emerald-500" />
-              Últimas Facturas
-            </h3>
-            <button className="text-xs text-emerald-500 hover:underline">Ver historial completo</button>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800/50">
-              <div className="flex items-center gap-4">
-                <div className="p-2 bg-slate-900 rounded-lg">
-                  <CreditCard className="w-4 h-4 text-slate-400" />
+        {/* RENDERIZADO CONDICIONAL DE FACTURAS */}
+        {billingHistory.length > 0 && (
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 animate-in slide-in-from-bottom-5 duration-700">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <FileText className="w-5 h-5 text-emerald-500" />
+                Historial de Facturación
+              </h3>
+            </div>
+            
+            <div className="space-y-3">
+              {billingHistory.map((invoice, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800/50 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-slate-900 rounded-lg">
+                      <CreditCard className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">{invoice.planName}</p>
+                      <p className="text-xs text-slate-500">{invoice.date}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-white">€{invoice.amount}</p>
+                    <span className="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">Pagado</span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-white">Sporvit Premium - Mensual</p>
-                  <p className="text-xs text-slate-500">12 de Octubre, 2025</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-white">€14.99</p>
-                <span className="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full uppercase">Pagado</span>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
