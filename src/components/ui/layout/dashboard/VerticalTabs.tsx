@@ -38,7 +38,7 @@ export default function VerticalTabs() {
   const { activeTab, toggleTab } = useSidebarStore();
 
   return (
-    <div className="fixed left-0 top-16 h-[calc(100vh-64px)] w-12 bg-slate-900 border-r border-slate-800 flex flex-col z-30">
+    <div className="fixed left-0 top-[112px] h-[calc(100vh-112px)] w-12 bg-slate-900 border-r border-slate-800 flex flex-col z-30">
       {/* Tabs */}
       <div className="flex-1 flex flex-col py-2">
         {TABS.map((tab) => {

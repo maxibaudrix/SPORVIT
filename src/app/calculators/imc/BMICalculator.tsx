@@ -6,16 +6,42 @@ import {
   Scale, Ruler, Activity, Zap, ShieldAlert, ArrowRight, Share2, Target, Heart
 } from 'lucide-react';
 
-export default function BMICalculator() {
+// ============================================
+// NUEVO: Añadir interfaz Props con compact
+// ============================================
+interface Props {
+  compact?: boolean;
+}
+
+// ============================================
+// NUEVO: Añadir parámetro { compact = false }
+// ============================================
+export default function BMICalculator({ compact = false }: Props) {
   const [formData, setFormData] = useState({ weight: '', height: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<any>(null);
+  
+  // ============================================
+  // ELIMINADO en modo compact: estados de copy/share
+  // Mantenidos para versión completa
+  // ============================================
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
   const [currentUrl, setCurrentUrl] = useState('');
 
-  useEffect(() => { setCurrentUrl(window.location.href); }, []);
+  // ============================================
+  // ELIMINADO en modo compact: tracking de URL
+  // Solo necesario para embed/share
+  // ============================================
+  useEffect(() => { 
+    if (!compact) {
+      setCurrentUrl(window.location.href); 
+    }
+  }, [compact]);
 
+  // ============================================
+  // MANTENIDO: Lógica de cálculo (CORE - sin cambios)
+  // ============================================
   const calculateBMI = (e: React.FormEvent) => {
     e.preventDefault();
     const w = parseFloat(formData.weight);
@@ -44,28 +70,125 @@ export default function BMICalculator() {
       }
     });
 
-    if ((window as any).gtag) {
+    // ============================================
+    // ELIMINADO en modo compact: Google Analytics
+    // ============================================
+    if (!compact && (window as any).gtag) {
       (window as any).gtag('event', 'calculate_bmi', { bmi_value: bmi });
     }
   };
 
+  // ============================================
+  // ELIMINADO en modo compact: Share text
+  // ============================================
   const shareText = useMemo(() => 
-    result ? `📊 Mi IMC es de ${result.value} (${result.category}). ¡Calcula el tuyo en Sporvit!` : "", 
-  [result]);
+    compact ? "" : (result ? `📊 Mi IMC es de ${result.value} (${result.category}). ¡Calcula el tuyo en Sporvit!` : ""), 
+  [result, compact]);
 
+  // ============================================
+  // ELIMINADO en modo compact: Embed snippet
+  // ============================================
   const embedSnippet = useMemo(() => 
-    `<iframe src="${currentUrl}" width="100%" height="850px" frameborder="0" style="border-radius:24px; overflow:hidden; border:1px solid #1e293b;" title="Calculadora IMC Sporvit"></iframe>`,
-  [currentUrl]);
+    compact ? "" : `<iframe src="${currentUrl}" width="100%" height="850px" frameborder="0" style="border-radius:24px; overflow:hidden; border:1px solid #1e293b;" title="Calculadora IMC Sporvit"></iframe>`,
+  [currentUrl, compact]);
 
+  // ============================================
+  // ELIMINADO en modo compact: copyToClipboard
+  // ============================================
   const copyToClipboard = useCallback(async (text: string, type: 'embed' | 'share') => {
+    if (compact) return;
     await navigator.clipboard.writeText(text);
     if (type === 'embed') setCopyStatus('copied');
     else setShareStatus('copied');
     setTimeout(() => { setCopyStatus('idle'); setShareStatus('idle'); }, 2000);
-  }, []);
+  }, [compact]);
 
+  // ============================================
+  // NUEVO: Renderizado condicional según compact
+  // ============================================
+  if (compact) {
+    // ========== MODO SIDEBAR (COMPACTO) ==========
+    return (
+      <div className="p-4 space-y-6">
+        {/* Formulario compacto */}
+        <form onSubmit={calculateBMI} noValidate className="space-y-4">
+          <div className="space-y-4">
+            {/* Input Peso */}
+            <div className="space-y-2">
+              <label htmlFor="weight-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+                <Scale className="w-3 h-3 text-emerald-500" /> Peso (kg)
+              </label>
+              <input
+                id="weight-compact"
+                type="number"
+                value={formData.weight}
+                onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                className={`w-full bg-slate-950 border ${errors.weight ? 'border-red-500' : 'border-slate-800'} rounded-xl py-3 px-4 text-lg text-white outline-none focus:border-emerald-500 transition-all`}
+                placeholder="70"
+              />
+              {errors.weight && <p className="text-red-400 text-xs">{errors.weight}</p>}
+            </div>
+
+            {/* Input Altura */}
+            <div className="space-y-2">
+              <label htmlFor="height-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+                <Ruler className="w-3 h-3 text-emerald-500" /> Altura (cm)
+              </label>
+              <input
+                id="height-compact"
+                type="number"
+                value={formData.height}
+                onChange={(e) => setFormData({...formData, height: e.target.value})}
+                className={`w-full bg-slate-950 border ${errors.height ? 'border-red-500' : 'border-slate-800'} rounded-xl py-3 px-4 text-lg text-white outline-none focus:border-emerald-500 transition-all`}
+                placeholder="175"
+              />
+              {errors.height && <p className="text-red-400 text-xs">{errors.height}</p>}
+            </div>
+          </div>
+
+          {/* Botón Calcular */}
+          <button 
+            type="submit" 
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+          >
+            <Calculator className="w-4 h-4" /> Calcular
+          </button>
+        </form>
+
+        {/* Resultados compactos */}
+        {result && (
+          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 space-y-3">
+            <p className="text-emerald-500 font-bold uppercase text-xs text-center">Resultado</p>
+            
+            {/* Valor IMC */}
+            <div className={`text-5xl font-black text-center ${result.color}`}>
+              {result.value}
+            </div>
+            
+            {/* Categoría */}
+            <div className="text-center text-sm font-bold text-white uppercase">
+              {result.category}
+            </div>
+            
+            {/* Rango saludable */}
+            <div className="pt-3 border-t border-slate-800">
+              <p className="text-xs text-slate-500 text-center mb-1">Rango Saludable</p>
+              <div className="text-sm font-bold text-emerald-400 text-center">
+                {result.healthyRange.min}kg - {result.healthyRange.max}kg
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ========== MODO PÁGINA COMPLETA (ORIGINAL) ==========
   return (
     <div className="pt-8 pb-16 container mx-auto px-4 sm:px-6 max-w-6xl">
+      {/* ============================================
+          HEADER - Solo en versión completa
+          ============================================ */}
       <header className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black mb-6 uppercase tracking-widest">
           <Heart className="w-3 h-3" /> Salud y Bienestar
@@ -78,6 +201,9 @@ export default function BMICalculator() {
         </p>
       </header>
 
+      {/* ============================================
+          FORMULARIO Y RESULTADOS - Versión completa
+          ============================================ */}
       <div className="grid lg:grid-cols-12 gap-8 mb-20">
         <section className="lg:col-span-7">
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-sm shadow-2xl">
@@ -135,6 +261,9 @@ export default function BMICalculator() {
                 </div>
               </div>
 
+              {/* ============================================
+                  SHARE BUTTONS - Solo en versión completa
+                  ============================================ */}
               {result && (
                 <div className="mt-8 pt-8 border-t border-slate-800 grid grid-cols-4 gap-2">
                   <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + currentUrl)}`)} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl hover:text-green-500 transition-all flex justify-center shadow-lg"><MessageCircle className="w-5 h-5" /></button>
@@ -146,6 +275,9 @@ export default function BMICalculator() {
             </div>
           </div>
 
+          {/* ============================================
+              EMBED WIDGET - Solo en versión completa
+              ============================================ */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] justify-center">
               <Code className="w-3 h-3 text-emerald-500" /> Inserta este Widget
@@ -159,6 +291,9 @@ export default function BMICalculator() {
         </aside>
       </div>
 
+      {/* ============================================
+          ARTÍCULOS EDUCATIVOS - Solo en versión completa
+          ============================================ */}
       <article className="prose prose-invert prose-slate max-w-none space-y-16">
         <section className="bg-slate-900/30 border border-slate-800 rounded-[40px] p-8 md:p-12">
           <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-4">

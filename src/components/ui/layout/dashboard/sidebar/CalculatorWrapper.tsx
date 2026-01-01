@@ -5,11 +5,48 @@ import { ArrowLeft } from 'lucide-react';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { getCalculatorById } from '@/config/calculators';
 
-// Importar calculadoras Fase 1
+// ============ FASE 1: MVP ============
 import BMICalculator from '@/app/calculators/imc/BMICalculator';
+import OneRMCalculator from '@/app/calculators/1rm/OneRMCalculator';
+import MacroCalculator from '@/app/calculators/macros/MacroCalculator';
+import CaloricDeficitCalculator from '@/app/calculators/deficit/CaloricDeficitCalculator';
+import HarrisBenedictCalculator from '@/app/calculators/harris-benedict/HarrisBenedictCalculator';
 
-const CALCULATOR_COMPONENTS: Record<string, React.ComponentType> = {
+// ============ FASE 2: Esenciales ============
+import ProteinCalculator from '@/app/calculators/protein/ProteinCalculator';
+import TrainingPaceCalculator from '@/app/calculators/running-pace/TrainingPaceCalculator';
+import HRZonesCalculator from '@/app/calculators/heart-rate-zones/HRZonesCalculator';
+import BodyFatCalculator from '@/app/calculators/body-fat/BodyFatCalculator';
+import WaterIntakeCalculator from '@/app/calculators/water/WaterIntakeCalculator';
+
+// ============ FASE 3: Avanzadas ============
+import VO2MaxCalculator from '@/app/calculators/vo2max/VO2MaxCalculator';
+import FTPCalculator from '@/app/calculators/ftp/FTPCalculator';
+import FFMICalculator from '@/app/calculators/ffmi/FFMICalculator';
+import TrainingVolumeCalculator from '@/app/calculators/training-volume/TrainingVolumeCalculator';
+import ProgressionCalculator from '@/app/calculators/progression/ProgressionCalculator';
+
+const CALCULATOR_COMPONENTS: Record<string, React.ComponentType<{compact?: boolean}>> = {
+  // Fase 1
   'imc': BMICalculator,
+  '1rm': OneRMCalculator,
+  'macros': MacroCalculator,
+  'deficit': CaloricDeficitCalculator,
+  'harris-benedict': HarrisBenedictCalculator,
+  
+  // Fase 2
+  'protein': ProteinCalculator,
+  'running-pace': TrainingPaceCalculator,
+  'heart-rate-zones': HRZonesCalculator,
+  'body-fat': BodyFatCalculator,
+  'water': WaterIntakeCalculator,
+  
+  // Fase 3
+  'vo2max': VO2MaxCalculator,
+  'ftp': FTPCalculator,
+  'ffmi': FFMICalculator,
+  'training-volume': TrainingVolumeCalculator,
+  'progression': ProgressionCalculator,
 };
 
 export default function CalculatorWrapper() {
@@ -47,7 +84,7 @@ export default function CalculatorWrapper() {
 
       {/* Calculator Content */}
       <div className="flex-1 overflow-y-auto">
-        <CalculatorComponent />
+        <CalculatorComponent compact={true} />
       </div>
     </div>
   );
