@@ -1,45 +1,70 @@
-'use client';
-
-import { usePathname } from 'next/navigation';
-import AuthSessionProvider from '@/components/providers/SessionProvider';
+// 1. ELIMINAMOS "use client" de aquí para que sea un Server Component
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth'; // Función de servidor de NextAuth v5
 import { HeaderBar } from '@/components/ui/layout/dashboard/HeaderBar';
-import { AppFooter } from '@/components/ui/layout/dashboard/AppFooter';
 import TopMetricsBar from '@/components/ui/layout/dashboard/TopMetricsBar';
-import Sidebar from '@/components/ui/layout/dashboard/Sidebar';
+import VerticalTabs from '@/components/ui/layout/dashboard/VerticalTabs';
+import CollapsibleSidebar from '@/components/ui/layout/dashboard/CollapsibleSidebar';
+import { Providers } from "@/components/Providers";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isAccountSection = pathname.startsWith('/dashboard/profile') || 
-                           pathname.startsWith('/dashboard/settings') || 
-                           pathname.startsWith('/dashboard/subscription');
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // 2. Protección de ruta en el servidor (más rápido y seguro)
+  const session = await auth();
+
+  if (!session) {
+    redirect('/auth/signin');
+  }
 
   return (
-    <AuthSessionProvider>
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col">
-        {/* Header - Height: 64px (h-16) */}
+    // 3. Envolvemos TODO con Providers para que HeaderBar y otros puedan usar useSession()
+    <Providers>
+      <div className="min-h-screen bg-slate-950">
+        {/* Header Bar */}
         <HeaderBar />
 
-        {/* Top Metrics Bar - Height: ~48px (más compacta) */}
-        {!isAccountSection && (
-          <div className="hidden lg:block sticky top-16 z-40">
-            <TopMetricsBar />
-          </div>
-        )}
+        {/* Top Metrics Bar - Desktop only */}
+        <div className="hidden lg:block sticky top-16 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800">
+          <TopMetricsBar />
+        </div>
 
-        <div className="flex flex-1">
-          {/* Sidebar - Width: 200px (reducida de 256px) */}
-          <aside className="hidden lg:block w-[200px] border-r border-slate-800/50 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
-            <Sidebar />
-          </aside>
+        {/* Main Layout with Tabs System */}
+        <div className="relative">
+          {/* Vertical Tabs - Fixed left (48px) */}
+          <VerticalTabs />
 
-          {/* Main Content - SIN max-width para maximizar calendario */}
-          <main className="flex-1 min-h-[calc(100vh-64px)] w-full">
-            {children}
+          {/* Collapsible Sidebar - Fixed left after tabs (0-320px) */}
+          <CollapsibleSidebar />
+
+          {/* Main Content - Adjusts based on sidebar state */}
+          <main 
+            className="min-h-[calc(100vh-64px)] transition-all duration-300 ease-in-out"
+            style={{
+              marginLeft: 'calc(3rem)', // 48px for tabs
+            }}
+          >
+            <div className="dashboard-content-wrapper">
+              {children}
+            </div>
           </main>
         </div>
-        
-        <AppFooter />
+
+        {/* 4. El tag <style jsx> requiere que el componente sea Cliente. 
+           Si necesitas mantener esta lógica aquí, lo ideal es mover estos estilos 
+           a un archivo .css global o usar clases de Tailwind dinámicas.
+        */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          .dashboard-content-wrapper {
+            transition: margin-left 300ms ease-in-out;
+          }
+          body:has([data-sidebar-open="true"]) .dashboard-content-wrapper {
+            margin-left: 320px;
+          }
+        `}} />
       </div>
-    </AuthSessionProvider>
+    </Providers>
   );
 }

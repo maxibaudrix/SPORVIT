@@ -35,6 +35,7 @@
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "date-fns": "^3.6.0",
     "framer-motion": "^12.23.26",
     "html5-qrcode": "^2.3.8",
