@@ -1,0 +1,1545 @@
+{
+  "$schema": "https://schema.org/Recipe",
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-03",
+  "language": "es",
+  "recipes": [
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-001",
+      "name": "Tazón de Avena Proteica con Frutas",
+      "category": "desayuno",
+      "difficulty": "fácil",
+      "prepTime": "PT5M",
+      "cookTime": "PT5M",
+      "totalTime": "PT10M",
+      "recipeYield": "1 porción",
+      "description": "Desayuno completo rico en proteínas y fibra, perfecto para comenzar el día con energía. Combina carbohidratos complejos con proteína de alta calidad.",
+      "keywords": "desayuno fitness, avena proteica, desayuno saludable, receta alta en proteína, desayuno pre-entrenamiento",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/avena-proteica.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "127"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "385 kcal",
+        "proteinContent": "28g",
+        "carbohydrateContent": "48g",
+        "fiberContent": "8g",
+        "sugarContent": "12g",
+        "fatContent": "9g",
+        "saturatedFatContent": "2g",
+        "sodiumContent": "85mg"
+      },
+      "recipeIngredient": [
+        "60g de avena integral",
+        "250ml de leche desnatada o bebida vegetal",
+        "1 scoop (30g) de proteína whey sabor vainilla",
+        "1 plátano mediano (120g)",
+        "100g de frutos rojos (arándanos, fresas)",
+        "1 cucharada de semillas de chía (10g)",
+        "1 cucharadita de canela",
+        "Stevia o edulcorante al gusto (opcional)"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "En un recipiente apto para microondas, mezcla la avena con la leche."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Cocina en microondas durante 2-3 minutos, removiendo a mitad de cocción."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Deja reposar 1 minuto y añade el scoop de proteína, mezclando bien hasta integrar."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Corta el plátano en rodajas y añade junto con los frutos rojos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Espolvorea las semillas de chía y la canela. Endulza al gusto si lo deseas."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/HighProteinDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Desayuno",
+      "tags": ["fitness", "proteico", "pre-entrenamiento", "vegetariano", "fácil", "rápido"],
+      "seo": {
+        "title": "Tazón de Avena Proteica con Frutas - Desayuno Fitness | SPORVIT",
+        "metaDescription": "Receta de desayuno fitness con avena proteica y frutas. 385 kcal, 28g de proteína. Ideal para deportistas. ¡Listo en 10 minutos!",
+        "focusKeyword": "desayuno fitness proteico"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-002",
+      "name": "Tortilla de Claras con Espinacas y Queso",
+      "category": "desayuno",
+      "difficulty": "fácil",
+      "prepTime": "PT5M",
+      "cookTime": "PT8M",
+      "totalTime": "PT13M",
+      "recipeYield": "1 porción",
+      "description": "Desayuno bajo en calorías y alto en proteínas, perfecto para definición muscular. Rico en hierro y calcio.",
+      "keywords": "tortilla de claras, desayuno bajo en grasa, receta fitness, alto en proteína, desayuno definición",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/tortilla-claras.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "93"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "245 kcal",
+        "proteinContent": "32g",
+        "carbohydrateContent": "8g",
+        "fiberContent": "3g",
+        "sugarContent": "3g",
+        "fatContent": "8g",
+        "saturatedFatContent": "3.5g",
+        "sodiumContent": "420mg"
+      },
+      "recipeIngredient": [
+        "6 claras de huevo",
+        "1 huevo entero",
+        "100g de espinacas frescas",
+        "30g de queso fresco bajo en grasa",
+        "1 tomate pequeño (80g)",
+        "1 cucharadita de aceite de oliva",
+        "Sal y pimienta al gusto",
+        "Ajo en polvo (opcional)"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Bate las claras con el huevo entero en un bol. Sazona con sal, pimienta y ajo en polvo."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "En una sartén antiadherente, calienta el aceite a fuego medio."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Saltea las espinacas hasta que se reduzcan (2-3 minutos)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Vierte la mezcla de huevo sobre las espinacas y cocina 3-4 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Añade el queso desmenuzado y el tomate en cubitos. Dobla la tortilla y sirve."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/LowCalorieDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/VegetarianDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Desayuno",
+      "tags": ["fitness", "bajo en grasa", "proteico", "definición", "vegetariano"],
+      "seo": {
+        "title": "Tortilla de Claras con Espinacas - Desayuno Fitness Bajo en Calorías | SPORVIT",
+        "metaDescription": "Receta de tortilla de claras fitness con espinacas. Solo 245 kcal y 32g de proteína. Perfecto para definición muscular.",
+        "focusKeyword": "tortilla de claras fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-003",
+      "name": "Pollo a la Plancha con Quinoa y Vegetales",
+      "category": "almuerzo",
+      "difficulty": "media",
+      "prepTime": "PT15M",
+      "cookTime": "PT25M",
+      "totalTime": "PT40M",
+      "recipeYield": "2 porciones",
+      "description": "Almuerzo completo y equilibrado con proteína magra, carbohidratos complejos y abundantes vegetales. Ideal para ganar masa muscular.",
+      "keywords": "pollo fitness, quinoa receta, almuerzo saludable, comida post-entrenamiento, receta alta en proteína",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/pollo-quinoa.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "215"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "485 kcal",
+        "proteinContent": "42g",
+        "carbohydrateContent": "48g",
+        "fiberContent": "7g",
+        "sugarContent": "6g",
+        "fatContent": "12g",
+        "saturatedFatContent": "2g",
+        "sodiumContent": "380mg"
+      },
+      "recipeIngredient": [
+        "300g de pechuga de pollo",
+        "150g de quinoa (peso en crudo)",
+        "200g de brócoli",
+        "150g de pimiento rojo",
+        "100g de zanahoria",
+        "2 cucharadas de aceite de oliva",
+        "1 limón",
+        "2 dientes de ajo",
+        "Hierbas provenzales",
+        "Sal y pimienta",
+        "Perejil fresco"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Lava la quinoa y cocínala en agua con sal siguiendo las instrucciones del paquete (aproximadamente 15 minutos)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Marina el pollo con jugo de limón, ajo picado, hierbas provenzales, sal y pimienta durante 10 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Corta los vegetales en trozos medianos. Cocina el brócoli al vapor durante 5 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "En una plancha o sartén caliente, cocina el pollo 6-7 minutos por cada lado hasta que esté bien cocido."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Saltea los pimientos y zanahorias en 1 cucharada de aceite durante 5-6 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Sirve el pollo cortado en tiras sobre la quinoa, acompaña con los vegetales y decora con perejil fresco."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/LowFatDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Almuerzo",
+      "tags": ["fitness", "post-entrenamiento", "masa muscular", "sin gluten", "proteico"],
+      "seo": {
+        "title": "Pollo con Quinoa y Vegetales - Receta Fitness Post-Entrenamiento | SPORVIT",
+        "metaDescription": "Receta fitness de pollo con quinoa y vegetales. 485 kcal, 42g proteína. Comida completa post-entrenamiento para ganar músculo.",
+        "focusKeyword": "pollo quinoa fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-004",
+      "name": "Salmón al Horno con Batata y Espárragos",
+      "category": "cena",
+      "difficulty": "media",
+      "prepTime": "PT10M",
+      "cookTime": "PT30M",
+      "totalTime": "PT40M",
+      "recipeYield": "2 porciones",
+      "description": "Cena rica en omega-3, proteína de alta calidad y carbohidratos de bajo índice glucémico. Perfecta para recuperación nocturna.",
+      "keywords": "salmón fitness, cena saludable, omega 3, batata receta, cena post-entrenamiento",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/salmon-batata.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "178"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "520 kcal",
+        "proteinContent": "38g",
+        "carbohydrateContent": "42g",
+        "fiberContent": "8g",
+        "sugarContent": "9g",
+        "fatContent": "20g",
+        "saturatedFatContent": "3.5g",
+        "sodiumContent": "320mg",
+        "unsaturatedFatContent": "15g"
+      },
+      "recipeIngredient": [
+        "2 filetes de salmón (300g total)",
+        "400g de batata (boniato)",
+        "300g de espárragos verdes",
+        "2 cucharadas de aceite de oliva virgen extra",
+        "1 limón",
+        "2 dientes de ajo",
+        "Romero fresco",
+        "Tomillo",
+        "Sal marina y pimienta negra",
+        "Pimentón dulce"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Precalienta el horno a 200°C."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Pela y corta la batata en cubos medianos. Colócalos en una bandeja de horno con aceite de oliva, sal, pimentón y romero. Hornea 20 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Limpia los espárragos retirando la parte dura del tallo."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Sazona el salmón con sal, pimienta, ajo picado, tomillo y jugo de limón."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Después de 20 minutos, añade el salmón y los espárragos a la bandeja. Rocía con aceite de oliva."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Hornea 10-12 minutos más hasta que el salmón esté cocido pero jugoso. Sirve con rodajas de limón."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/PaleoDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Cena",
+      "tags": ["fitness", "omega-3", "cena ligera", "sin gluten", "paleo", "anti-inflamatorio"],
+      "seo": {
+        "title": "Salmón al Horno con Batata - Cena Fitness Rica en Omega-3 | SPORVIT",
+        "metaDescription": "Receta de salmón fitness con batata y espárragos. 520 kcal, 38g proteína, rico en omega-3. Cena perfecta para deportistas.",
+        "focusKeyword": "salmón fitness batata"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-005",
+      "name": "Ternera Magra con Arroz Integral y Verduras",
+      "category": "almuerzo",
+      "difficulty": "media",
+      "prepTime": "PT15M",
+      "cookTime": "PT35M",
+      "totalTime": "PT50M",
+      "recipeYield": "2 porciones",
+      "description": "Comida completa rica en hierro, proteína y carbohidratos complejos. Ideal para atletas y deportistas de fuerza.",
+      "keywords": "ternera fitness, arroz integral, comida post-entrenamiento, receta alta en hierro, almuerzo fitness",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/ternera-arroz.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "142"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "545 kcal",
+        "proteinContent": "44g",
+        "carbohydrateContent": "58g",
+        "fiberContent": "6g",
+        "sugarContent": "5g",
+        "fatContent": "12g",
+        "saturatedFatContent": "3g",
+        "sodiumContent": "340mg",
+        "ironContent": "4.2mg"
+      },
+      "recipeIngredient": [
+        "300g de solomillo de ternera magra",
+        "150g de arroz integral (peso en crudo)",
+        "200g de judías verdes",
+        "150g de calabacín",
+        "100g de cebolla",
+        "2 tomates maduros",
+        "2 cucharadas de aceite de oliva",
+        "2 dientes de ajo",
+        "Pimentón dulce",
+        "Comino",
+        "Sal y pimienta",
+        "Perejil fresco"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Cocina el arroz integral según las instrucciones del paquete (aproximadamente 30-35 minutos)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Corta la ternera en tiras finas y sazónala con sal, pimienta, pimentón y comino."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "En una sartén grande, calienta 1 cucharada de aceite y sofríe la cebolla picada y el ajo durante 3 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Añade las judías verdes cortadas y el calabacín en cubitos. Cocina 5 minutos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Incorpora el tomate rallado y cocina 5 minutos más hasta que espese."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "En otra sartén muy caliente, sella la ternera 2-3 minutos por lado para que quede jugosa."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "text": "Sirve el arroz como base, añade las verduras y la ternera por encima. Decora con perejil."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet"
+      ],
+      "recipeCuisine": "Mediterránea",
+      "recipeCategory": "Almuerzo",
+      "tags": ["fitness", "alto en hierro", "masa muscular", "post-entrenamiento", "sin gluten"],
+      "seo": {
+        "title": "Ternera con Arroz Integral - Receta Fitness Alta en Hierro | SPORVIT",
+        "metaDescription": "Receta de ternera magra con arroz integral y verduras. 545 kcal, 44g proteína, alto en hierro. Ideal para deportistas de fuerza.",
+        "focusKeyword": "ternera fitness arroz integral"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-006",
+      "name": "Batido de Proteína Pre-Entrenamiento",
+      "category": "pre-entrenamiento",
+      "difficulty": "muy fácil",
+      "prepTime": "PT3M",
+      "cookTime": "PT0M",
+      "totalTime": "PT3M",
+      "recipeYield": "1 porción",
+      "description": "Batido energético con carbohidratos de rápida absorción y proteína. Proporciona energía inmediata para entrenamientos intensos.",
+      "keywords": "batido pre-entrenamiento, bebida energética fitness, batido proteico, pre-workout natural",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/batido-pre.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "201"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "285 kcal",
+        "proteinContent": "25g",
+        "carbohydrateContent": "38g",
+        "fiberContent": "4g",
+        "sugarContent": "20g",
+        "fatContent": "3g",
+        "saturatedFatContent": "0.5g",
+        "sodiumContent": "95mg",
+        "caffeine": "80mg"
+      },
+      "recipeIngredient": [
+        "1 scoop (30g) de proteína whey",
+        "1 plátano mediano maduro (120g)",
+        "200ml de agua o leche desnatada",
+        "1 cucharada de miel (15g)",
+        "1 shot de café expreso (opcional, 30ml)",
+        "3-4 cubitos de hielo",
+        "1/2 cucharadita de canela"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Coloca todos los ingredientes en la batidora de vaso."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Bate a máxima potencia durante 30-45 segundos hasta obtener una mezcla homogénea."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Sirve inmediatamente y consume 30-45 minutos antes del entrenamiento."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/HighProteinDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Pre-entrenamiento",
+      "tags": ["pre-workout", "batido", "energía", "rápido", "vegetariano"],
+      "recommendations": {
+        "whenToConsume": "30-45 minutos antes del entrenamiento",
+        "idealFor": "Entrenamientos de alta intensidad, pesas, crossfit",
+        "hydration": "Acompañar con 200-300ml adicionales de agua"
+      },
+      "seo": {
+        "title": "Batido Pre-Entrenamiento Casero - Energía para tu Workout | SPORVIT",
+        "metaDescription": "Receta de batido pre-entrenamiento con plátano y proteína. 285 kcal, energía inmediata. ¡Listo en 3 minutos!",
+        "focusKeyword": "batido pre-entrenamiento"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-007",
+      "name": "Batido Post-Entrenamiento de Recuperación",
+      "category": "post-entrenamiento",
+      "difficulty": "muy fácil",
+      "prepTime": "PT3M",
+      "cookTime": "PT0M",
+      "totalTime": "PT3M",
+      "recipeYield": "1 porción",
+      "description": "Batido de recuperación con proteína y carbohidratos para máxima recuperación muscular. Relación 2:1 de carbohidratos a proteína.",
+      "keywords": "batido post-entrenamiento, recuperación muscular, batido proteico, post-workout, anabólico",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/batido-post.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "312"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "420 kcal",
+        "proteinContent": "35g",
+        "carbohydrateContent": "62g",
+        "fiberContent": "5g",
+        "sugarContent": "28g",
+        "fatContent": "4g",
+        "saturatedFatContent": "1g",
+        "sodiumContent": "125mg"
+      },
+      "recipeIngredient": [
+        "1.5 scoops (45g) de proteína whey",
+        "1 plátano grande maduro (150g)",
+        "100g de frutos rojos congelados",
+        "300ml de leche desnatada",
+        "30g de avena en polvo o instantánea",
+        "1 cucharada de mantequilla de cacahuete en polvo (PB2) - 6g",
+        "1 cucharadita de creatina monohidrato (5g) - opcional",
+        "4-5 cubitos de hielo"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Añade todos los ingredientes en la batidora en el siguiente orden: líquido primero, luego sólidos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Bate durante 45-60 segundos a máxima potencia hasta obtener una textura cremosa."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Consume inmediatamente después del entrenamiento (ventana anabólica de 30-60 minutos)."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/HighProteinDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Post-entrenamiento",
+      "tags": ["post-workout", "recuperación", "anabólico", "masa muscular", "batido"],
+      "recommendations": {
+        "whenToConsume": "Inmediatamente después del entrenamiento (máximo 60 minutos)",
+        "idealFor": "Entrenamientos intensos de fuerza, hipertrofia muscular",
+        "benefits": "Recuperación muscular, síntesis proteica, reposición de glucógeno"
+      },
+      "seo": {
+        "title": "Batido Post-Entrenamiento para Recuperación Muscular | SPORVIT",
+        "metaDescription": "Batido post-entrenamiento óptimo: 420 kcal, 35g proteína. Máxima recuperación y crecimiento muscular. Receta científicamente diseñada.",
+        "focusKeyword": "batido post-entrenamiento"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-008",
+      "name": "Hummus de Garbanzos Proteico",
+      "category": "snack",
+      "difficulty": "fácil",
+      "prepTime": "PT10M",
+      "cookTime": "PT0M",
+      "totalTime": "PT10M",
+      "recipeYield": "4 porciones",
+      "description": "Snack saludable rico en proteína vegetal, fibra y grasas saludables. Perfecto para picar entre comidas.",
+      "keywords": "hummus fitness, snack proteico, proteína vegetal, hummus casero, snack saludable",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/hummus.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "167"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "servingSize": "100g",
+        "calories": "180 kcal",
+        "proteinContent": "9g",
+        "carbohydrateContent": "18g",
+        "fiberContent": "6g",
+        "sugarContent": "1g",
+        "fatContent": "8g",
+        "saturatedFatContent": "1g",
+        "sodiumContent": "220mg"
+      },
+      "recipeIngredient": [
+        "400g de garbanzos cocidos (1 bote escurrido)",
+        "3 cucharadas de tahini (pasta de sésamo) - 45g",
+        "2 dientes de ajo",
+        "El zumo de 1 limón grande",
+        "2 cucharadas de aceite de oliva virgen extra",
+        "1 cucharadita de comino molido",
+        "Pimentón dulce para decorar",
+        "Sal al gusto",
+        "4-6 cucharadas de agua fría"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Escurre bien los garbanzos y reserva el líquido (aquafaba)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "En un procesador de alimentos, añade los garbanzos, tahini, ajo pelado, zumo de limón y comino."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Procesa durante 1 minuto y añade el aceite de oliva gradualmente mientras procesas."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Añade agua fría poco a poco hasta conseguir la textura deseada (cremosa pero no líquida)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Prueba y ajusta sal y limón al gusto. Sirve en un plato, haz un hueco en el centro y añade aceite de oliva y pimentón."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VeganDiet",
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/GlutenFreeDiet"
+      ],
+      "recipeCuisine": "Mediterránea",
+      "recipeCategory": "Snack",
+      "tags": ["vegano", "sin gluten", "proteína vegetal", "snack", "meal prep"],
+      "servingSuggestions": "Acompañar con bastones de zanahoria, pepino, apio o tostadas integrales",
+      "storageInstructions": "Se conserva 5-7 días en refrigerador en recipiente hermético",
+      "seo": {
+        "title": "Hummus Proteico Casero - Snack Fitness Vegano | SPORVIT",
+        "metaDescription": "Receta de hummus fitness alto en proteína vegetal. 180 kcal por porción, 9g proteína. Snack saludable vegano y sin gluten.",
+        "focusKeyword": "hummus fitness proteico"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-009",
+      "name": "Bolitas Energéticas de Dátiles y Almendras",
+      "category": "snack",
+      "difficulty": "muy fácil",
+      "prepTime": "PT15M",
+      "cookTime": "PT0M",
+      "totalTime": "PT15M",
+      "recipeYield": "12 bolitas",
+      "description": "Snack energético natural, perfecto pre-entrenamiento. Sin azúcar añadido, solo ingredientes naturales.",
+      "keywords": "energy balls, bolitas energéticas, snack natural, pre-entrenamiento, sin azúcar añadido",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/energy-balls.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "245"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "servingSize": "2 bolitas",
+        "calories": "165 kcal",
+        "proteinContent": "5g",
+        "carbohydrateContent": "22g",
+        "fiberContent": "4g",
+        "sugarContent": "16g",
+        "fatContent": "7g",
+        "saturatedFatContent": "1g",
+        "sodiumContent": "5mg"
+      },
+      "recipeIngredient": [
+        "200g de dátiles Medjool deshuesados",
+        "100g de almendras crudas",
+        "2 cucharadas de cacao puro en polvo (15g)",
+        "2 cucharadas de semillas de chía (20g)",
+        "1 cucharada de mantequilla de almendras (15g)",
+        "1 cucharadita de extracto de vainilla",
+        "1 pizca de sal marina",
+        "Coco rallado para rebozar (opcional)"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Si los dátiles están duros, remójalos en agua caliente 10 minutos y escúrrelos bien."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "En un procesador de alimentos, tritura las almendras hasta obtener trozos pequeños."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Añade los dátiles, cacao, semillas de chía, mantequilla de almendras, vainilla y sal."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Procesa hasta formar una masa pegajosa que se pueda moldear (1-2 minutos)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Con las manos húmedas, forma bolitas del tamaño de una nuez (aproximadamente 25g cada una)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Opcionalmente, reboza en coco rallado. Refrigera al menos 30 minutos antes de consumir."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VeganDiet",
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/GlutenFreeDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Snack",
+      "tags": ["vegano", "sin gluten", "sin azúcar añadido", "energético", "meal prep"],
+      "storageInstructions": "Conservar en recipiente hermético en refrigerador hasta 2 semanas, o en congelador hasta 3 meses",
+      "recommendations": {
+        "whenToConsume": "30-60 minutos antes del entrenamiento o como snack entre comidas",
+        "portionSize": "2-3 bolitas según necesidades energéticas"
+      },
+      "seo": {
+        "title": "Bolitas Energéticas Naturales - Energy Balls Fitness | SPORVIT",
+        "metaDescription": "Receta de bolitas energéticas con dátiles y almendras. Sin azúcar añadido, 165 kcal. Snack fitness vegano y natural.",
+        "focusKeyword": "bolitas energéticas fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-010",
+      "name": "Wraps de Pavo con Vegetales",
+      "category": "snack",
+      "difficulty": "muy fácil",
+      "prepTime": "PT8M",
+      "cookTime": "PT0M",
+      "totalTime": "PT8M",
+      "recipeYield": "2 porciones",
+      "description": "Snack proteico bajo en carbohidratos, ideal para definición. Rápido de preparar y muy saciante.",
+      "keywords": "wraps fitness, snack proteico bajo en carbohidratos, pavo fitness, snack definición",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/wraps-pavo.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "134"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "195 kcal",
+        "proteinContent": "24g",
+        "carbohydrateContent": "12g",
+        "fiberContent": "4g",
+        "sugarContent": "4g",
+        "fatContent": "6g",
+        "saturatedFatContent": "2g",
+        "sodiumContent": "580mg"
+      },
+      "recipeIngredient": [
+        "4 lonchas grandes de pechuga de pavo (120g)",
+        "2 tortillas integrales o de espinacas",
+        "60g de queso fresco batido 0%",
+        "50g de rúcula o espinacas frescas",
+        "1 tomate mediano en rodajas",
+        "1/2 aguacate pequeño (50g)",
+        "1 cucharadita de mostaza de Dijon",
+        "Sal y pimienta al gusto"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Calienta ligeramente las tortillas en una sartén o microondas para que sean más flexibles."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Extiende el queso fresco batido mezclado con mostaza sobre cada tortilla."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Coloca las lonchas de pavo en el centro, añade rúcula, rodajas de tomate y aguacate."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Sazona con sal y pimienta al gusto."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Enrolla firmemente, corta por la mitad en diagonal y sirve."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/LowCalorieDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/LowCarbohydrateDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Snack",
+      "tags": ["bajo en carbohidratos", "alto en proteína", "definición", "rápido", "meal prep"],
+      "mealPrepTips": "Puedes preparar varios wraps, envolverlos en film transparente y guardar en nevera hasta 2 días",
+      "seo": {
+        "title": "Wraps de Pavo Fitness - Snack Alto en Proteína Bajo en Carbohidratos | SPORVIT",
+        "metaDescription": "Receta de wraps fitness con pavo y vegetales. Solo 195 kcal, 24g proteína. Snack perfecto para definición muscular.",
+        "focusKeyword": "wraps fitness pavo"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-011",
+      "name": "Ensalada de Atún con Garbanzos y Aguacate",
+      "category": "almuerzo",
+      "difficulty": "fácil",
+      "prepTime": "PT12M",
+      "cookTime": "PT0M",
+      "totalTime": "PT12M",
+      "recipeYield": "2 porciones",
+      "description": "Ensalada completa y equilibrada, rica en proteínas, omega-3 y fibra. Perfecta para llevar al trabajo.",
+      "keywords": "ensalada fitness, atún receta, comida saludable, ensalada proteica, meal prep",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/ensalada-atun.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "189"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "425 kcal",
+        "proteinContent": "32g",
+        "carbohydrateContent": "32g",
+        "fiberContent": "11g",
+        "sugarContent": "4g",
+        "fatContent": "18g",
+        "saturatedFatContent": "3g",
+        "sodiumContent": "450mg",
+        "unsaturatedFatContent": "14g"
+      },
+      "recipeIngredient": [
+        "2 latas de atún al natural (160g escurrido)",
+        "240g de garbanzos cocidos (peso escurrido)",
+        "1 aguacate mediano (150g)",
+        "150g de tomate cherry",
+        "100g de pepino",
+        "80g de cebolla morada",
+        "100g de espinacas baby o rúcula",
+        "2 cucharadas de aceite de oliva virgen extra",
+        "El zumo de 1 limón",
+        "1 cucharadita de orégano seco",
+        "Sal y pimienta negra",
+        "Semillas de sésamo para decorar"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Escurre bien el atún y desmenuza con un tenedor."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Lava y corta los tomates cherry por la mitad, el pepino en cubitos y la cebolla en juliana fina."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Corta el aguacate en cubos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "En un bol grande, mezcla las espinacas, garbanzos, atún, tomates, pepino y cebolla."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Prepara la vinagreta mezclando aceite de oliva, zumo de limón, orégano, sal y pimienta."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Aliña la ensalada, añade el aguacate con cuidado y decora con semillas de sésamo."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/DiabeticDiet"
+      ],
+      "recipeCuisine": "Mediterránea",
+      "recipeCategory": "Almuerzo",
+      "tags": ["fitness", "omega-3", "meal prep", "sin gluten", "ensalada completa"],
+      "mealPrepTips": "Prepara todos los ingredientes por separado y guarda en contenedores. Mezcla justo antes de comer. Se conserva 2-3 días.",
+      "seo": {
+        "title": "Ensalada de Atún con Garbanzos - Receta Fitness Completa | SPORVIT",
+        "metaDescription": "Ensalada fitness de atún con garbanzos y aguacate. 425 kcal, 32g proteína, omega-3. Perfecta para meal prep.",
+        "focusKeyword": "ensalada fitness atún"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-012",
+      "name": "Pechuga de Pollo Rellena de Espinacas y Queso",
+      "category": "cena",
+      "difficulty": "media",
+      "prepTime": "PT20M",
+      "cookTime": "PT25M",
+      "totalTime": "PT45M",
+      "recipeYield": "2 porciones",
+      "description": "Cena elegante y nutritiva, alta en proteínas y baja en carbohidratos. Perfecta para una cena especial sin salirse de la dieta.",
+      "keywords": "pollo relleno fitness, cena proteica, receta baja en carbohidratos, cena gourmet fitness",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/pollo-relleno.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "156"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "340 kcal",
+        "proteinContent": "48g",
+        "carbohydrateContent": "6g",
+        "fiberContent": "2g",
+        "sugarContent": "2g",
+        "fatContent": "13g",
+        "saturatedFatContent": "5g",
+        "sodiumContent": "520mg"
+      },
+      "recipeIngredient": [
+        "2 pechugas de pollo grandes (400g total)",
+        "150g de espinacas frescas",
+        "80g de queso mozzarella light",
+        "2 dientes de ajo",
+        "50g de tomates secos",
+        "1 cucharada de aceite de oliva",
+        "1 cucharadita de pimentón dulce",
+        "1 cucharadita de tomillo seco",
+        "Sal y pimienta negra",
+        "Palillos o hilo de cocina",
+        "Guarnición: 300g de brócoli al vapor"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Precalienta el horno a 190°C."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Saltea las espinacas con ajo picado hasta que se reduzcan. Deja enfriar."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Haz un corte horizontal en cada pechuga para crear un bolsillo, sin atravesar completamente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Rellena cada pechuga con espinacas salteadas, mozzarella y tomates secos picados."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Cierra con palillos o ata con hilo de cocina. Sazona por fuera con sal, pimienta, pimentón y tomillo."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Sella las pechugas en una sartén caliente con aceite, 2 minutos por lado."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "text": "Transfiere al horno y hornea 18-20 minutos hasta que estén completamente cocidas (temperatura interna 74°C)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 8,
+          "text": "Deja reposar 5 minutos antes de cortar. Sirve con brócoli al vapor."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/LowCarbohydrateDiet",
+        "https://schema.org/KetogenicDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Cena",
+      "tags": ["fitness", "bajo en carbohidratos", "keto friendly", "alto en proteína", "gourmet"],
+      "cookingTips": "Usa un termómetro de cocina para asegurar que el pollo esté bien cocido pero jugoso",
+      "seo": {
+        "title": "Pechuga de Pollo Rellena Fitness - Cena Proteica Gourmet | SPORVIT",
+        "metaDescription": "Receta de pechuga de pollo rellena de espinacas y queso. 340 kcal, 48g proteína. Cena fitness elegante y deliciosa.",
+        "focusKeyword": "pollo relleno fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-013",
+      "name": "Bowl Vegano de Lentejas con Tahini",
+      "category": "almuerzo",
+      "difficulty": "fácil",
+      "prepTime": "PT15M",
+      "cookTime": "PT25M",
+      "totalTime": "PT40M",
+      "recipeYield": "2 porciones",
+      "description": "Bowl completo vegano rico en proteína vegetal, hierro y fibra. Nutritivo, saciante y completamente plant-based.",
+      "keywords": "bowl vegano, lentejas fitness, proteína vegetal, receta vegana alta en proteína, comida plant-based",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/bowl-lentejas.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "203"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "465 kcal",
+        "proteinContent": "22g",
+        "carbohydrateContent": "62g",
+        "fiberContent": "16g",
+        "sugarContent": "8g",
+        "fatContent": "14g",
+        "saturatedFatContent": "2g",
+        "sodiumContent": "380mg",
+        "ironContent": "7.2mg"
+      },
+      "recipeIngredient": [
+        "200g de lentejas pardinas o rojas (peso en crudo)",
+        "200g de boniato",
+        "150g de col kale o col rizada",
+        "100g de zanahoria",
+        "100g de remolacha cocida",
+        "50g de cebolla",
+        "2 cucharadas de tahini",
+        "1 cucharada de aceite de oliva",
+        "El zumo de 1/2 limón",
+        "1 diente de ajo",
+        "1 cucharadita de comino",
+        "1 cucharadita de cúrcuma",
+        "Semillas de calabaza (20g)",
+        "Sal y pimienta"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Cocina las lentejas según instrucciones del paquete (20-25 minutos). Escurre y reserva."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Pela y corta el boniato en cubos. Ásalo en el horno a 200°C durante 20 minutos o hasta que esté tierno."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Saltea la cebolla picada en aceite de oliva. Añade la zanahoria rallada, comino y cúrcuma."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Añade las lentejas cocidas a la sartén, mezcla bien y sazona."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Saltea la col kale picada hasta que esté tierna (3-4 minutos)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Prepara la salsa de tahini mezclando tahini, zumo de limón, ajo picado y un poco de agua hasta conseguir consistencia cremosa."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "text": "Monta el bowl: base de lentejas, añade boniato, col kale, remolacha en rodajas. Rocía con salsa de tahini y decora con semillas de calabaza."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VeganDiet",
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighFiberDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Almuerzo",
+      "tags": ["vegano", "sin gluten", "proteína vegetal", "alto en hierro", "meal prep"],
+      "nutritionalHighlights": "Excelente fuente de hierro no hemo, proteína vegetal completa y antioxidantes",
+      "seo": {
+        "title": "Bowl Vegano de Lentejas con Tahini - Receta Fitness Plant-Based | SPORVIT",
+        "metaDescription": "Bowl vegano fitness con lentejas. 465 kcal, 22g proteína vegetal, alto en hierro. Comida completa y nutritiva 100% plant-based.",
+        "focusKeyword": "bowl vegano lentejas fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-014",
+      "name": "Pancakes Proteicos de Plátano",
+      "category": "desayuno",
+      "difficulty": "fácil",
+      "prepTime": "PT5M",
+      "cookTime": "PT10M",
+      "totalTime": "PT15M",
+      "recipeYield": "2 porciones (6 pancakes)",
+      "description": "Pancakes fitness esponjosos y ricos en proteína. Solo 4 ingredientes básicos para un desayuno delicioso y saludable.",
+      "keywords": "pancakes proteicos, tortitas fitness, desayuno proteico, pancakes saludables, receta con plátano",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/pancakes-proteicos.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "328"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "servingSize": "3 pancakes",
+        "calories": "295 kcal",
+        "proteinContent": "24g",
+        "carbohydrateContent": "35g",
+        "fiberContent": "4g",
+        "sugarContent": "12g",
+        "fatContent": "6g",
+        "saturatedFatContent": "1.5g",
+        "sodiumContent": "180mg"
+      },
+      "recipeIngredient": [
+        "2 plátanos maduros grandes (240g)",
+        "4 huevos enteros",
+        "1 scoop (30g) de proteína whey sabor vainilla o neutro",
+        "1 cucharadita de levadura química (polvo de hornear)",
+        "1 cucharadita de canela",
+        "1 pizca de sal",
+        "Spray de aceite en aerosol para cocinar",
+        "Para servir: frutos rojos, yogur griego 0%, sirope sin azúcar"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Machaca los plátanos en un bol hasta obtener un puré sin grumos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "Añade los huevos y bate bien hasta integrar completamente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Incorpora la proteína en polvo, levadura, canela y sal. Mezcla hasta obtener una masa homogénea sin grumos."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Deja reposar la masa 3-5 minutos para que espese ligeramente."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Calienta una sartén antiadherente a fuego medio-bajo y rocía con spray de aceite."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Vierte porciones de masa (aproximadamente 1/4 taza por pancake). Cocina 2-3 minutos hasta que se formen burbujas en la superficie."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "text": "Voltea con cuidado y cocina 1-2 minutos más hasta dorar."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 8,
+          "text": "Sirve calientes con frutos rojos, yogur griego y sirope sin azúcar."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/GlutenFreeDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/VegetarianDiet"
+      ],
+      "recipeCuisine": "Americana",
+      "recipeCategory": "Desayuno",
+      "tags": ["fitness", "proteico", "sin gluten", "vegetariano", "fácil", "desayuno dulce"],
+      "cookingTips": "Cocina a fuego medio-bajo para evitar que se quemen por fuera y queden crudos por dentro",
+      "mealPrepTips": "Se pueden preparar con antelación y refrigerar 3-4 días, o congelar hasta 3 meses",
+      "seo": {
+        "title": "Pancakes Proteicos de Plátano - Desayuno Fitness Fácil | SPORVIT",
+        "metaDescription": "Receta de pancakes proteicos con solo 4 ingredientes. 295 kcal, 24g proteína. Desayuno fitness delicioso y sin gluten.",
+        "focusKeyword": "pancakes proteicos fitness"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Recipe",
+      "id": "recipe-015",
+      "name": "Yogur Griego con Granola Casera Proteica",
+      "category": "desayuno",
+      "difficulty": "media",
+      "prepTime": "PT10M",
+      "cookTime": "PT25M",
+      "totalTime": "PT35M",
+      "recipeYield": "4 porciones",
+      "description": "Desayuno completo con yogur griego rico en proteína y granola casera baja en azúcar. Perfecto para meal prep.",
+      "keywords": "yogur griego fitness, granola proteica, granola casera, desayuno saludable, meal prep desayuno",
+      "author": {
+        "@type": "Organization",
+        "name": "SPORVIT"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/images/yogur-granola.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "267"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "365 kcal",
+        "proteinContent": "26g",
+        "carbohydrateContent": "38g",
+        "fiberContent": "6g",
+        "sugarContent": "14g",
+        "fatContent": "12g",
+        "saturatedFatContent": "3g",
+        "sodiumContent": "75mg"
+      },
+      "recipeIngredient": [
+        "Para la granola:",
+        "150g de avena integral en copos",
+        "50g de almendras troceadas",
+        "30g de nueces picadas",
+        "2 cucharadas de semillas de chía",
+        "2 cucharadas de semillas de calabaza",
+        "2 cucharadas de miel o sirope de agave",
+        "2 cucharadas de aceite de coco",
+        "1 scoop (30g) de proteína whey sabor vainilla",
+        "1 cucharadita de canela",
+        "Para servir (por porción):",
+        "200g de yogur griego natural 0%",
+        "100g de frutos rojos frescos"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "text": "Precalienta el horno a 160°C. Forra una bandeja con papel de horno."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "text": "En un bol grande, mezcla la avena, frutos secos, semillas y canela."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "text": "Derrite el aceite de coco y mézclalo con la miel. Vierte sobre la mezcla seca y remueve bien."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "text": "Extiende la mezcla en la bandeja en una capa uniforme."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "text": "Hornea 20-25 minutos, removiendo cada 8-10 minutos para un tostado uniforme."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 6,
+          "text": "Retira del horno y deja enfriar completamente (la granola se volverá crujiente al enfriarse)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 7,
+          "text": "Una vez fría, añade la proteína en polvo y mezcla bien."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 8,
+          "text": "Para servir: coloca yogur griego en un bol, añade 50g de granola y corona con frutos rojos."
+        }
+      ],
+      "suitableForDiet": [
+        "https://schema.org/VegetarianDiet",
+        "https://schema.org/HighProteinDiet",
+        "https://schema.org/GlutenFreeDiet"
+      ],
+      "recipeCuisine": "Internacional",
+      "recipeCategory": "Desayuno",
+      "tags": ["fitness", "meal prep", "proteico", "vegetariano", "granola casera"],
+      "storageInstructions": "La granola se conserva en recipiente hermético hasta 3 semanas a temperatura ambiente",
+      "servingSuggestions": "Perfecto también como snack post-entrenamiento o postre saludable",
+      "seo": {
+        "title": "Yogur Griego con Granola Proteica Casera - Desayuno Fitness | SPORVIT",
+        "metaDescription": "Receta de granola proteica casera con yogur griego. 365 kcal, 26g proteína. Desayuno fitness perfecto para meal prep.",
+        "focusKeyword": "granola proteica casera fitness"
+      }
+    }
+  ],
+  "categories": [
+    {
+      "name": "desayuno",
+      "description": "Recetas para comenzar el día con energía",
+      "recipeCount": 5
+    },
+    {
+      "name": "almuerzo",
+      "description": "Comidas completas y equilibradas",
+      "recipeCount": 4
+    },
+    {
+      "name": "cena",
+      "description": "Cenas ligeras y nutritivas",
+      "recipeCount": 3
+    },
+    {
+      "name": "snack",
+      "description": "Snacks saludables entre comidas",
+      "recipeCount": 4
+    },
+    {
+      "name": "pre-entrenamiento",
+      "description": "Comidas y bebidas para consumir antes del ejercicio",
+      "recipeCount": 1
+    },
+    {
+      "name": "post-entrenamiento",
+      "description": "Comidas y bebidas para recuperación muscular",
+      "recipeCount": 1
+    }
+  ],
+  "dietaryFilters": {
+    "vegetarian": "Recetas sin carne ni pescado",
+    "vegan": "Recetas 100% plant-based",
+    "glutenFree": "Recetas sin gluten",
+    "lowCarb": "Recetas bajas en carbohidratos",
+    "highProtein": "Recetas altas en proteína (+20g por porción)",
+    "keto": "Recetas compatibles con dieta cetogénica",
+    "paleo": "Recetas compatibles con dieta paleo"
+  },
+  "nutritionalGuidelines": {
+    "caloriesRange": {
+      "desayuno": "250-400 kcal",
+      "almuerzo": "400-600 kcal",
+      "cena": "350-550 kcal",
+      "snack": "150-250 kcal",
+      "pre-entrenamiento": "200-350 kcal",
+      "post-entrenamiento": "300-500 kcal"
+    },
+    "proteinTarget": {
+      "desayuno": "20-30g",
+      "almuerzo": "30-50g",
+      "cena": "30-50g",
+      "snack": "10-20g",
+      "pre-entrenamiento": "15-25g",
+      "post-entrenamiento": "25-40g"
+    }
+  },
+  "seoMetadata": {
+    "title": "Recetas Fitness y Saludables - Base de Datos Nutricional | SPORVIT",
+    "description": "Descubre nuestra colección de recetas fitness con valores nutricionales detallados. Desayunos, almuerzos, cenas y snacks optimizados para deportistas.",
+    "keywords": "recetas fitness, comida saludable, recetas proteicas, nutrición deportiva, meal prep, recetas para ganar músculo, recetas para definición"
+  }
+}
