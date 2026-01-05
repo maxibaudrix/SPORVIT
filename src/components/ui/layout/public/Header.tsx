@@ -46,16 +46,16 @@ export const Header = () => {
         ${scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'}
       `}
     >
-      <nav className="container mx-auto px-4 sm:px-4 py-4">
+      <nav className="container mx-auto px-4 sm:px-6 py-4 md:py-4">
         <div className="flex items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="transition-opacity hover:opacity-80">
-            <Logo variant="full" />
+          <Link href="/" className="transition-opacity hover:opacity-80 flex-shrink-0">
+            <Logo variant="full" size="sm" />
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -75,7 +75,7 @@ export const Header = () => {
             {/* CTA */}
             <Link
               href="/register"
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all transform hover:scale-105 inline-flex items-center justify-center text-white"
+              className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all transform hover:scale-105 inline-flex items-center justify-center text-white text-sm whitespace-nowrap"
             >
               Empezar Gratis
             </Link>
@@ -83,8 +83,9 @@ export const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-slate-300 hover:text-emerald-400"
+            className="md:hidden p-2 text-slate-300 hover:text-emerald-400 flex-shrink-0"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
