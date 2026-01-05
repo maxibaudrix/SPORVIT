@@ -1,18 +1,16 @@
 // src/app/api/meal-plan/assign/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 /**
  * PATCH /api/meal-plan/assign
  * Asigna una receta a una comida y día específicos.
  */
 export async function PATCH(request: NextRequest) {
-  // Simulación de autenticación
-  const userId = 'mock-user-uuid-123'; 
-  if (!userId) {
-    return NextResponse.json({ message: "No autorizado." }, { status: 401 });
-  }
-
   try {
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
     const body = await request.json();
     const { date, mealType, recipeId } = body;
     
@@ -26,7 +24,10 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ message: "Receta asignada correctamente.", date, mealType, recipeId }, { status: 200 });
 
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error assigning recipe:', error);
     return NextResponse.json({ message: "Error interno al asignar la receta." }, { status: 500 });
   }
@@ -40,13 +41,10 @@ export async function PATCH(request: NextRequest) {
  * Quita la receta asignada a una comida y día específicos.
  */
 export async function DELETE(request: NextRequest) {
-    // Simulación de autenticación
-    const userId = 'mock-user-uuid-123'; 
-    if (!userId) {
-      return NextResponse.json({ message: "No autorizado." }, { status: 401 });
-    }
-  
     try {
+      // Authenticate user
+      const userId = await getUserIdFromSession(request);
+      if (!userId) return handleUnauthorized();
       const body = await request.json();
       const { date, mealType } = body;
       
@@ -60,7 +58,10 @@ export async function DELETE(request: NextRequest) {
   
       return NextResponse.json({ message: "Receta removida correctamente.", date, mealType }, { status: 200 });
   
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.message === "Unauthorized") {
+        return handleUnauthorized();
+      }
       console.error('Error removing recipe:', error);
       return NextResponse.json({ message: "Error interno al remover la receta." }, { status: 500 });
     }

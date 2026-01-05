@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addWeightSchema } from '@/lib/validations/progress';
 import prisma from '@/lib/prisma'; // Tu instancia de Prisma
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 /**
  * POST /api/progress/weight
@@ -20,8 +21,10 @@ export async function POST(request: NextRequest) {
 
     const { date, weight, bodyFat } = validation.data;
 
-    // Obtener userId (MOCKEO, reemplazar por lógica de autenticación)
-    const userId = 'mock-user-uuid-123';
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
+
     const targetDate = new Date(date + 'T00:00:00Z'); // Usar T00:00:00Z para consistencia de fecha
 
     // 2. Insertar en la base de datos (MOCKEO DE PRISMA)
@@ -46,6 +49,9 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error al registrar peso:', error);
     // Manejar errores específicos de la DB (ej. clave única duplicada si se usa create en lugar de upsert)
     return NextResponse.json({ message: "Error interno del servidor al registrar peso." }, { status: 500 });

@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateExerciseSchema } from '@/lib/validations/diary'; // Importar esquema Zod
 import prisma from '@/lib/prisma'; // Importa tu instancia de Prisma
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 interface Context {
   params: {
@@ -31,9 +32,10 @@ export async function PATCH(request: NextRequest, context: Context) {
     }
 
     const { completed, notes } = validation.data;
-    
-    // Obtener userId (MOCKEO, reemplazar por lógica de autenticación y verificación de propiedad)
-    const userId = 'mock-user-uuid-123';
+
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
 
     // 2. Actualizar el registro del ejercicio (MOCKEO DE PRISMA)
     /*
@@ -58,7 +60,10 @@ export async function PATCH(request: NextRequest, context: Context) {
       data: mockResponse 
     }, { status: 200 });
 
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     // Manejar error si el ejercicio no existe (P2025 en Prisma)
     console.error(`Error al actualizar ejercicio ${exerciseId}:`, error);
     return NextResponse.json({ message: `Error al actualizar el ejercicio. Es posible que el ID ${exerciseId} no exista.` }, { status: 404 });

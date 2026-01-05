@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { progressQuerySchema } from '@/lib/validations/progress';
 import prisma from '@/lib/prisma';
 import { calculateIMC } from '@/lib/calculations/imc'; // Tu función de cálculo de IMC
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 // Función de MOCK para obtener la fecha de inicio del período
 const getStartDate = (period: string): Date => {
@@ -30,11 +31,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: "Parámetro 'period' inválido." }, { status: 400 });
   }
 
-  // Obtener userId (MOCKEO, reemplazar por autenticación real)
-  const userId = 'mock-user-uuid-123'; 
-  const startDate = getStartDate(period);
-  
   try {
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
+
+    const startDate = getStartDate(period);
     // 2. Consulta de históricos (MOCKEO DE PRISMA)
     /*
     const weightHistory = await prisma.weightEntry.findMany({ 
@@ -92,7 +94,10 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error fetching progress data:', error);
     return NextResponse.json({ message: "Error interno al obtener los datos de progreso." }, { status: 500 });
   }

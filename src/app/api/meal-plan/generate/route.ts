@@ -1,19 +1,17 @@
 // src/app/api/meal-plan/generate/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { generateWeeklyPlan } from '@/lib/mealPlanEngine/generator';
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 /**
  * POST /api/meal-plan/generate
  * Genera un plan de comidas automático basado en preferencias.
  */
 export async function POST(request: NextRequest) {
-  // Simulación de autenticación
-  const userId = 'mock-user-uuid-123'; 
-  if (!userId) {
-    return NextResponse.json({ message: "No autorizado." }, { status: 401 });
-  }
-  
   try {
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
     const body = await request.json();
     const { week, preferences } = body;
     
@@ -29,7 +27,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newPlan, { status: 200 });
 
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error generating meal plan:', error);
     return NextResponse.json({ message: "Error interno al generar el plan automático." }, { status: 500 });
   }

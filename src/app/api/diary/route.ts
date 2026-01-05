@@ -2,7 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 // Importa tu instancia de Prisma (asumiendo que está en lib/prisma)
-import prisma from '@/lib/prisma'; 
+import prisma from '@/lib/prisma';
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper'; 
 
 // Esquema de validación para el query parameter 'date'
 const dateQuerySchema = z.object({
@@ -28,12 +29,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: result.error.errors[0].message }, { status: 400 });
   }
 
-  // En un entorno real, obtendrías el userId de la sesión/token de autenticación
-  const userId = 'mock-user-uuid-123'; 
-  const targetDate = new Date(dateParam);
-  
-  // 2. Consulta y agregación de datos (MOCKEO)
+  // 2. Authenticate user
   try {
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
+
+    const targetDate = new Date(dateParam);
+
+    // 3. Consulta y agregación de datos (MOCKEO)
     // a) Obtener comidas del día
     // const meals = await prisma.diaryMeal.findMany({ where: { userId, date: targetDate }, include: { product: true } });
     const mockMeals = {
@@ -68,7 +71,10 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error fetching diary data:', error);
     return NextResponse.json({ message: "Error interno al obtener los datos del diario." }, { status: 500 });
   }

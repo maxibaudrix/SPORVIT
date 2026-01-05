@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addWaterSchema } from '@/lib/validations/diary'; // Importar esquema Zod
 import prisma from '@/lib/prisma'; // Importa tu instancia de Prisma
+import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
 
 /**
  * POST /api/diary/water
@@ -20,9 +21,10 @@ export async function POST(request: NextRequest) {
 
     const { date, glasses } = validation.data;
 
-    // Obtener userId (MOCKEO, reemplazar por lógica de autenticación)
-    const userId = 'mock-user-uuid-123';
-    
+    // Authenticate user
+    const userId = await getUserIdFromSession(request);
+    if (!userId) return handleUnauthorized();
+
     const targetDate = new Date(date + 'T00:00:00Z');
 
     // 2. Upsert en la base de datos (MOCKEO DE PRISMA)
@@ -45,7 +47,10 @@ export async function POST(request: NextRequest) {
       data: mockResponse 
     }, { status: 200 });
 
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "Unauthorized") {
+      return handleUnauthorized();
+    }
     console.error('Error al registrar agua:', error);
     return NextResponse.json({ message: "Error interno del servidor." }, { status: 500 });
   }
