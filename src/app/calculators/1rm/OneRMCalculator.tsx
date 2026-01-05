@@ -3,19 +3,43 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Calculator, Info, Code, Copy, Check, MessageCircle, Send, Mail, 
-  Dumbbell, Zap, ShieldAlert, ArrowRight, Share2, Target, Trophy, Activity
+  Dumbbell, Zap, ShieldAlert, ArrowRight, Share2, Target, Trophy, Activity, BarChart
 } from 'lucide-react';
 
-export default function OneRMCalculator() {
+// ============================================
+// NUEVO: Interfaz Props con compact
+// ============================================
+interface Props {
+  compact?: boolean;
+}
+
+// ============================================
+// NUEVO: Parámetro { compact = false }
+// ============================================
+export default function OneRMCalculator({ compact = false }: Props) {
   const [formData, setFormData] = useState({ weight: '', reps: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<any>(null);
+  
+  // ============================================
+  // CONDICIONAL: Estados solo para versión completa
+  // ============================================
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
   const [currentUrl, setCurrentUrl] = useState('');
 
-  useEffect(() => { setCurrentUrl(window.location.href); }, []);
+  useEffect(() => { 
+    // ============================================
+    // CONDICIONAL: Solo cargar URL en versión completa
+    // ============================================
+    if (typeof window !== 'undefined' && !compact) {
+      setCurrentUrl(window.location.href); 
+    }
+  }, [compact]);
 
+  // ============================================
+  // MANTENIDO: Lógica de cálculo CORE (sin cambios)
+  // ============================================
   const calculate1RM = (e: React.FormEvent) => {
     e.preventDefault();
     const w = parseFloat(formData.weight);
@@ -47,30 +71,143 @@ export default function OneRMCalculator() {
       percentages
     });
 
-    if ((window as any).gtag) {
+    // ============================================
+    // CONDICIONAL: Analytics solo en versión completa
+    // ============================================
+    if (!compact && (window as any).gtag) {
       (window as any).gtag('event', 'calculate_1rm', { value: avg1RM });
     }
   };
 
-  // SHARE TEXT CORREGIDO: Incluye los datos reales obtenidos
+  // ============================================
+  // CONDICIONAL: Share text solo para versión completa
+  // ============================================
   const shareText = useMemo(() => {
-    if (!result) return "";
+    if (!result || compact) return "";
     return `🏋️‍♂️ ¡He estimado mi 1RM en Sporvit!\n\nFuerza Máxima: ${result.oneRM} kg\nCarga al 80%: ${result.percentages.find((p:any)=>p.pct===80).val} kg\n\nCalcula tu potencial aquí:`;
-  }, [result]);
+  }, [result, compact]);
 
+  // ============================================
+  // CONDICIONAL: Embed snippet solo para versión completa
+  // ============================================
   const embedSnippet = useMemo(() => 
-    `<iframe src="${currentUrl}" width="100%" height="950px" frameborder="0" style="border-radius:24px; overflow:hidden; border:1px solid #1e293b;" title="Calculadora 1RM Sporvit"></iframe>`,
-  [currentUrl]);
+    compact ? "" : `<iframe src="${currentUrl}" width="100%" height="950px" frameborder="0" style="border-radius:24px; overflow:hidden; border:1px solid #1e293b;" title="Calculadora 1RM Sporvit"></iframe>`,
+  [currentUrl, compact]);
 
+  // ============================================
+  // CONDICIONAL: copyToClipboard solo para versión completa
+  // ============================================
   const copyToClipboard = useCallback(async (text: string, type: 'embed' | 'share') => {
+    if (compact) return;
     await navigator.clipboard.writeText(text);
     if (type === 'embed') setCopyStatus('copied');
     else setShareStatus('copied');
     setTimeout(() => { setCopyStatus('idle'); setShareStatus('idle'); }, 2000);
-  }, []);
+  }, [compact]);
 
+  // ============================================
+  // NUEVO: Renderizado condicional según compact
+  // ============================================
+  if (compact) {
+    // ========== MODO SIDEBAR (COMPACTO) ==========
+    return (
+      <div className="p-4 space-y-6">
+        {/* Formulario compacto */}
+        <form onSubmit={calculate1RM} noValidate className="space-y-4">
+          <div className="space-y-4">
+            {/* Input Peso */}
+            <div className="space-y-2">
+              <label htmlFor="weight-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+                <Dumbbell className="w-3 h-3 text-red-500" /> Peso Levantado (kg)
+              </label>
+              <input
+                id="weight-compact"
+                type="number"
+                value={formData.weight}
+                onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                className={`w-full bg-slate-950 border ${errors.weight ? 'border-red-500' : 'border-slate-800'} rounded-xl py-3 px-4 text-lg text-white outline-none focus:border-red-500 transition-all`}
+                placeholder="100"
+              />
+              {errors.weight && <p className="text-red-400 text-xs">{errors.weight}</p>}
+            </div>
+
+            {/* Input Reps */}
+            <div className="space-y-2">
+              <label htmlFor="reps-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+                <Activity className="w-3 h-3 text-red-500" /> Repeticiones (1-12)
+              </label>
+              <input
+                id="reps-compact"
+                type="number"
+                value={formData.reps}
+                onChange={(e) => setFormData({...formData, reps: e.target.value})}
+                className={`w-full bg-slate-950 border ${errors.reps ? 'border-red-500' : 'border-slate-800'} rounded-xl py-3 px-4 text-lg text-white outline-none focus:border-red-500 transition-all`}
+                placeholder="5"
+              />
+              {errors.reps && <p className="text-red-400 text-xs">{errors.reps}</p>}
+            </div>
+          </div>
+
+          {/* Botón Calcular */}
+          <button 
+            type="submit" 
+            className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+          >
+            <Target className="w-4 h-4" /> Calcular 1RM
+          </button>
+        </form>
+
+        {/* Resultados compactos */}
+        {result && (
+          <div className="space-y-4">
+            {/* Resultado principal */}
+            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+              <p className="text-red-500 font-bold uppercase text-xs mb-2">Tu 1RM Estimado</p>
+              <div className="text-5xl font-black text-white mb-3">
+                {result.oneRM} <span className="text-lg text-slate-500">kg</span>
+              </div>
+              
+              {/* Fórmulas */}
+              <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800">
+                <div className="bg-slate-950/50 p-2 rounded-lg">
+                  <div className="text-[9px] text-slate-500 uppercase mb-1">Brzycki</div>
+                  <div className="text-sm font-bold text-white">{result.brzycki}kg</div>
+                </div>
+                <div className="bg-slate-950/50 p-2 rounded-lg">
+                  <div className="text-[9px] text-slate-500 uppercase mb-1">Epley</div>
+                  <div className="text-sm font-bold text-white">{result.epley}kg</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Porcentajes más relevantes (compacto) */}
+            <div>
+              <p className="text-xs text-slate-500 font-bold uppercase mb-2 text-center">Cargas de Entrenamiento</p>
+              <div className="grid grid-cols-4 gap-2">
+                {[90, 85, 80, 75].map(pct => {
+                  const pctData = result.percentages.find((p: any) => p.pct === pct);
+                  return (
+                    <div key={pct} className="bg-slate-950/50 border border-slate-800 p-2 rounded-lg text-center">
+                      <div className="text-[9px] text-red-500 font-bold">{pct}%</div>
+                      <div className="text-sm font-bold text-white">{pctData?.val}<span className="text-[8px] text-slate-500">kg</span></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ========== MODO PÁGINA COMPLETA (ORIGINAL) ==========
   return (
     <div className="pt-8 pb-16 container mx-auto px-4 sm:px-6 max-w-6xl">
+      
+      {/* ============================================
+          HEADER - Solo en versión completa
+          ============================================ */}
       <header className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black mb-6 uppercase tracking-widest">
           <Trophy className="w-3 h-3" /> Máximo Potencial Mecánico
@@ -83,7 +220,10 @@ export default function OneRMCalculator() {
         </p>
       </header>
 
+      {/* GRID PRINCIPAL */}
       <div className="grid lg:grid-cols-12 gap-8 mb-20">
+        
+        {/* COLUMNA FORMULARIO */}
         <section className="lg:col-span-7">
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-sm shadow-2xl">
             <form onSubmit={calculate1RM} noValidate className="space-y-8">
@@ -122,6 +262,7 @@ export default function OneRMCalculator() {
           </div>
         </section>
 
+        {/* COLUMNA RESULTADOS */}
         <aside className="lg:col-span-5 space-y-6">
           <div className={`${result ? 'opacity-100 scale-100' : 'opacity-30 grayscale pointer-events-none transition-all duration-1000'}`}>
             <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
@@ -141,7 +282,9 @@ export default function OneRMCalculator() {
                 </div>
               </div>
 
-              {/* SHARE */}
+              {/* ============================================
+                  SHARE BUTTONS - Solo en versión completa
+                  ============================================ */}
               {result && (
                 <div className="grid grid-cols-4 gap-2">
                   <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + currentUrl)}`)} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl hover:text-green-500 transition-all flex justify-center shadow-lg"><MessageCircle className="w-5 h-5" /></button>
@@ -153,6 +296,9 @@ export default function OneRMCalculator() {
             </div>
           </div>
 
+          {/* ============================================
+              EMBED WIDGET - Solo en versión completa
+              ============================================ */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] justify-center">
               <Code className="w-3 h-3 text-red-500" /> Widget para tu Web de Fuerza
@@ -166,6 +312,9 @@ export default function OneRMCalculator() {
         </aside>
       </div>
 
+      {/* ============================================
+          PORCENTAJES - Siempre visible si hay resultado
+          ============================================ */}
       {result && (
         <section className="mb-20">
            <h3 className="text-center text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8">Porcentajes de Entrenamiento Basados en tu 1RM</h3>
@@ -180,6 +329,9 @@ export default function OneRMCalculator() {
         </section>
       )}
 
+      {/* ============================================
+          ARTÍCULOS EDUCATIVOS - Solo en versión completa
+          ============================================ */}
       <article className="prose prose-invert prose-slate max-w-none space-y-16">
         <section className="bg-slate-900/30 border border-slate-800 rounded-[40px] p-8 md:p-12">
           <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-4">

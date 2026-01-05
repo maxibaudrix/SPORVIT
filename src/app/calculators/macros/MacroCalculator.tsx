@@ -6,7 +6,9 @@ import {
   Flame, Scale, Target, Zap, ShieldAlert, ArrowRight, Share2, Brain, Salad
 } from 'lucide-react';
 
-// Tipos de dieta y sus porcentajes (Proteína, Carbohidratos, Grasas)
+// ============================================
+// Tipos de dieta y sus porcentajes (P, C, F)
+// ============================================
 const DIET_TYPES = {
   balanced: { name: 'Equilibrada', p: 30, c: 40, f: 30 },
   low_carb: { name: 'Baja en Carbohidratos', p: 40, c: 20, f: 40 },
@@ -14,7 +16,17 @@ const DIET_TYPES = {
   keto: { name: 'Cetogénica (Keto)', p: 25, c: 5, f: 70 },
 };
 
-export default function MacroCalculator() {
+// ============================================
+// NUEVO: Interfaz Props con compact
+// ============================================
+interface Props {
+  compact?: boolean;
+}
+
+// ============================================
+// NUEVO: Parámetro { compact = false }
+// ============================================
+export default function MacroCalculator({ compact = false }: Props) {
   const [formData, setFormData] = useState({
     calories: '',
     dietType: 'balanced'
@@ -22,12 +34,26 @@ export default function MacroCalculator() {
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [result, setResult] = useState<any>(null);
+  
+  // ============================================
+  // CONDICIONAL: Estados solo para versión completa
+  // ============================================
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
   const [currentUrl, setCurrentUrl] = useState('');
 
-  useEffect(() => { setCurrentUrl(window.location.href); }, []);
+  useEffect(() => { 
+    // ============================================
+    // CONDICIONAL: Solo cargar URL en versión completa
+    // ============================================
+    if (!compact) {
+      setCurrentUrl(window.location.href); 
+    }
+  }, [compact]);
 
+  // ============================================
+  // MANTENIDO: Lógica de cálculo CORE (sin cambios)
+  // ============================================
   const calculateMacros = (e: React.FormEvent) => {
     e.preventDefault();
     const kcal = parseFloat(formData.calories);
@@ -52,28 +78,136 @@ export default function MacroCalculator() {
       distribution: diet
     });
 
-    if ((window as any).gtag) {
+    // ============================================
+    // CONDICIONAL: Analytics solo en versión completa
+    // ============================================
+    if (!compact && (window as any).gtag) {
       (window as any).gtag('event', 'calculate_macros', { diet_type: diet.name, calories: kcal });
     }
   };
 
+  // ============================================
+  // CONDICIONAL: Share text solo para versión completa
+  // ============================================
   const shareText = useMemo(() => 
-    result ? `🥗 Mis macros para ${result.kcal} kcal: P: ${result.protein}g | C: ${result.carbs}g | G: ${result.fats}g. ¡Calcula los tuyos en Sporvit!` : "", 
-  [result]);
+    compact ? "" : (result ? `🥗 Mis macros para ${result.kcal} kcal: P: ${result.protein}g | C: ${result.carbs}g | G: ${result.fats}g. ¡Calcula los tuyos en Sporvit!` : ""), 
+  [result, compact]);
 
+  // ============================================
+  // CONDICIONAL: Embed snippet solo para versión completa
+  // ============================================
   const embedSnippet = useMemo(() => 
-    `<iframe src="${currentUrl}" width="100%" height="950px" frameborder="0" style="border-radius:24px; overflow:hidden;" title="Calculadora Macros Sporvit"></iframe>`,
-  [currentUrl]);
+    compact ? "" : `<iframe src="${currentUrl}" width="100%" height="950px" frameborder="0" style="border-radius:24px; overflow:hidden;" title="Calculadora Macros Sporvit"></iframe>`,
+  [currentUrl, compact]);
 
+  // ============================================
+  // CONDICIONAL: copyToClipboard solo para versión completa
+  // ============================================
   const copyToClipboard = useCallback(async (text: string, type: 'embed' | 'share') => {
+    if (compact) return;
     await navigator.clipboard.writeText(text);
     if (type === 'embed') setCopyStatus('copied');
     else setShareStatus('copied');
     setTimeout(() => { setCopyStatus('idle'); setShareStatus('idle'); }, 2000);
-  }, []);
+  }, [compact]);
 
+  // ============================================
+  // NUEVO: Renderizado condicional según compact
+  // ============================================
+  if (compact) {
+    // ========== MODO SIDEBAR (COMPACTO) ==========
+    return (
+      <div className="p-4 space-y-6">
+        {/* Formulario compacto */}
+        <form onSubmit={calculateMacros} noValidate className="space-y-4">
+          {/* Input Calorías */}
+          <div className="space-y-2">
+            <label htmlFor="calories-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+              <Flame className="w-3 h-3 text-emerald-500" /> Calorías Diarias
+            </label>
+            <div className="relative">
+              <input
+                id="calories-compact"
+                type="number"
+                value={formData.calories}
+                onChange={(e) => setFormData({...formData, calories: e.target.value})}
+                className={`w-full bg-slate-950 border ${errors.calories ? 'border-red-500' : 'border-slate-800'} rounded-xl py-3 px-4 text-lg text-white outline-none focus:border-emerald-500 transition-all pr-16`}
+                placeholder="2500"
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs font-bold">KCAL</div>
+            </div>
+            {errors.calories && <p className="text-red-400 text-xs">{errors.calories}</p>}
+          </div>
+
+          {/* Tipo de Dieta - Compacto */}
+          <div className="space-y-2">
+            <label htmlFor="dietType-compact" className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2">
+              <Target className="w-3 h-3 text-emerald-500" /> Estrategia
+            </label>
+            <select
+              id="dietType-compact"
+              value={formData.dietType}
+              onChange={(e) => setFormData({...formData, dietType: e.target.value})}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-white outline-none focus:border-emerald-500 transition-all"
+            >
+              {Object.entries(DIET_TYPES).map(([key, value]) => (
+                <option key={key} value={key}>
+                  {value.name} (P:{value.p}% C:{value.c}% G:{value.f}%)
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Botón Calcular */}
+          <button 
+            type="submit" 
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+          >
+            <Calculator className="w-4 h-4" /> Calcular Macros
+          </button>
+        </form>
+
+        {/* Resultados compactos */}
+        {result && (
+          <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 space-y-3">
+            <p className="text-emerald-500 font-bold uppercase text-xs text-center mb-3">Tu Plan de Macros</p>
+            
+            {/* Macros en grid compacto */}
+            <div className="space-y-2">
+              {[
+                { label: 'Proteínas', val: result.protein, color: 'text-red-400', bgColor: 'bg-red-500/10', kcal: 4 },
+                { label: 'Carbohidratos', val: result.carbs, color: 'text-blue-400', bgColor: 'bg-blue-500/10', kcal: 4 },
+                { label: 'Grasas', val: result.fats, color: 'text-orange-400', bgColor: 'bg-orange-500/10', kcal: 9 }
+              ].map((item, i) => (
+                <div key={i} className={`${item.bgColor} border border-slate-800 p-3 rounded-lg flex justify-between items-center`}>
+                  <div>
+                    <div className={`text-xs font-bold ${item.color}`}>{item.label}</div>
+                    <div className="text-[9px] text-slate-500">{item.val * item.kcal} kcal</div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-2xl font-black ${item.color}`}>{item.val}<span className="text-xs text-slate-500 ml-1">g</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Total */}
+            <div className="pt-3 border-t border-slate-800 text-center">
+              <div className="text-xs text-slate-500 mb-1">Total Diario</div>
+              <div className="text-lg font-black text-white">{result.kcal} <span className="text-xs text-slate-500">kcal</span></div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ========== MODO PÁGINA COMPLETA (ORIGINAL) ==========
   return (
     <div className="pt-8 pb-16 container mx-auto px-4 sm:px-6 max-w-6xl">
+      {/* ============================================
+          HEADER - Solo en versión completa
+          ============================================ */}
       <header className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black mb-6 uppercase tracking-widest">
           <Salad className="w-3 h-3" /> Arquitectura Nutricional
@@ -173,7 +307,9 @@ export default function MacroCalculator() {
                 ))}
               </div>
 
-              {/* SHARE */}
+              {/* ============================================
+                  SHARE BUTTONS - Solo en versión completa
+                  ============================================ */}
               {result && (
                 <div className="mt-8 pt-8 border-t border-slate-800 grid grid-cols-4 gap-2">
                   <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + currentUrl)}`)} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl hover:text-green-500 transition-all flex justify-center shadow-lg" aria-label="WhatsApp"><MessageCircle className="w-5 h-5" /></button>
@@ -185,6 +321,9 @@ export default function MacroCalculator() {
             </div>
           </div>
 
+          {/* ============================================
+              EMBED WIDGET - Solo en versión completa
+              ============================================ */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 shadow-xl">
             <div className="flex items-center gap-2 mb-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] justify-center">
               <Code className="w-3 h-3 text-emerald-500" /> Inserta este plan nutricional
@@ -198,7 +337,9 @@ export default function MacroCalculator() {
         </aside>
       </div>
 
-      {/* CONTENIDO EDUCATIVO (+800 PALABRAS) */}
+      {/* ============================================
+          CONTENIDO EDUCATIVO - Solo en versión completa
+          ============================================ */}
       <article className="prose prose-invert prose-slate max-w-none space-y-16">
         <section className="bg-slate-900/30 border border-slate-800 rounded-[40px] p-8 md:p-12">
           <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-4">
