@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type SidebarTab = 'calendar' | 'timer' | 'calculators' | 'progress' | null;
+export type SidebarTab = 'calendar' | 'timer' | 'calculators' | 'progress' | 'tracking' | null;
 
 interface SidebarStore {
   // Estado del sidebar

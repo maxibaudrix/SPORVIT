@@ -7,6 +7,7 @@ import MonthlyCalendarWidget from '@/components/ui/layout/dashboard/MonthlyCalen
 import TimerWidget from '@/components/ui/layout/dashboard/TimerWidget';
 import CalculatorsBrowser from '@/components/ui/layout/dashboard/sidebar/CalculatorsBrowser';
 import CalculatorWrapper from '@/components/ui/layout/dashboard/sidebar/CalculatorWrapper';
+import TrackingWidget from '@/components/ui/layout/dashboard/TrackingWidget';
 
 
 export default function CollapsibleSidebar() {
@@ -24,7 +25,7 @@ export default function CollapsibleSidebar() {
   return (
     <aside
       className={`
-        fixed left-12 top-[112px] h-[calc(100vh-112px)]
+        fixed left-12 top-16 h-[calc(100vh-64px)]
         bg-slate-900/95 backdrop-blur-sm border-r border-slate-800 z-20
         transition-all duration-300 ease-in-out
         ${isOpen ? 'w-80 opacity-100' : 'w-0 opacity-0'}
@@ -41,6 +42,7 @@ export default function CollapsibleSidebar() {
             {activeTab === 'calendar' && <MonthlyCalendarWidget />}
             {activeTab === 'timer' && <TimerWidget />}
             {activeTab === 'calculators' && <CalculatorsBrowser />}
+            {activeTab === 'tracking' && <TrackingWidget />}
           </>
         )}
       </div>

@@ -2,7 +2,6 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth'; // Función de servidor de NextAuth v5
 import { HeaderBar } from '@/components/ui/layout/dashboard/HeaderBar';
-import TopMetricsBar from '@/components/ui/layout/dashboard/TopMetricsBar';
 import VerticalTabs from '@/components/ui/layout/dashboard/VerticalTabs';
 import CollapsibleSidebar from '@/components/ui/layout/dashboard/CollapsibleSidebar';
 import { Providers } from "@/components/Providers";
@@ -25,11 +24,6 @@ export default async function DashboardLayout({
       <div className="min-h-screen bg-slate-950">
         {/* Header Bar */}
         <HeaderBar />
-
-        {/* Top Metrics Bar - Desktop only */}
-        <div className="hidden lg:block sticky top-16 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800">
-          <TopMetricsBar />
-        </div>
 
         {/* Main Layout with Tabs System */}
         <div className="relative">

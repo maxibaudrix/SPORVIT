@@ -1,7 +1,7 @@
 // src/components/ui/layout/dashboard/VerticalTabs.tsx
 'use client';
 
-import { Calendar, Timer, Calculator, TrendingUp } from 'lucide-react';
+import { Calendar, Timer, Calculator, TrendingUp, Activity } from 'lucide-react';
 import { useSidebarStore } from '@/store/sidebarStore';
 import type { SidebarTab } from '@/store/sidebarStore';
 
@@ -32,13 +32,18 @@ const TABS: TabConfig[] = [
     icon: <TrendingUp className="w-5 h-5" />,
     label: 'Progreso Semanas',
   },
+  {
+    id: 'tracking',
+    icon: <Activity className="w-5 h-5" />,
+    label: 'Seguimiento',
+  },
 ];
 
 export default function VerticalTabs() {
   const { activeTab, toggleTab } = useSidebarStore();
 
   return (
-    <div className="fixed left-0 top-[112px] h-[calc(100vh-112px)] w-12 bg-slate-900 border-r border-slate-800 flex flex-col z-30">
+    <div className="fixed left-0 top-16 h-[calc(100vh-64px)] w-12 bg-slate-900 border-r border-slate-800 flex flex-col z-30">
       {/* Tabs */}
       <div className="flex-1 flex flex-col py-2">
         {TABS.map((tab) => {

@@ -404,11 +404,11 @@ const UserMenu = () => {
 export function HeaderBar() {
   return (
     <header className="sticky top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
-      <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        
+      <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+
         {/* Logo - Left */}
         <Link href="/dashboard" className="flex-shrink-0">
-          <Logo variant="symbol" className="w-8 h-8" />
+          <Logo variant="symbol" size="sm" />
         </Link>
 
         {/* Search Bar - Center (hidden on mobile) */}
