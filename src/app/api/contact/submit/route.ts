@@ -1,5 +1,6 @@
 // src/app/api/contact/submit/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { withContactFormRateLimit } from '@/lib/lib_rate-limiter';
 
 interface ContactFormData {
   name: string;
@@ -18,7 +19,7 @@ async function sendEmail(data: any) {
   return new Promise((resolve) => setTimeout(resolve, 1000)); // Simular delay de red
 }
 
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   try {
     // Extraer y tipar los datos del cuerpo de la solicitud
     const data: ContactFormData = await req.json();
@@ -52,3 +53,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// Apply contact form rate limiting: 5 requests per hour
+export const POST = withContactFormRateLimit(handlePOST);

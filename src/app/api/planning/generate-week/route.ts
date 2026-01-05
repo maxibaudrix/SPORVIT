@@ -4,8 +4,9 @@ import { prisma } from '@/lib/db';
 import { generateWeekPlan } from '@/lib/ai/generateWeekPlan';
 import { persistWeek } from '@/lib/planning/persistWeek';
 import { buildUserPlanningContext } from '@/lib/planning/buildUserPlanningContext';
+import { withAIRateLimit } from '@/lib/lib_rate-limiter';
 
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -112,3 +113,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// Apply AI rate limiting: 10 requests per hour
+export const POST = withAIRateLimit(handlePOST);

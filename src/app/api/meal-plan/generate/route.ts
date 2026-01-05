@@ -2,12 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateWeeklyPlan } from '@/lib/mealPlanEngine/generator';
 import { getUserIdFromSession, handleUnauthorized } from '@/lib/auth-helper';
+import { withAIRateLimit } from '@/lib/lib_rate-limiter';
 
 /**
  * POST /api/meal-plan/generate
  * Genera un plan de comidas automático basado en preferencias.
  */
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest) {
   try {
     // Authenticate user
     const userId = await getUserIdFromSession(request);
@@ -35,3 +36,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Error interno al generar el plan automático." }, { status: 500 });
   }
 }
+
+// Apply AI rate limiting: 10 requests per hour
+export const POST = withAIRateLimit(handlePOST);

@@ -1,11 +1,12 @@
 // src/app/api/auth/forgot-password/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma  from '@/lib/prisma'
 import { generatePasswordResetToken } from '@/lib/auth/tokens'
 import { sendEmail } from '@/lib/email/send-email'
 import ResetPasswordEmail from '@/lib/email/templates/reset-password'
+import { withPasswordResetRateLimit } from '@/lib/lib_rate-limiter'
 
-export async function POST(request: Request) {
+async function handlePOST(request: NextRequest) {
   try {
     const { email } = await request.json()
 
@@ -57,3 +58,6 @@ export async function POST(request: Request) {
     )
   }
 }
+
+// Apply strict rate limiting: 3 requests per hour
+export const POST = withPasswordResetRateLimit(handlePOST);

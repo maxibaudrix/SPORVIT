@@ -1,9 +1,10 @@
 // src/app/api/recipes/generate/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateRecipesFromPantry } from '@/lib/recipeEngine/generateRecipe';
+import { withAIRateLimit } from '@/lib/lib_rate-limiter';
 
 // Endpoint para generar recetas (útil para mover la lógica pesada o llamadas a OpenAI al servidor)
-export async function POST(request: Request) {
+async function handlePOST(request: NextRequest) {
   try {
     const { pantryItems } = await request.json();
     
@@ -18,3 +19,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Generation failed' }, { status: 500 });
   }
 }
+
+// Apply AI rate limiting: 10 requests per hour
+export const POST = withAIRateLimit(handlePOST);

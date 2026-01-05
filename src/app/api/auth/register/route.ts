@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { withAuthRateLimit } from "@/lib/lib_rate-limiter";
 
 // Schema de validación
 const registerSchema = z.object({
@@ -11,7 +12,7 @@ const registerSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
 });
 
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest) {
   try {
     const body = await request.json();
     
@@ -87,3 +88,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// Apply rate limiting: 5 requests per 15 minutes
+export const POST = withAuthRateLimit(handlePOST);

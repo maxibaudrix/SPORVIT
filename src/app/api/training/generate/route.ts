@@ -1,8 +1,9 @@
 // src/app/api/training/generate/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateDailyWorkout } from '@/lib/trainingEngine/generateWorkout';
+import { withAIRateLimit } from '@/lib/lib_rate-limiter';
 
-export async function POST(request: Request) {
+async function handlePOST(request: NextRequest) {
   try {
     const { goal } = await request.json();
     
@@ -17,3 +18,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Generation failed' }, { status: 500 });
   }
 }
+
+// Apply AI rate limiting: 10 requests per hour
+export const POST = withAIRateLimit(handlePOST);

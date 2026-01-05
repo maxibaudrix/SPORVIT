@@ -1,13 +1,14 @@
 // src/app/api/auth/reset-password/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma  from '@/lib/prisma'
 import {
   verifyPasswordResetToken,
   deletePasswordResetToken,
 } from '@/lib/auth/tokens'
 import { hashPassword, validatePasswordStrength } from '@/lib/auth/password'
+import { withPasswordResetRateLimit, withAuthRateLimit } from '@/lib/lib_rate-limiter'
 
-export async function POST(request: Request) {
+async function handlePOST(request: NextRequest) {
   try {
     const { token, password } = await request.json()
 
@@ -91,8 +92,11 @@ export async function POST(request: Request) {
   }
 }
 
+// Apply strict rate limiting: 3 requests per hour
+export const POST = withPasswordResetRateLimit(handlePOST);
+
 // Endpoint GET para validar token sin cambiar contraseña (útil para UI)
-export async function GET(request: Request) {
+async function handleGET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const token = searchParams.get('token')
@@ -130,3 +134,6 @@ export async function GET(request: Request) {
     )
   }
 }
+
+// Apply auth rate limiting to GET: 5 requests per 15 minutes
+export const GET = withAuthRateLimit(handleGET);
