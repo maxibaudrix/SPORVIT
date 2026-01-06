@@ -26,7 +26,7 @@ export default function CollapsibleSidebar() {
     <aside
       className={`
         fixed left-12 top-16 h-[calc(100vh-64px)]
-        bg-slate-900/95 backdrop-blur-sm border-r border-slate-800 z-20
+        bg-slate-900/95 backdrop-blur-sm border-r border-slate-800 z-30
         transition-all duration-300 ease-in-out
         ${isOpen ? 'w-80 opacity-100' : 'w-0 opacity-0'}
         overflow-hidden

@@ -1,31 +1,30 @@
 'use client';
 
-import { useEffect } from 'react';
-import { WeekPlan, DayEvent } from '@/types/calendar';
+import { useEffect, useState } from 'react';
+import { DayEvent } from '@/types/calendar';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
-import { getWeekStart } from '@/lib/utils/calendar';
 import WeekSelector from './WeekSelector';
-import DayColumn from './DayColumn';
+import WeeklyDatePicker from './WeeklyDatePicker';
+import DailyDetailView from '@/components/ui/layout/dashboard/DailyDetailView';
 import { Loader2 } from 'lucide-react';
 
 interface WeeklyCalendarProps {
   userId: string;
-  onEventClick: (event: DayEvent) => void;
-  onAddEvent: (date: Date) => void;
 }
 
 export default function WeeklyCalendar({
   userId,
-  onEventClick,
-  onAddEvent,
 }: WeeklyCalendarProps) {
   const {
-    getCurrentDate,
     goToNextWeek,
     goToPreviousWeek,
     goToToday,
   } = useCalendarState();
+
+  // Estados para la fecha y eventos seleccionados
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDayEvents, setSelectedDayEvents] = useState<DayEvent[]>([]);
 
   // 🚨 HARDCODED TEMPORALMENTE - Semana del 29 de diciembre 2025
   const weekStartDate = new Date('2025-12-29T00:00:00');
@@ -37,10 +36,68 @@ export default function WeeklyCalendar({
     userId,
   });
 
-  // Refetch deshabilitado temporalmente (usando fecha hardcodeada)
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  // Auto-seleccionar día actual al cargar
+  useEffect(() => {
+    if (weekPlan && !selectedDate) {
+      const today = new Date();
+      const todayInWeek = weekPlan.days.find(d =>
+        d.date.toDateString() === today.toDateString()
+      );
+
+      if (todayInWeek) {
+        setSelectedDate(today);
+        setSelectedDayEvents(todayInWeek.events);
+      } else {
+        // Si hoy no está en la semana, seleccionar el primer día
+        setSelectedDate(weekPlan.days[0].date);
+        setSelectedDayEvents(weekPlan.days[0].events);
+      }
+    }
+  }, [weekPlan, selectedDate]);
+
+  // Handler para selección de fecha desde WeeklyDatePicker
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+
+    // Encontrar los eventos del día seleccionado
+    if (weekPlan) {
+      const selectedDayPlan = weekPlan.days.find(
+        d => d.date.toDateString() === date.toDateString()
+      );
+      setSelectedDayEvents(selectedDayPlan?.events || []);
+    }
+  };
+
+  // Handlers para navegación de días en DailyDetailPanel
+  const handlePreviousDay = () => {
+    if (!selectedDate || !weekPlan) return;
+    const prevDay = new Date(selectedDate);
+    prevDay.setDate(prevDay.getDate() - 1);
+
+    const prevDayPlan = weekPlan.days.find(
+      d => d.date.toDateString() === prevDay.toDateString()
+    );
+
+    if (prevDayPlan) {
+      setSelectedDate(prevDay);
+      setSelectedDayEvents(prevDayPlan.events);
+    }
+  };
+
+  const handleNextDay = () => {
+    if (!selectedDate || !weekPlan) return;
+    const nextDay = new Date(selectedDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const nextDayPlan = weekPlan.days.find(
+      d => d.date.toDateString() === nextDay.toDateString()
+    );
+
+    if (nextDayPlan) {
+      setSelectedDate(nextDay);
+      setSelectedDayEvents(nextDayPlan.events);
+    }
+  };
 
   if (isLoading) {
     return <LoadingState />;
@@ -55,7 +112,7 @@ export default function WeeklyCalendar({
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-950">
       {/* Week selector */}
       <WeekSelector
         currentDate={weekStartDate}
@@ -64,19 +121,24 @@ export default function WeeklyCalendar({
         onToday={goToToday}
       />
 
-      {/* Calendar grid */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-7 h-full">
-          {weekPlan.days.map((dayPlan) => (
-            <DayColumn
-              key={dayPlan.date.toISOString()}
-              dayPlan={dayPlan}
-              onEventClick={onEventClick}
-              onAddEvent={onAddEvent}
-            />
-          ))}
+      {/* Weekly Date Picker */}
+      <WeeklyDatePicker
+        days={weekPlan.days}
+        selectedDate={selectedDate}
+        onDateSelect={handleDateSelect}
+      />
+
+      {/* Daily Detail View - Integrado */}
+      {selectedDate && (
+        <div className="flex-1 overflow-y-auto pb-8">
+          <DailyDetailView
+            date={selectedDate}
+            events={selectedDayEvents}
+            onPreviousDay={handlePreviousDay}
+            onNextDay={handleNextDay}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,17 +1,13 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
 import { usePlanGenerationStatus } from '@/hooks/usePlanGenerationStatus';
-import { DayEvent } from '@/types/calendar';
-import { getWeekStart } from '@/lib/utils/calendar';
 import { Loader2, CheckCircle2, X } from 'lucide-react';
 import { getProgramBySlug, type ProgramaPlan } from '@/lib/data/trainingPlans';
 
 import WeeklyCalendar from '@/components/ui/layout/dashboard/calendar/WeeklyCalendar';
-import DailyDetailPanel from '@/components/ui/layout/dashboard/DailyDetailPanel';
 import { PlanGenerationToast } from '@/components/dashboard/PlanGenerationToast';
 import { WeekStatusDrawer } from '@/components/dashboard/WeekStatusDrawer';
 
@@ -20,38 +16,18 @@ export default function DashboardPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  const [selectedEvent, setSelectedEvent] = useState<DayEvent | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedDayEvents, setSelectedDayEvents] = useState<DayEvent[]>([]);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   // Estados para carga de plan desde URL
   const [loadingPlan, setLoadingPlan] = useState(false);
   const [loadedProgram, setLoadedProgram] = useState<ProgramaPlan | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  // 1. Memorizar la fecha de inicio de la semana actual
-  const currentWeekStart = useMemo(() => {
-    return getWeekStart(new Date());
-  }, []);
-
-  // 2. Hook de status de generación (Polling)
-  const { 
-    status: planStatus, 
-    loading: statusLoading, 
-    error: statusError 
+  // Hook de status de generación (Polling)
+  const {
+    status: planStatus,
+    loading: statusLoading,
+    error: statusError
   } = usePlanGenerationStatus();
-
-  // 3. Hook del plan semanal
-  const { 
-    weekPlan, 
-    isLoading: planLoading, 
-    error: planError,
-    refetch 
-  } = useWeeklyPlan({ 
-    weekStartDate: currentWeekStart, 
-    userId: session?.user?.id 
-  });
 
   // 4. Efecto para cargar plan desde URL (?loadPlan=slug)
   useEffect(() => {
@@ -114,34 +90,6 @@ export default function DashboardPage() {
     }
   }, [loadedProgram, loadingPlan]);
 
-  // Handlers para DailyDetailPanel
-  const handleEventClick = (event: DayEvent) => {
-    setSelectedEvent(event);
-    setSelectedDate(event.date);
-    setSelectedDayEvents([event]);
-    setIsPanelOpen(true);
-  };
-
-  const handleAddEvent = (date: Date) => {
-    setSelectedEvent(null);
-    setSelectedDate(date);
-    setSelectedDayEvents([]);
-    setIsPanelOpen(true);
-  };
-
-  const handlePreviousDay = () => {
-    if (!selectedDate) return;
-    const prevDay = new Date(selectedDate);
-    prevDay.setDate(prevDay.getDate() - 1);
-    setSelectedDate(prevDay);
-  };
-
-  const handleNextDay = () => {
-    if (!selectedDate) return;
-    const nextDay = new Date(selectedDate);
-    nextDay.setDate(nextDay.getDate() + 1);
-    setSelectedDate(nextDay);
-  };
 
   // --- RENDERIZADO CONDICIONAL ---
 
@@ -241,24 +189,8 @@ export default function DashboardPage() {
 
       {/* Calendario principal - FULL WIDTH */}
       <div className="flex-1 overflow-y-auto">
-        <WeeklyCalendar 
-          userId={session.user.id} 
-          onEventClick={handleEventClick} 
-          onAddEvent={handleAddEvent} 
-        />
+        <WeeklyCalendar userId={session.user.id} />
       </div>
-
-      {/* Daily Detail Panel */}
-      {selectedDate && (
-        <DailyDetailPanel
-          date={selectedDate}
-          events={selectedDayEvents}
-          isOpen={isPanelOpen}
-          onClose={() => setIsPanelOpen(false)}
-          onPreviousDay={handlePreviousDay}
-          onNextDay={handleNextDay}
-        />
-      )}
     </div>
   );
 }
