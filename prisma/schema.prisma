@@ -103,11 +103,16 @@ model OnboardingData {
   // Status
   status    String   @default("completed") // draft, completed, archived
   version   String   @default("1.0.0")
-  
+
+  // HYBRID ONBOARDING FIELDS
+  onboardingType      String   @default("basic")  // "basic" | "complete"
+  completedModules    String?                      // JSON: { trainingDetailed: bool, nutritionDetailed: bool }
+  pendingRegeneration Boolean  @default(false)
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([userId, status])
 }
 

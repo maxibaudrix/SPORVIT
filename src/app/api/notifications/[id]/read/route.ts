@@ -1,54 +1,62 @@
-// ============================================
-// 2. app/api/notifications/[id]/read/route.ts
-// ============================================
+/**
+ * PATCH /api/notifications/[id]/read
+ *
+ * Marca una notificación como leída.
+ */
 
 import { NextRequest, NextResponse } from 'next/server';
-import NextAuth from 'next-auth';
 import { auth } from '@/auth';
-import prisma  from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
-export async function POST(
+export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Autenticación
     const session = await auth();
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+    const userId = session.user.id;
+    const notificationId = params.id;
+
+    // Verificar que la notificación pertenece al usuario
+    const notification = await prisma.notification.findUnique({
+      where: { id: notificationId },
     });
 
-    if (!user) {
+    if (!notification) {
       return NextResponse.json(
-        { error: 'Usuario no encontrado' },
+        { error: 'Notificación no encontrada' },
         { status: 404 }
       );
     }
 
-    const notification = await prisma.notification.update({
-      where: {
-        id: params.id,
-        userId: user.id
-      },
-      data: {
-        read: true,
-        readAt: new Date()
-      }
+    if (notification.userId !== userId) {
+      return NextResponse.json(
+        { error: 'No tienes permiso para modificar esta notificación' },
+        { status: 403 }
+      );
+    }
+
+    // Marcar como leída
+    const updatedNotification = await prisma.notification.update({
+      where: { id: notificationId },
+      data: { read: true },
     });
 
-    return NextResponse.json({ success: true, notification });
+    console.log(`[Notifications] Marked notification ${notificationId} as read`);
 
-  } catch (error) {
-    console.error('Mark as read error:', error);
+    return NextResponse.json({
+      success: true,
+      notification: updatedNotification,
+    });
+  } catch (error: any) {
+    console.error('[Notifications] Error marking notification as read:', error);
     return NextResponse.json(
-      { error: 'Error al marcar como leída' },
+      { error: 'Error al marcar notificación como leída', details: error.message },
       { status: 500 }
     );
   }

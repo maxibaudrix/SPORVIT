@@ -1,4 +1,5 @@
 //pages/forgot-password.tsx
+'use client';
 import React, { useState } from 'react';
 import { 
     Mail, Dumbbell, AlertCircle, Loader, ArrowRight, 

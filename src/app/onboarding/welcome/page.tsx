@@ -1,9 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { ArrowRight, Target, Dumbbell, Apple, TrendingUp, Sparkles, Wand2, Settings, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Target, Dumbbell, Apple, TrendingUp, Sparkles, Wand2, Settings, CheckCircle2, Zap, Edit3 } from 'lucide-react';
+import { useOnboardingStore } from '@/store/onboarding';
+import { useRouter } from 'next/navigation';
 
 export default function OnboardingWelcomePage() {
   const [hoveredOption, setHoveredOption] = useState(null);
+  const router = useRouter();
+  const { setOnboardingType } = useOnboardingStore();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4 relative overflow-hidden">
@@ -28,123 +32,186 @@ export default function OnboardingWelcomePage() {
 
           {/* Título */}
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-b from-white via-slate-200 to-slate-500 bg-clip-text text-transparent leading-tight">
-            ¿Cómo quieres empezar?
+            Configura tu perfil
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Elige la experiencia que mejor se adapte a ti. Puedes cambiar de opción cuando quieras.
+            Elige cuánto detalle quieres dar ahora. Siempre podrás completar tu perfil después.
           </p>
         </div>
 
         {/* Cards de Elección */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
+        <div className="grid md:grid-cols-3 gap-6 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
           
-          {/* Opción 1: Asistido con IA */}
-          <div 
-            onMouseEnter={() => setHoveredOption('assisted')}
+          {/* Opción 1: Básico - 3 Pasos */}
+          <div
+            onMouseEnter={() => setHoveredOption('basic')}
             onMouseLeave={() => setHoveredOption(null)}
             className={`relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
-              hoveredOption === 'assisted' 
-                ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-[1.02]' 
+              hoveredOption === 'basic'
+                ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-[1.02]'
                 : 'border-slate-700/50 hover:border-slate-600'
             }`}
           >
             {/* Badge Recomendado */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <div className="px-4 py-1.5 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full shadow-lg">
-                ⭐ RECOMENDADO
+                ⚡ INICIO RÁPIDO
               </div>
             </div>
 
             {/* Icono Principal */}
             <div className="w-16 h-16 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Wand2 className="w-8 h-8 text-emerald-400" />
+              <Zap className="w-8 h-8 text-emerald-400" />
             </div>
 
             {/* Título */}
             <h2 className="text-2xl font-bold mb-3 text-white">
-              Ayúdame a crear mi planificación
+              Inicio Rápido
             </h2>
 
             {/* Descripción */}
             <p className="text-slate-400 mb-6 leading-relaxed">
-              Responde un cuestionario de <strong className="text-emerald-400">5 minutos</strong> y nuestra IA creará un plan personalizado de entrenamiento y nutrición adaptado a tus objetivos.
+              Solo <strong className="text-emerald-400">3 pasos básicos</strong> (2 minutos) para generar tu primer plan. Podrás completar tu perfil después para mayor personalización.
             </p>
 
             {/* Features */}
             <div className="space-y-3 mb-8">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Plan de entrenamiento personalizado</span>
+                <span className="text-sm text-slate-300">Datos biométricos básicos</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Menú semanal con macros calculados</span>
+                <span className="text-sm text-slate-300">Objetivo y timeline</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Ajustes automáticos según progreso</span>
+                <span className="text-sm text-slate-300">Nivel de actividad</span>
               </div>
             </div>
 
             {/* CTA Button */}
-            <button 
-              onClick={() => window.location.href = '/onboarding/step-1-biometrics'}
+            <button
+              onClick={() => {
+                setOnboardingType('basic');
+                router.push('/onboarding/step-1-biometrics');
+              }}
               className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 group"
             >
-              <span>Comenzar Onboarding</span>
+              <span>Empezar Ahora</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <p className="text-center text-xs text-slate-500 mt-3">
-              ⏱️ ~5 minutos
+              ⏱️ ~2 minutos · 3 pasos
             </p>
           </div>
 
-          {/* Opción 2: Manual */}
-          <div 
-            onMouseEnter={() => setHoveredOption('manual')}
+          {/* Opción 2: Completo - 6 Pasos */}
+          <div
+            onMouseEnter={() => setHoveredOption('complete')}
             onMouseLeave={() => setHoveredOption(null)}
             className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
-              hoveredOption === 'manual' 
-                ? 'border-blue-500 shadow-2xl shadow-blue-500/20 scale-[1.02]' 
+              hoveredOption === 'complete'
+                ? 'border-blue-500 shadow-2xl shadow-blue-500/20 scale-[1.02]'
                 : 'border-slate-700/50 hover:border-slate-600'
             }`}
           >
             {/* Icono Principal */}
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Settings className="w-8 h-8 text-blue-400" />
+              <Wand2 className="w-8 h-8 text-blue-400" />
             </div>
 
             {/* Título */}
             <h2 className="text-2xl font-bold mb-3 text-white">
-              Crearé la planificación manualmente
+              Configuración Completa
             </h2>
 
             {/* Descripción */}
             <p className="text-slate-400 mb-6 leading-relaxed">
-              Accede directamente al dashboard y crea tu propio plan de entrenamiento y nutrición. <strong className="text-blue-400">Control total</strong> desde el inicio.
+              Cuestionario completo de <strong className="text-blue-400">6 pasos</strong> (5 minutos) para un plan ultra-personalizado con todos los detalles de entrenamiento y nutrición.
             </p>
 
             {/* Features */}
             <div className="space-y-3 mb-8">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Diseña tus propias rutinas</span>
+                <span className="text-sm text-slate-300">Experiencia y preferencias de entrenamiento</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Configura tus comidas a medida</span>
+                <span className="text-sm text-slate-300">Dieta, intolerancias y suplementos</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-300">Flexibilidad total en tus planes</span>
+                <span className="text-sm text-slate-300">Máxima personalización</span>
               </div>
             </div>
 
             {/* CTA Button */}
-            <button 
-              onClick={() => window.location.href = '/dashboard'}
+            <button
+              onClick={() => {
+                setOnboardingType('complete');
+                router.push('/onboarding/step-1-biometrics');
+              }}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2 group border border-blue-500/50"
+            >
+              <span>Configuración Detallada</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            <p className="text-center text-xs text-slate-500 mt-3">
+              ⏱️ ~5 minutos · 6 pasos
+            </p>
+          </div>
+
+          {/* Opción 3: Manual */}
+          <div
+            onMouseEnter={() => setHoveredOption('manual')}
+            onMouseLeave={() => setHoveredOption(null)}
+            className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
+              hoveredOption === 'manual'
+                ? 'border-purple-500 shadow-2xl shadow-purple-500/20 scale-[1.02]'
+                : 'border-slate-700/50 hover:border-slate-600'
+            }`}
+          >
+            {/* Icono Principal */}
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Edit3 className="w-8 h-8 text-purple-400" />
+            </div>
+
+            {/* Título */}
+            <h2 className="text-2xl font-bold mb-3 text-white">
+              Manual
+            </h2>
+
+            {/* Descripción */}
+            <p className="text-slate-400 mb-6 leading-relaxed">
+              Salta el onboarding y accede directamente al dashboard. Crea tus planes de entrenamiento y nutrición manualmente con <strong className="text-purple-400">control total</strong>.
+            </p>
+
+            {/* Features */}
+            <div className="space-y-3 mb-8">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-slate-300">Diseña tus propias rutinas</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-slate-300">Configura comidas personalizadas</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-slate-300">Flexibilidad total</span>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <button
+              onClick={() => {
+                router.push('/dashboard');
+              }}
               className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 group border border-slate-600"
             >
               <span>Ir al Dashboard</span>
@@ -168,13 +235,10 @@ export default function OnboardingWelcomePage() {
               <div>
                 <h3 className="font-bold text-white text-sm mb-1">¿No estás seguro?</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Recomendamos empezar con el onboarding asistido. Siempre podrás ajustar manualmente tu plan más adelante.
+                  Empieza con el <strong className="text-emerald-400">inicio rápido</strong>. Podrás completar tu perfil más adelante para mayor personalización.
                 </p>
               </div>
             </div>
-            <a href="/features" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium text-sm whitespace-nowrap">
-              Ver comparación →
-            </a>
           </div>
         </div>
 

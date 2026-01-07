@@ -17,6 +17,14 @@ interface OnboardingStore {
   data: OnboardingData;
   currentStep: number;
 
+  // HYBRID ONBOARDING STATE
+  onboardingType: 'basic' | 'complete';
+  completedModules: {
+    trainingDetailed: boolean;
+    nutritionDetailed: boolean;
+  };
+  pendingRegeneration: boolean;
+
   // GETTERS (computed properties)
   biometrics?: BiometricsData;
   goal?: GoalData;
@@ -36,12 +44,17 @@ interface OnboardingStore {
   setDiet: (data: DietData) => void;
   setStartDate: (date: string) => void;
   setCalculatedMacros: (macros: OnboardingData['calculatedMacros']) => void;
-  
+
+  // HYBRID ONBOARDING ACTIONS
+  setOnboardingType: (type: 'basic' | 'complete') => void;
+  setCompletedModules: (modules: { trainingDetailed: boolean; nutritionDetailed: boolean }) => void;
+  setPendingRegeneration: (pending: boolean) => void;
+
   // Navigation
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: number) => void;
-  
+
   // Reset
   resetOnboarding: () => void;
 }
@@ -63,6 +76,14 @@ export const useOnboardingStore = create<OnboardingStore>()(
       // Estado base
       data: initialState,
       currentStep: 1,
+
+      // HYBRID ONBOARDING STATE
+      onboardingType: 'basic',
+      completedModules: {
+        trainingDetailed: false,
+        nutritionDetailed: false,
+      },
+      pendingRegeneration: false,
 
       // GETTERS DERIVADOS
       get biometrics() {
@@ -144,6 +165,22 @@ export const useOnboardingStore = create<OnboardingStore>()(
           data: { ...state.data, calculatedMacros },
         })),
 
+      // HYBRID ONBOARDING ACTIONS
+      setOnboardingType: (onboardingType) => {
+        console.log('[Store] Setting onboarding type:', onboardingType);
+        set({ onboardingType });
+      },
+
+      setCompletedModules: (completedModules) => {
+        console.log('[Store] Setting completed modules:', completedModules);
+        set({ completedModules });
+      },
+
+      setPendingRegeneration: (pendingRegeneration) => {
+        console.log('[Store] Setting pending regeneration:', pendingRegeneration);
+        set({ pendingRegeneration });
+      },
+
       // NAVEGACIÓN
       nextStep: () =>
         set((state) => ({
@@ -165,13 +202,22 @@ export const useOnboardingStore = create<OnboardingStore>()(
         set({
           data: initialState,
           currentStep: 1,
+          onboardingType: 'basic',
+          completedModules: {
+            trainingDetailed: false,
+            nutritionDetailed: false,
+          },
+          pendingRegeneration: false,
         }),
     }),
     {
       name: 'onboarding-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        data: state.data, // Solo persistir data
+        data: state.data,
+        onboardingType: state.onboardingType,
+        completedModules: state.completedModules,
+        pendingRegeneration: state.pendingRegeneration,
       }),
     }
   )

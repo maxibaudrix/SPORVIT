@@ -85,7 +85,8 @@ export default function Step3ActivityPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-const setActivity = useOnboardingStore((state) => state.setActivity); 
+const setActivity = useOnboardingStore((state) => state.setActivity);
+const onboardingType = useOnboardingStore((state) => state.onboardingType);
 
 const handleSubmit = () => {
   if (validate()) {
@@ -124,9 +125,17 @@ const handleSubmit = () => {
       availableDays: formData.availableDays, // ✅ NUEVO
       preferredTimes: formData.preferredTimes, // ✅ NUEVO
     });
-    
-    console.log('Activity saved, navigating to step 4...', formData);
-    router.push('/onboarding/step-4-training-level');
+
+    console.log('Activity saved, navigating...', formData);
+
+    // CONDICIONAL: Si es básico, saltar a step-6 (macros). Si es completo, ir a step-4
+    if (onboardingType === 'basic') {
+      console.log('[Hybrid Onboarding] Basic mode: Skipping steps 4-5, going to step-6');
+      router.push('/onboarding/step-6-macros');
+    } else {
+      console.log('[Hybrid Onboarding] Complete mode: Going to step-4');
+      router.push('/onboarding/step-4-training-level');
+    }
   }
 };
 

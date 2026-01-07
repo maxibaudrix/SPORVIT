@@ -51,12 +51,25 @@ export default function Step6ReviewPage() {
   const training = useOnboardingStore((state) => state.training);
   const diet = useOnboardingStore((state) => state.diet);
   const saveStartDateToStore = useOnboardingStore((state) => state.setStartDate);
+  const onboardingType = useOnboardingStore((state) => state.onboardingType);
 
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
   const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const hasCompleteData = useMemo(() => {
+    // BÁSICO: Solo requiere biometrics, goal, activity
+    if (onboardingType === 'basic') {
+      return !!(
+        biometrics?.age &&
+        biometrics?.weight &&
+        biometrics?.height &&
+        goal?.goalType &&
+        activity?.activityLevel
+      );
+    }
+
+    // COMPLETO: Requiere todos los datos
     return !!(
       biometrics?.age &&
       biometrics?.weight &&
@@ -67,7 +80,7 @@ export default function Step6ReviewPage() {
       training?.trainingFrequency &&
       diet?.dietType
     );
-  }, [biometrics, goal, activity, training, diet]);
+  }, [biometrics, goal, activity, training, diet, onboardingType]);
 
   const calculations: CalculationsResult = useMemo(() => {
     if (!hasCompleteData) {
@@ -151,51 +164,88 @@ export default function Step6ReviewPage() {
       alert('Por favor selecciona una fecha de inicio');
       return;
     }
-    
+
     // ✅ Guardar en el store CON EL NOMBRE RENOMBRADO
     saveStartDateToStore(startDate);
-    
+
     setIsGenerating(true);
 
-    // Construir el payload
-    const planningPayload = {
-      biometrics: {
-        age: biometrics!.age,
-        gender: biometrics!.gender,
-        weight: biometrics!.weight,
-        height: biometrics!.height,
-        bodyFatPercentage: biometrics!.bodyFatPercentage,
-      },
-      objective: {
-        primaryGoal: goal!.goalType,
-        targetTimeline: goal!.targetTimeline || calculations.targetTimeline,
-        targetWeight: goal!.targetWeight,
-      },
-      activity: {
-        activityLevel: activity!.activityLevel,
-        dailySteps: activity!.sittingHours || '',
-        workType: activity!.workType || '',
-      },
-      training: {
-        experienceLevel: training!.trainingLevel,
-        trainingFrequency: training!.trainingFrequency,
-        trainingTypes: training!.trainingTypes,
-        sessionDuration: training!.sessionDuration,
-        intensity: training!.intensity,
-      },
-      nutrition: {
-        dietType: diet!.dietType,
-        allergies: diet!.allergies || [],
-        intolerances: diet!.excludedIngredients || [],
-      },
-      calculations,
-      startDate, // ISO string
-    };
+    // CONDICIONAL: Construir payload según el tipo de onboarding
+    let planningPayload: any;
+    let endpoint: string;
 
-    console.log('[Step 6] Sending payload to backend:', planningPayload);
+    if (onboardingType === 'basic') {
+      // MODO BÁSICO: Payload con datos mínimos + valores por defecto
+      console.log('[Hybrid Onboarding] Generating BASIC plan');
+      endpoint = '/api/planning/generate-basic';
+
+      planningPayload = {
+        biometrics: {
+          age: biometrics!.age,
+          gender: biometrics!.gender,
+          weight: biometrics!.weight,
+          height: biometrics!.height,
+          bodyFatPercentage: biometrics!.bodyFatPercentage || null,
+        },
+        objective: {
+          primaryGoal: goal!.goalType,
+          targetTimeline: goal!.targetTimeline || calculations.targetTimeline,
+          targetWeight: goal!.targetWeight || null,
+        },
+        activity: {
+          activityLevel: activity!.activityLevel,
+          dailySteps: activity!.sittingHours || '',
+          workType: activity!.workType || '',
+        },
+        calculations,
+        startDate,
+        onboardingType: 'basic', // Flag para el backend
+      };
+    } else {
+      // MODO COMPLETO: Payload con todos los datos
+      console.log('[Hybrid Onboarding] Generating COMPLETE plan');
+      endpoint = '/api/planning/init';
+
+      planningPayload = {
+        biometrics: {
+          age: biometrics!.age,
+          gender: biometrics!.gender,
+          weight: biometrics!.weight,
+          height: biometrics!.height,
+          bodyFatPercentage: biometrics!.bodyFatPercentage,
+        },
+        objective: {
+          primaryGoal: goal!.goalType,
+          targetTimeline: goal!.targetTimeline || calculations.targetTimeline,
+          targetWeight: goal!.targetWeight,
+        },
+        activity: {
+          activityLevel: activity!.activityLevel,
+          dailySteps: activity!.sittingHours || '',
+          workType: activity!.workType || '',
+        },
+        training: {
+          experienceLevel: training!.trainingLevel,
+          trainingFrequency: training!.trainingFrequency,
+          trainingTypes: training!.trainingTypes,
+          sessionDuration: training!.sessionDuration,
+          intensity: training!.intensity,
+        },
+        nutrition: {
+          dietType: diet!.dietType,
+          allergies: diet!.allergies || [],
+          intolerances: diet!.excludedIngredients || [],
+        },
+        calculations,
+        startDate,
+        onboardingType: 'complete', // Flag para el backend
+      };
+    }
+
+    console.log(`[Step 6] Sending ${onboardingType} payload to ${endpoint}:`, planningPayload);
 
     try {
-      const response = await fetch('/api/planning/init', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(planningPayload),
