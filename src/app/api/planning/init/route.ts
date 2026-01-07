@@ -6,6 +6,7 @@ import { generateWeekPlan } from '@/lib/ai/generateWeekPlan';
 import { persistWeek } from '@/lib/planning/persistWeek';
 import { generateRemainingWeeks } from '@/lib/jobs/generateRemainingWeeks';
 import { generateWeekInChunks } from '@/lib/ai/generateWeekInChunks';
+import { generatePlan } from '@/lib/planning/generation/orchestrator';
 
 /**
  * POST /api/planning/init
@@ -104,10 +105,37 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 7. Generar SOLO semana 1 con AI (sincrónico)
-    console.log('[Planning Init] Calling AI to generate week 1...');
-    console.log('[Planning Init] Calling AI to generate week 1 in chunks...');
-    const weekOutput = await generateWeekInChunks(userContext, 1);
+    // 7. Generar SOLO semana 1 (Orchestrator: AI o Caché inteligente)
+    console.log('[Planning Init] Generating week 1 with Orchestrator (AI/Cache)...');
+
+    // Feature flag para sistema híbrido
+    const USE_HYBRID_CACHE = process.env.USE_HYBRID_CACHE === 'true';
+
+    let weekOutput;
+    let planSource: 'ai' | 'cache_exact' | 'cache_adapted' = 'ai';
+    let cacheMetadata: any = null;
+
+    if (USE_HYBRID_CACHE) {
+      console.log('🚀 [Hybrid Cache] Sistema activado');
+
+      // Determinar tier del usuario
+      const userTier = {
+        tier: 'free' as const, // TODO: Obtener de la DB
+        isFirstPlan: true, // TODO: Verificar si es su primer plan
+      };
+
+      const result = await generatePlan(userContext, 1, userTier);
+      weekOutput = result.plan;
+      planSource = result.source;
+      cacheMetadata = result.metadata;
+
+      console.log(
+        `✅ [Hybrid Cache] Week 1 generada usando: ${planSource} (costo: $${cacheMetadata.costUsd}, tiempo: ${cacheMetadata.responseTimeMs}ms)`
+      );
+    } else {
+      console.log('⚠️ [Hybrid Cache] Sistema desactivado - usando AI directo');
+      weekOutput = await generateWeekInChunks(userContext, 1);
+    }
 
     // 8. Persistir semana 1 en base de datos
     console.log('[Planning Init] Persisting week 1 to database...');
@@ -173,6 +201,17 @@ export async function POST(req: NextRequest) {
         totalWeeks,
         generatedWeeks: 1,
         pendingWeeks: totalWeeks - 1,
+        // Metadata del sistema de caché (si está activo)
+        ...(USE_HYBRID_CACHE && {
+          cacheSystem: {
+            enabled: true,
+            source: planSource,
+            costUsd: cacheMetadata?.costUsd || 0,
+            responseTimeMs: cacheMetadata?.responseTimeMs || 0,
+            similarityScore: cacheMetadata?.similarityScore,
+            adaptations: cacheMetadata?.adaptations?.length || 0,
+          },
+        }),
       },
       redirectTo: '/dashboard',
     });
