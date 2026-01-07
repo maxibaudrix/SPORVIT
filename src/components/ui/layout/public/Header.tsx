@@ -42,7 +42,7 @@ export const Header = () => {
     <header
       className={`
         fixed top-0 w-full z-50 transition-all duration-300
-        ${scrolled ? 'bg-slate-950/95 backdrop-blur-lg shadow-lg shadow-emerald-500/10' : 'bg-transparent'}
+        ${scrolled ? 'bg-slate-950/95 backdrop-blur-lg shadow-lg shadow-emerald-500/10' : 'bg-slate-950/95 md:bg-transparent backdrop-blur-lg md:backdrop-blur-none'}
         ${scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'}
       `}
     >
@@ -98,7 +98,7 @@ export const Header = () => {
               <Link
                 key={link.name}
                 href={link.href}
-                className="block py-2 text-slate-300 hover:text-emerald-400"
+                className="block py-2 text-slate-300 hover:text-emerald-400 text-center"
                 onClick={handleLinkClick}
               >
                 {link.name}
@@ -106,7 +106,7 @@ export const Header = () => {
             ))}
             <Link
               href="/login"
-              className="block py-2 text-slate-300 hover:text-emerald-400"
+              className="block py-2 text-slate-300 hover:text-emerald-400 text-center"
               onClick={handleLinkClick}
             >
               Login

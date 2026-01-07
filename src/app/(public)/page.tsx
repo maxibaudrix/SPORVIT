@@ -130,7 +130,7 @@ export default function LandingPage() {
       
       <main>
         {/* HERO SECTION */}
-        <section className="relative pt-16 pb-16 md:pt-16 md:pb-16 overflow-hidden">
+        <section className="relative pt-16 pb-16 md:pt-16 md:pb-16 overflow-hidden bg-slate-950/95 md:bg-transparent">
           {/* Background Gradients */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-emerald-500/20 blur-[120px] rounded-full opacity-50 pointer-events-none" />
           <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-blue-500/10 blur-[100px] rounded-full opacity-30 pointer-events-none" />
@@ -379,13 +379,13 @@ export default function LandingPage() {
               <p className="text-slate-300 text-lg mb-8">
                 5 minutos de onboarding. 12 semanas de plan completo. Resultados medibles desde el día 1.
               </p>
-              <Link 
-                href="/register" 
-                className="inline-flex px-10 py-5 bg-white text-emerald-950 rounded-full font-bold text-xl hover:bg-emerald-50 transition-all shadow-xl hover:shadow-white/20 hover:scale-105 items-center gap-2"
+              <Link
+                href="/register"
+                className="inline-flex px-6 py-3 sm:px-10 sm:py-5 bg-white text-emerald-950 rounded-full font-bold text-base sm:text-xl hover:bg-emerald-50 transition-all shadow-xl hover:shadow-white/20 hover:scale-105 items-center gap-2"
               >
-                <Sparkles className="w-6 h-6" />
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
                 Crear Mi Plan Gratis
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </Link>
               <p className="mt-4 text-xs text-slate-400">
                 Sin tarjeta • Sin compromiso • Plan free permanente

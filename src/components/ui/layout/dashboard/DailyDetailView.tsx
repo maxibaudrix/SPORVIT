@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, Dumbbell, Utensils, FileText, ChevronDown, Clock, ChefHat } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Dumbbell, Utensils, FileText, ChevronDown, Clock, ChefHat, BedDouble, Droplet, Footprints, Sparkles } from 'lucide-react';
 import { DayEvent } from '@/types/calendar';
 import { formatDateLong, getDayName } from '@/lib/utils/calendar';
 import WorkoutDetail, { EmptyWorkoutState } from '@/components/dashboard/WorkoutDetail';
@@ -136,51 +136,23 @@ export default function DailyDetailView({
       <div className="bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-2xl p-6">
         {/* Tab: Entrenamientos */}
         {activeTab === 'workouts' && (
-          <div className="space-y-6">
-            {/* Timer Widget - Sticky en la parte superior */}
-            <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm rounded-xl p-4 border border-slate-700 shadow-lg">
-              <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                Cronómetro de Entrenamiento
-              </h3>
-              <TimerWidget />
-            </div>
-
-            {/* Lista de entrenamientos */}
-            <div className="space-y-4">
-              {workouts.length > 0 ? (
-                workouts.map((workout) => (
-                  <WorkoutDetail
-                    key={workout.id}
-                    workout={workout}
-                  />
-                ))
-              ) : (
-                <EmptyWorkoutState />
-              )}
-            </div>
+          <div className="space-y-4">
+            {workouts.length > 0 ? (
+              workouts.map((workout) => (
+                <WorkoutDetail
+                  key={workout.id}
+                  workout={workout}
+                />
+              ))
+            ) : (
+              <RestDayCard totalCalories={meals.reduce((sum, meal) => sum + (meal.totalCalories || 0), 0)} />
+            )}
           </div>
         )}
 
         {/* Tab: Nutrición */}
         {activeTab === 'nutrition' && (
-          <div className="space-y-4">
-            {meals.length > 0 ? (
-              meals.map((meal, index) => (
-                <MealCard key={meal.id} meal={meal} index={index} />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <Utensils className="w-16 h-16 text-slate-700 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-400 mb-2">
-                  No hay comidas planificadas
-                </h3>
-                <p className="text-sm text-slate-500">
-                  Agrega comidas a tu plan nutricional
-                </p>
-              </div>
-            )}
-          </div>
+          <NutritionTab meals={meals} />
         )}
 
         {/* Tab: Notas */}
@@ -200,32 +172,60 @@ export default function DailyDetailView({
   );
 }
 
-// Componente MealCard con detalle expandible
-function MealCard({ meal, index }: { meal: any; index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+// Componente NutritionTab con estado compartido para expansión
+function NutritionTab({ meals }: { meals: any[] }) {
+  const [expandedMealId, setExpandedMealId] = useState<string | null>(null);
 
-  // Mock data para demostración - en producción vendría de la API
-  const recipeData = {
-    prepTime: '15 min',
-    difficulty: 'Fácil',
-    servings: 1,
-    ingredients: [
-      { name: 'Pechuga de pollo', amount: '150g' },
-      { name: 'Arroz integral', amount: '80g (crudo)' },
-      { name: 'Brócoli', amount: '100g' },
-      { name: 'Aceite de oliva', amount: '1 cucharada' },
-      { name: 'Sal y pimienta', amount: 'Al gusto' },
-    ],
-    instructions: [
-      'Cocina el arroz integral siguiendo las instrucciones del paquete',
-      'Sazona la pechuga de pollo con sal y pimienta',
-      'Calienta el aceite de oliva en una sartén a fuego medio',
-      'Cocina la pechuga de pollo 6-7 minutos por cada lado hasta que esté dorada',
-      'Mientras tanto, cocina el brócoli al vapor durante 5-6 minutos',
-      'Sirve el pollo cortado en rodajas sobre el arroz, acompañado del brócoli',
-    ],
-    tags: ['Alto en proteína', 'Bajo en grasa', 'Post-workout'],
+  const toggleMeal = (mealId: string) => {
+    setExpandedMealId(expandedMealId === mealId ? null : mealId);
   };
+
+  if (meals.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Utensils className="w-16 h-16 text-slate-700 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-slate-400 mb-2">
+          No hay comidas planificadas
+        </h3>
+        <p className="text-sm text-slate-500">
+          Agrega comidas a tu plan nutricional
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {meals.map((meal, index) => (
+        <MealCard
+          key={meal.id}
+          meal={meal}
+          index={index}
+          isExpanded={expandedMealId === meal.id}
+          onToggle={() => toggleMeal(meal.id)}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Componente MealCard con detalle expandible
+function MealCard({
+  meal,
+  index,
+  isExpanded,
+  onToggle
+}: {
+  meal: any;
+  index: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  // TODO: En producción, estos datos vendrían de meal.recipe o de la API
+  // Por ahora mostramos estructura sin datos ficticios extensos
+  const hasRecipe = false; // meal.recipe !== undefined
 
   const getMealTypeLabel = (type: string) => {
     const types: Record<string, string> = {
@@ -239,134 +239,219 @@ function MealCard({ meal, index }: { meal: any; index: number }) {
     return types[type] || type;
   };
 
+  const handleCheckboxToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCompleted(!isCompleted);
+  };
+
   return (
-    <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300">
-      {/* Header - Siempre visible */}
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-medium px-2 py-1 bg-amber-500/20 text-amber-400 rounded-full">
+    <div
+      className={`
+        w-full bg-slate-800/50 border-2 rounded-xl overflow-hidden
+        transition-all duration-300
+        ${isExpanded
+          ? 'border-amber-500 shadow-xl shadow-amber-500/10'
+          : 'border-slate-700 hover:border-slate-600'
+        }
+      `}
+    >
+      {/* Header - Clickable para expandir */}
+      <button
+        onClick={onToggle}
+        className="w-full p-4 sm:p-5 text-left"
+        aria-expanded={isExpanded}
+        aria-label={`Expandir detalles de ${meal.title || getMealTypeLabel(meal.mealType)}`}
+      >
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="text-xs font-medium px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full flex-shrink-0">
                 {getMealTypeLabel(meal.mealType)}
               </span>
-              {recipeData.tags.slice(0, 2).map((tag, i) => (
-                <span key={i} className="text-xs px-2 py-1 bg-slate-700 text-slate-300 rounded-full">
-                  {tag}
+              {/* Badge indicando que es expandible */}
+              {!isExpanded && (
+                <span className="text-[10px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 rounded flex items-center gap-1 animate-pulse">
+                  <ChevronDown className="w-3 h-3" />
+                  Ver receta
                 </span>
-              ))}
+              )}
             </div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-base sm:text-lg font-semibold text-white line-clamp-1">
               {meal.title || `Comida ${index + 1}`}
             </h3>
           </div>
 
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 hover:bg-slate-700 rounded-lg transition-colors ml-4"
-          >
-            <ChevronDown
-              className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${
-                isExpanded ? 'rotate-180' : ''
-              }`}
-            />
-          </button>
+          <div className="flex items-center gap-2 ml-2">
+            {/* Checkbox de completado */}
+            <button
+              onClick={handleCheckboxToggle}
+              className={`
+                w-6 h-6 rounded border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0
+                ${isCompleted
+                  ? 'bg-emerald-500 border-emerald-500'
+                  : 'bg-transparent border-slate-600 hover:border-slate-500'
+                }
+              `}
+              aria-label={`Marcar ${meal.title || getMealTypeLabel(meal.mealType)} como completado`}
+            >
+              {isCompleted && (
+                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </button>
+
+            {/* Chevron de expansión */}
+            <div
+              className={`
+                p-2 rounded-lg transition-all duration-300 flex-shrink-0
+                ${isExpanded ? 'bg-amber-500/20' : 'bg-slate-700/50'}
+              `}
+            >
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-300 ${
+                  isExpanded ? 'rotate-180 text-amber-400' : 'text-slate-400'
+                }`}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Macros Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-            <p className="text-xl sm:text-2xl font-bold text-emerald-400">
+        {/* Macros Grid - Altura fija */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 min-h-[64px] sm:min-h-[72px]">
+          <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center flex flex-col justify-center">
+            <p className="text-lg sm:text-xl font-bold text-emerald-400">
               {meal.totalCalories}
             </p>
-            <p className="text-[10px] sm:text-xs text-slate-400 mt-1">Calorías</p>
+            <p className="text-[9px] sm:text-xs text-slate-400 mt-0.5">Calorías</p>
           </div>
-          <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-            <p className="text-xl sm:text-2xl font-bold text-blue-400">
+          <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center flex flex-col justify-center">
+            <p className="text-lg sm:text-xl font-bold text-blue-400">
               {meal.totalProteinG}g
             </p>
-            <p className="text-[10px] sm:text-xs text-slate-400 mt-1">Proteína</p>
+            <p className="text-[9px] sm:text-xs text-slate-400 mt-0.5">Proteína</p>
           </div>
-          <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-            <p className="text-xl sm:text-2xl font-bold text-amber-400">
+          <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center flex flex-col justify-center">
+            <p className="text-lg sm:text-xl font-bold text-amber-400">
               {meal.totalCarbsG}g
             </p>
-            <p className="text-[10px] sm:text-xs text-slate-400 mt-1">Carbos</p>
+            <p className="text-[9px] sm:text-xs text-slate-400 mt-0.5">Carbos</p>
           </div>
-          <div className="bg-slate-900/50 rounded-lg p-3 text-center">
-            <p className="text-xl sm:text-2xl font-bold text-purple-400">
+          <div className="bg-slate-900/50 rounded-lg p-2 sm:p-3 text-center flex flex-col justify-center">
+            <p className="text-lg sm:text-xl font-bold text-purple-400">
               {meal.totalFatG}g
             </p>
-            <p className="text-[10px] sm:text-xs text-slate-400 mt-1">Grasas</p>
+            <p className="text-[9px] sm:text-xs text-slate-400 mt-0.5">Grasas</p>
           </div>
         </div>
-      </div>
+      </button>
 
-      {/* Detalle Expandible */}
+      {/* Detalle Expandible - Se expande hacia abajo */}
       {isExpanded && (
-        <div className="border-t border-slate-700 bg-slate-900/30 p-6 space-y-6 animate-in slide-in-from-top-2 duration-300">
-          {/* Info de la receta */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{recipeData.prepTime}</span>
+        <div className="border-t border-slate-700 bg-slate-900/30 p-4 sm:p-6 space-y-4">
+          {hasRecipe ? (
+            <>
+              {/* TODO: Mostrar ingredientes e instrucciones de meal.recipe */}
+              <div className="text-center py-8">
+                <ChefHat className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                <p className="text-sm text-slate-400">
+                  Receta disponible próximamente
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-8">
+              <ChefHat className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+              <p className="text-sm text-slate-400 mb-2">
+                No hay receta disponible para esta comida
+              </p>
+              <p className="text-xs text-slate-500">
+                Los datos de ingredientes e instrucciones se mostrarán aquí cuando estén disponibles
+              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <ChefHat className="w-4 h-4" />
-              <span>{recipeData.difficulty}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Utensils className="w-4 h-4" />
-              <span>{recipeData.servings} porción</span>
-            </div>
-          </div>
-
-          {/* Ingredientes */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-emerald-500 rounded-full"></span>
-              Ingredientes
-            </h4>
-            <ul className="space-y-2">
-              {recipeData.ingredients.map((ingredient, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5 flex-shrink-0"></span>
-                  <span className="text-slate-300">
-                    <strong className="text-white">{ingredient.amount}</strong> {ingredient.name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Instrucciones */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <span className="w-1 h-4 bg-amber-500 rounded-full"></span>
-              Instrucciones
-            </h4>
-            <ol className="space-y-3">
-              {recipeData.instructions.map((instruction, i) => (
-                <li key={i} className="flex gap-3 text-sm">
-                  <span className="flex-shrink-0 w-6 h-6 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold">
-                    {i + 1}
-                  </span>
-                  <span className="text-slate-300 leading-relaxed">{instruction}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
+          )}
 
           {/* Botones de acción */}
-          <div className="flex gap-3 pt-4">
-            <button className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors text-sm">
-              Marcar como completado
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
+            <button className="flex-1 min-h-[44px] px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors text-sm">
+              Marcar completado
             </button>
-            <button className="px-4 py-2 border border-slate-600 hover:border-slate-500 text-slate-300 rounded-lg font-medium transition-colors text-sm">
+            <button className="min-h-[44px] px-4 py-2.5 border border-slate-600 hover:border-slate-500 text-slate-300 rounded-lg font-medium transition-colors text-sm">
               Editar
             </button>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Componente RestDayCard para días de descanso
+function RestDayCard({ totalCalories }: { totalCalories: number }) {
+  return (
+    <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-2 border-slate-700 rounded-xl p-6 sm:p-8">
+      {/* Header */}
+      <div className="text-center mb-6">
+        <div className="w-16 h-16 mx-auto mb-4 bg-slate-700/50 rounded-full flex items-center justify-center">
+          <BedDouble className="w-8 h-8 text-slate-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">
+          🛌 DÍA DE DESCANSO
+        </h3>
+        <p className="text-slate-400">
+          Hoy tu cuerpo se recupera
+        </p>
+      </div>
+
+      {/* Recomendaciones */}
+      <div className="space-y-3 mb-6">
+        <div className="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+            <BedDouble className="w-4 h-4 text-emerald-400" />
+          </div>
+          <p className="text-sm text-slate-300">
+            Prioriza el sueño (8h)
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg">
+          <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+            <Droplet className="w-4 h-4 text-blue-400" />
+          </div>
+          <p className="text-sm text-slate-300">
+            Hidrátate bien
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg">
+          <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+            <Footprints className="w-4 h-4 text-amber-400" />
+          </div>
+          <p className="text-sm text-slate-300">
+            Caminata ligera opcional
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg">
+          <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-4 h-4 text-purple-400" />
+          </div>
+          <p className="text-sm text-slate-300">
+            Estiramientos suaves
+          </p>
+        </div>
+      </div>
+
+      {/* Calorías del día */}
+      <div className="pt-4 border-t border-slate-700">
+        <div className="bg-slate-900/50 rounded-lg p-4 text-center">
+          <p className="text-sm text-slate-400 mb-1">Calorías hoy</p>
+          <p className="text-2xl font-bold text-emerald-400">
+            {totalCalories.toLocaleString()} <span className="text-sm text-slate-500">kcal</span>
+          </p>
+          <p className="text-xs text-slate-500 mt-1">(día de descanso)</p>
+        </div>
+      </div>
     </div>
   );
 }

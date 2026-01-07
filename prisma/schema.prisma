@@ -610,3 +610,73 @@ model Payment {
   @@index([userId, createdAt])
   @@index([status])
 }
+
+// ============================================
+// HYBRID AI+CACHE SYSTEM
+// ============================================
+
+// Tabla para almacenar planes cacheados
+model CachedPlan {
+  id         String   @id @default(cuid())
+
+  // Hashing e identificación
+  exactHash     String   @unique
+  semanticHash  String
+  compoundKey   String   // "goal|level|days|diet|timeline" para indexación rápida
+  featureVector String   // JSON array de features numéricos (SQLite no soporta array nativo)
+
+  // Plan data
+  planData         String   // JSON del CompletePlanningOutput completo
+  contextSnapshot  String   // JSON del UserPlanningContext original
+
+  // Metadata
+  source           String   // "ai" | "adapted"
+  originalPlanId   String?  // Si es adaptado, referencia al plan original
+  userId           String   // Usuario que generó el plan
+  version          String   @default("1.0.0")
+
+  // Analytics
+  accessCount      Int      @default(0)
+  adaptationCount  Int      @default(0)
+  successRate      Float?
+
+  // Timestamps
+  createdAt        DateTime @default(now())
+  lastAccessedAt   DateTime @default(now())
+
+  // Índices para búsqueda rápida
+  @@index([exactHash])
+  @@index([semanticHash])
+  @@index([compoundKey])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+// Tabla para logging de decisiones del sistema
+model PlanGenerationLog {
+  id        String   @id @default(cuid())
+  userId    String
+
+  // Decisión tomada
+  decision        String   // "ai" | "cache_exact" | "cache_adapted"
+  cachedPlanId    String?  // ID del plan cacheado usado (si aplica)
+  similarityScore Float?   // Score de similitud (0.0 - 1.0)
+
+  // Razones y costos
+  decisionReasons String   // JSON array de strings explicando la decisión
+  estimatedCostUsd Float
+  actualCostUsd    Float?
+
+  // Performance
+  responseTimeMs Int
+  success        Boolean
+  errorMessage   String?
+
+  // Context
+  createdAt DateTime @default(now())
+
+  // Índices
+  @@index([userId, createdAt])
+  @@index([decision])
+  @@index([createdAt])
+}

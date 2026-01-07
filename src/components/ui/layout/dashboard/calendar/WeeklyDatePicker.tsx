@@ -84,8 +84,8 @@ export default function WeeklyDatePicker({
 
       if (selectedIndex !== -1) {
         const container = scrollContainerRef.current;
-        const cardWidth = 96; // w-24 = 6rem = 96px
-        const gap = 16; // gap-4 = 1rem = 16px
+        const cardWidth = 64; // w-16 = 4rem = 64px
+        const gap = 12; // gap-3 = 0.75rem = 12px
         const scrollPosition = selectedIndex * (cardWidth + gap);
 
         container.scrollTo({
@@ -171,7 +171,7 @@ export default function WeeklyDatePicker({
       {/* Mobile: Scroll horizontal */}
       <div
         ref={scrollContainerRef}
-        className="lg:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 py-6 scrollbar-hide"
+        className="lg:hidden flex overflow-x-auto snap-x snap-mandatory gap-3 px-4 py-4 scrollbar-hide"
       >
         {weekDays.map((day) => {
           const isSelected = selectedDate &&
@@ -185,20 +185,20 @@ export default function WeeklyDatePicker({
               onClick={() => handleDayClick(day)}
               className={`
                 flex-shrink-0 snap-center
-                w-24 min-w-[6rem]
-                rounded-[2.5rem]
+                w-16 min-w-[4rem]
+                rounded-2xl
                 bg-white/5 backdrop-blur-xl
                 border-2 transition-all duration-300
-                p-4 flex flex-col items-center gap-2
+                p-2.5 flex flex-col items-center gap-1.5
                 ${isSelected
-                  ? `${colors.border} shadow-xl ${colors.shadow} scale-105`
-                  : 'border-transparent hover:border-white/10 hover:scale-[1.02]'
+                  ? `${colors.border} shadow-xl ${colors.shadow} scale-110`
+                  : 'border-transparent hover:border-white/10'
                 }
               `}
             >
               {/* Day label */}
               <span className={`
-                text-xs font-medium uppercase tracking-wider
+                text-[10px] font-medium uppercase tracking-wide
                 ${isSelected ? colors.text : 'text-slate-400'}
               `}>
                 {day.label}
@@ -206,7 +206,7 @@ export default function WeeklyDatePicker({
 
               {/* Day number */}
               <div className={`
-                w-12 h-12 rounded-full flex items-center justify-center
+                w-9 h-9 rounded-full flex items-center justify-center
                 transition-colors duration-300
                 ${isCurrentDay
                   ? `${colors.bg} text-white`
@@ -215,17 +215,17 @@ export default function WeeklyDatePicker({
                     : 'bg-slate-800/50 text-slate-300'
                 }
               `}>
-                <span className="text-lg font-bold">{day.num}</span>
+                <span className="text-base font-bold">{day.num}</span>
               </div>
 
               {/* Intensity indicators (dots) */}
               {!day.isRest && (
-                <div className="flex gap-1 mt-1">
+                <div className="flex gap-0.5 mt-0.5">
                   {[1, 2, 3].map((level) => (
                     <div
                       key={level}
                       className={`
-                        w-1.5 h-1.5 rounded-full transition-all duration-300
+                        w-1 h-1 rounded-full transition-all duration-300
                         ${level <= (day.workoutIntensity || 0)
                           ? colors.dot
                           : 'bg-slate-700'
@@ -237,10 +237,10 @@ export default function WeeklyDatePicker({
               )}
 
               {/* Completion indicators */}
-              <div className="flex gap-1.5 mt-2">
+              <div className="flex gap-1 mt-1">
                 {/* Workout indicator */}
                 <div className={`
-                  w-1.5 h-1.5 rounded-full transition-all duration-300
+                  w-1 h-1 rounded-full transition-all duration-300
                   ${day.workoutCompleted
                     ? colors.dot
                     : day.isRest
@@ -251,7 +251,7 @@ export default function WeeklyDatePicker({
 
                 {/* Nutrition indicator */}
                 <div className={`
-                  w-1.5 h-1.5 rounded-full transition-all duration-300
+                  w-1 h-1 rounded-full transition-all duration-300
                   ${day.nutritionCompleted
                     ? 'bg-amber-400'
                     : 'bg-slate-700'
@@ -264,7 +264,7 @@ export default function WeeklyDatePicker({
       </div>
 
       {/* Desktop: Grid 7 columnas */}
-      <div className="hidden lg:grid lg:grid-cols-7 gap-4 px-6 py-6">
+      <div className="hidden lg:grid lg:grid-cols-7 gap-3 px-6 py-4">
         {weekDays.map((day) => {
           const isSelected = selectedDate &&
             day.date.toDateString() === selectedDate.toDateString();
@@ -276,10 +276,10 @@ export default function WeeklyDatePicker({
               key={day.id}
               onClick={() => handleDayClick(day)}
               className={`
-                rounded-[2.5rem]
+                rounded-2xl
                 bg-white/5 backdrop-blur-xl
                 border-2 transition-all duration-300
-                p-5 flex flex-col items-center gap-3
+                p-3 flex flex-col items-center gap-2
                 cursor-pointer
                 ${isSelected
                   ? `${colors.border} shadow-xl ${colors.shadow} scale-105`
@@ -289,7 +289,7 @@ export default function WeeklyDatePicker({
             >
               {/* Day label */}
               <span className={`
-                text-xs font-medium uppercase tracking-wider
+                text-[10px] font-medium uppercase tracking-wider
                 ${isSelected ? colors.text : 'text-slate-400'}
               `}>
                 {day.label}
@@ -297,7 +297,7 @@ export default function WeeklyDatePicker({
 
               {/* Day number */}
               <div className={`
-                w-14 h-14 rounded-full flex items-center justify-center
+                w-11 h-11 rounded-full flex items-center justify-center
                 transition-colors duration-300
                 ${isCurrentDay
                   ? `${colors.bg} text-white`
@@ -306,13 +306,13 @@ export default function WeeklyDatePicker({
                     : 'bg-slate-800/50 text-slate-300'
                 }
               `}>
-                <span className="text-xl font-bold">{day.num}</span>
+                <span className="text-lg font-bold">{day.num}</span>
               </div>
 
               {/* Workout type label */}
               {!day.isRest && (
                 <span className={`
-                  text-[10px] font-medium uppercase tracking-wider
+                  text-[9px] font-medium uppercase tracking-wider
                   ${isSelected ? colors.text : 'text-slate-500'}
                 `}>
                   {day.workoutType}
@@ -320,34 +320,16 @@ export default function WeeklyDatePicker({
               )}
 
               {day.isRest && (
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
                   Descanso
                 </span>
               )}
 
-              {/* Intensity indicators (dots) */}
-              {!day.isRest && (
-                <div className="flex gap-1.5 mt-1">
-                  {[1, 2, 3].map((level) => (
-                    <div
-                      key={level}
-                      className={`
-                        w-2 h-2 rounded-full transition-all duration-300
-                        ${level <= (day.workoutIntensity || 0)
-                          ? colors.dot
-                          : 'bg-slate-700'
-                        }
-                      `}
-                    />
-                  ))}
-                </div>
-              )}
-
               {/* Completion indicators */}
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-1.5 mt-1">
                 {/* Workout indicator */}
                 <div className={`
-                  w-2 h-2 rounded-full transition-all duration-300
+                  w-1.5 h-1.5 rounded-full transition-all duration-300
                   ${day.workoutCompleted
                     ? colors.dot
                     : day.isRest
@@ -358,7 +340,7 @@ export default function WeeklyDatePicker({
 
                 {/* Nutrition indicator */}
                 <div className={`
-                  w-2 h-2 rounded-full transition-all duration-300
+                  w-1.5 h-1.5 rounded-full transition-all duration-300
                   ${day.nutritionCompleted
                     ? 'bg-amber-400'
                     : 'bg-slate-700'

@@ -267,7 +267,7 @@ export default function WorkoutDetail({
         </div>
       )}
 
-      {/* EXERCISES LIST (futuro) */}
+      {/* EXERCISES LIST */}
       {exercises.length > 0 && (
         <div className="pt-3 border-t border-slate-800 space-y-2">
           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -275,26 +275,12 @@ export default function WorkoutDetail({
           </h4>
           <div className="space-y-2">
             {exercises.map((exercise, index) => (
-              <div 
+              <ExerciseCard
                 key={exercise.id}
-                className="bg-slate-950/50 rounded-lg p-3 border border-slate-800"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="font-medium text-white text-sm">
-                      {index + 1}. {exercise.name}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {exercise.sets} series × {exercise.reps} reps
-                      {exercise.weight && ` · ${exercise.weight}kg`}
-                      {exercise.restSeconds && ` · ${exercise.restSeconds}s descanso`}
-                    </div>
-                    {exercise.notes && (
-                      <p className="text-xs text-slate-500 mt-1 italic">{exercise.notes}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
+                exercise={exercise}
+                exerciseNumber={index + 1}
+                readOnly={readOnly}
+              />
             ))}
           </div>
         </div>
@@ -332,6 +318,130 @@ export default function WorkoutDetail({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ============================================
+// EXERCISE CARD COMPONENT
+// ============================================
+
+interface ExerciseCardProps {
+  exercise: Exercise;
+  exerciseNumber: number;
+  readOnly?: boolean;
+  onToggleComplete?: (exerciseId: string) => void;
+  onEdit?: (exerciseId: string) => void;
+}
+
+function ExerciseCard({
+  exercise,
+  exerciseNumber,
+  readOnly = false,
+  onToggleComplete,
+  onEdit
+}: ExerciseCardProps) {
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const handleCheckboxToggle = () => {
+    setIsCompleted(!isCompleted);
+    if (onToggleComplete) {
+      onToggleComplete(exercise.id);
+    }
+  };
+
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(exercise.id);
+    }
+  };
+
+  return (
+    <div className="group relative bg-slate-800/30 rounded-lg p-3 border border-slate-700/50 hover:border-slate-600/50 transition-all duration-200">
+      <div className="flex items-start gap-3">
+        {/* Exercise Number - Large and Prominent */}
+        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+          <span className="text-lg font-bold text-emerald-400">
+            {exerciseNumber.toString().padStart(2, '0')}
+          </span>
+        </div>
+
+        {/* Exercise Details */}
+        <div className="flex-1 min-w-0">
+          {/* Exercise Name */}
+          <h5 className="font-semibold text-white text-sm mb-1.5">
+            {exercise.name}
+          </h5>
+
+          {/* Metadata - Series, Reps, Weight */}
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <span className="px-2 py-0.5 bg-slate-900/50 rounded">
+              {exercise.sets} series
+            </span>
+            <span className="text-slate-600">·</span>
+            <span className="px-2 py-0.5 bg-slate-900/50 rounded">
+              {exercise.reps} reps
+            </span>
+            {exercise.weight && (
+              <>
+                <span className="text-slate-600">·</span>
+                <span className="px-2 py-0.5 bg-slate-900/50 rounded">
+                  {exercise.weight}kg
+                </span>
+              </>
+            )}
+            {exercise.restSeconds && (
+              <>
+                <span className="text-slate-600">·</span>
+                <span className="px-2 py-0.5 bg-slate-900/50 rounded flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {exercise.restSeconds}s
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Notes */}
+          {exercise.notes && (
+            <p className="text-xs text-slate-500 mt-2 italic">
+              {exercise.notes}
+            </p>
+          )}
+        </div>
+
+        {/* Checkbox & Edit Button */}
+        <div className="flex-shrink-0 flex items-center gap-2">
+          {/* Completion Checkbox */}
+          {!readOnly && (
+            <button
+              onClick={handleCheckboxToggle}
+              className={`
+                w-6 h-6 rounded border-2 flex items-center justify-center transition-all duration-200
+                ${isCompleted
+                  ? 'bg-emerald-500 border-emerald-500'
+                  : 'bg-transparent border-slate-600 hover:border-slate-500'
+                }
+              `}
+              aria-label={`Marcar ${exercise.name} como ${isCompleted ? 'pendiente' : 'completado'}`}
+            >
+              {isCompleted && (
+                <CheckCircle2 className="w-4 h-4 text-white" />
+              )}
+            </button>
+          )}
+
+          {/* Edit Button - Visible on hover */}
+          {!readOnly && (
+            <button
+              onClick={handleEdit}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-slate-700 rounded-lg"
+              aria-label={`Editar ${exercise.name}`}
+            >
+              <Pencil className="w-4 h-4 text-slate-400 hover:text-white" />
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

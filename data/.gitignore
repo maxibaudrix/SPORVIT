@@ -1,0 +1,13 @@
+# Ignorar todos los archivos de datos preservados
+# Estos archivos contienen datos de usuarios que han eliminado sus cuentas
+# y se mantienen para análisis y mejora del sistema de IA
+
+# Ignorar bases de datos JSON
+*.json
+
+# Ignorar archivos temporales
+*.tmp
+*.bak
+
+# Permitir el README
+!README.md

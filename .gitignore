@@ -46,3 +46,8 @@ next-env.d.ts
 *.swp
 *.swo
 *~
+
+# Preserved user data (workouts and recipes from deleted accounts)
+/data/preserved/**/*.json
+!/data/preserved/workouts/.gitkeep
+!/data/preserved/recipes/.gitkeep

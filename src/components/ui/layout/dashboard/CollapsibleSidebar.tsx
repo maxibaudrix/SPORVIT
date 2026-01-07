@@ -11,7 +11,7 @@ import TrackingWidget from '@/components/ui/layout/dashboard/TrackingWidget';
 
 
 export default function CollapsibleSidebar() {
-  const { activeTab, isOpen, activeCalculator } = useSidebarStore();
+  const { activeTab, isOpen, activeCalculator, closeSidebar } = useSidebarStore();
 
   // Set data attribute on body for CSS targeting
   useEffect(() => {
@@ -21,6 +21,32 @@ export default function CollapsibleSidebar() {
       document.body.removeAttribute('data-sidebar-open');
     }
   }, [isOpen]);
+
+  // Cerrar sidebar al hacer click fuera
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // No cerrar si el click es en el sidebar o en los tabs verticales
+      if (
+        target.closest('aside') ||
+        target.closest('[data-vertical-tabs]')
+      ) {
+        return;
+      }
+      closeSidebar();
+    };
+
+    // Pequeño delay para evitar que el click que abre también cierre
+    setTimeout(() => {
+      document.addEventListener('click', handleClickOutside);
+    }, 100);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen, closeSidebar]);
 
   return (
     <aside
@@ -33,7 +59,7 @@ export default function CollapsibleSidebar() {
       `}
     >
       {/* Content container - siempre 320px (80 = 20rem) */}
-      <div className="w-80 h-full overflow-y-auto overflow-x-hidden">
+      <div className="w-80 h-full overflow-y-auto overflow-x-hidden pt-4">
         {/* Si hay calculadora activa, mostrar wrapper */}
         {activeTab === 'calculators' && activeCalculator ? (
           <CalculatorWrapper />

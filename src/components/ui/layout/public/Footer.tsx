@@ -16,10 +16,10 @@ export const Footer = () => {
           
           {/* Brand Column */}
           <div>
-              <div className="flex items-center mb-4"> 
-                  <Logo variant="symbol" className="w-7 h-7" /> 
+              <div className="flex items-center mb-6">
+                  <Logo variant="symbol" className="w-7 h-7" />
               </div>
-              
+
               <p className="text-slate-400 text-sm leading-relaxed">
                   Nutrición y entrenamiento perfectamente sincronizados con IA.
               </p>
