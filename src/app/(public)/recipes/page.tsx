@@ -1,4 +1,4 @@
-// src/app/recetas/page.tsx
+// src/app/(public)/recetas/page.tsx
 import React from 'react';
 import Link from 'next/link';
 import { Search, Clock, ChevronRight, ChefHat, Flame, Utensils, Filter } from 'lucide-react';
@@ -109,7 +109,7 @@ export default async function RecipesPage({
     <div className="min-h-screen bg-slate-950 text-white font-sans pb-24">
       
       {/* --- HEADER --- */}
-      <header className="pt-32 pb-12 container mx-auto px-6 text-center max-w-4xl">
+      <header className="pt-16 pb-12 container mx-auto px-6 text-center max-w-4xl">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-6 animate-in fade-in slide-in-from-bottom-4">
           <ChefHat className="w-3 h-3" />
           Sporvit Kitchen
