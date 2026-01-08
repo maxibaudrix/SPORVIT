@@ -8,9 +8,6 @@ import {
   Users, 
   ChefHat, 
   ArrowLeft, 
-  Printer,
-  Share2,
-  Bookmark,
   CheckCircle2
 } from 'lucide-react';
 import { 
@@ -20,6 +17,7 @@ import {
   parseISODuration,
   mapCategoryToUI 
 } from '@/lib/recipeUtils';
+import ShareButtons from '@/components/ShareButtons';
 
 // Generar metadata dinámica para SEO
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -66,6 +64,17 @@ export default async function RecipePage({ params }: { params: { slug: string } 
   const prepTime = parseISODuration(recipe.prepTime);
   const cookTime = parseISODuration(recipe.cookTime);
 
+  // Limpiar ingredientes mal formateados
+  const cleanedIngredients = recipe.recipeIngredient.map((ingredient: string) => {
+    // Si el ingrediente contiene "alimento" o "peso:" es un ingrediente mal formateado
+    if (ingredient.includes('alimento') || ingredient.includes('peso:')) {
+      // Intentar extraer solo la primera parte antes de "alimento" o "peso"
+      const match = ingredient.match(/^([^,]*(?:de|taza|cucharada|cucharadita)[^,]*)/i);
+      return match ? match[1].trim() : ingredient.split(',')[0].trim();
+    }
+    return ingredient;
+  }).filter((ing: string) => ing.length > 0 && ing.length < 200); // Filtrar vacíos y muy largos
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       
@@ -99,7 +108,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
           <div className="absolute bottom-0 left-0 right-0 z-20 container mx-auto px-6 pb-12 max-w-6xl">
             <div className="max-w-3xl">
               {/* Category Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950/90 backdrop-blur border border-emerald-500/50 text-emerald-400 text-xs font-medium mb-4">
                 <ChefHat className="w-3 h-3" />
                 {displayCategory}
               </div>
@@ -128,20 +137,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
               </div>
 
               {/* Actions */}
-              <div className="flex flex-wrap gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-950 rounded-lg font-medium hover:bg-slate-100 transition-colors">
-                  <Bookmark className="w-4 h-4" />
-                  Guardar
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur border border-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors">
-                  <Share2 className="w-4 h-4" />
-                  Compartir
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur border border-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors">
-                  <Printer className="w-4 h-4" />
-                  Imprimir
-                </button>
-              </div>
+              <ShareButtons recipe={recipe} />
             </div>
           </div>
         </div>
@@ -171,7 +167,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
                 Ingredientes
               </h2>
               <ul className="space-y-3">
-                {recipe.recipeIngredient.map((ingredient, index) => (
+                {cleanedIngredients.map((ingredient: string, index: number) => (
                   <li key={index} className="flex items-start gap-3 text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     <span>{ingredient.trim()}</span>
@@ -184,7 +180,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
             <section>
               <h2 className="text-2xl font-bold mb-6 text-white">Instrucciones</h2>
               <div className="space-y-6">
-                {recipe.recipeInstructions.map((instruction, index) => (
+                {recipe.recipeInstructions.map((instruction: string, index: number) => (
                   <div key={index} className="flex gap-4">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
                       {index + 1}
@@ -201,7 +197,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
             <section>
               <h3 className="text-lg font-semibold mb-4 text-white">Etiquetas</h3>
               <div className="flex flex-wrap gap-2">
-                {recipe.keywords.split(',').map((keyword, index) => (
+                {recipe.keywords.split(',').map((keyword: string, index: number) => (
                   <span 
                     key={index}
                     className="px-3 py-1 bg-slate-800/50 border border-slate-700 rounded-full text-xs text-slate-300"
@@ -244,25 +240,6 @@ export default async function RecipePage({ params }: { params: { slug: string } 
                   </p>
                 </div>
               )}
-
-              {/* Quality Indicators */}
-              <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
-                <h3 className="text-lg font-bold mb-4 text-white">Calidad</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400 text-sm">SEO Ready</span>
-                    <span className={`text-xs font-semibold ${recipe.quality.seo_ready ? 'text-emerald-400' : 'text-slate-500'}`}>
-                      {recipe.quality.seo_ready ? '✓ Sí' : '○ No'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400 text-sm">Instrucciones</span>
-                    <span className="text-emerald-400 text-xs font-semibold capitalize">
-                      {recipe.quality.instructions_level}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

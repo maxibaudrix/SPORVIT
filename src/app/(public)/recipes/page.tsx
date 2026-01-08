@@ -24,7 +24,7 @@ const CATEGORIES = ["Todas", "Desayunos", "Comidas", "Cenas", "Snacks", "Postres
 export default async function RecipesPage({
   searchParams,
 }: {
-  searchParams: { category?: string; q?: string };
+  searchParams: { category?: string; q?: string; page?: string };
 }) {
   const category = searchParams.category || 'Todas';
   const searchQuery = searchParams.q || '';
@@ -42,8 +42,13 @@ export default async function RecipesPage({
     allRecipes = await getRecipesByCategory(category);
   }
 
-  // Limitar a 12 recetas por página (puedes implementar paginación después)
-  const displayRecipes = allRecipes.slice(0, 12);
+  // Paginación
+  const currentPage = parseInt(searchParams.page || '1');
+  const recipesPerPage = 12;
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+  const startIndex = (currentPage - 1) * recipesPerPage;
+  const endIndex = startIndex + recipesPerPage;
+  const displayRecipes = allRecipes.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans pb-24">
@@ -159,7 +164,7 @@ export default async function RecipesPage({
         </nav>
 
         {/* --- RECIPES GRID --- */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {displayRecipes.length > 0 ? (
             displayRecipes.map((recipe) => {
               const displayCategory = mapCategoryToUI(recipe.recipeCategory);
@@ -228,15 +233,41 @@ export default async function RecipesPage({
           )}
         </div>
 
+        {/* Paginación */}
+        {displayRecipes.length > 0 && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mb-12">
+            <Link
+              href={`/recipes?page=${Math.max(1, currentPage - 1)}${category !== 'Todas' ? `&category=${category}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                currentPage === 1 
+                  ? 'opacity-50 pointer-events-none bg-slate-800 text-slate-600' 
+                  : 'bg-slate-900 text-white border border-slate-700 hover:bg-slate-800 hover:border-emerald-500/30'
+              }`}
+            >
+              ← Anterior
+            </Link>
+            
+            <span className="text-slate-300 font-medium px-4">
+              Página <span className="text-emerald-400">{currentPage}</span> de {totalPages}
+            </span>
+            
+            <Link
+              href={`/recipes?page=${Math.min(totalPages, currentPage + 1)}${category !== 'Todas' ? `&category=${category}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                currentPage === totalPages 
+                  ? 'opacity-50 pointer-events-none bg-slate-800 text-slate-600' 
+                  : 'bg-slate-900 text-white border border-slate-700 hover:bg-slate-800 hover:border-emerald-500/30'
+              }`}
+            >
+              Siguiente →
+            </Link>
+          </div>
+        )}
+
         {/* Indicador de resultados */}
         {displayRecipes.length > 0 && (
           <div className="text-center mb-12 text-slate-400 text-sm">
-            Mostrando {displayRecipes.length} de {allRecipes.length} recetas
-            {allRecipes.length > displayRecipes.length && (
-              <p className="mt-2 text-xs text-slate-500">
-                (Funcionalidad de paginación próximamente)
-              </p>
-            )}
+            Mostrando {startIndex + 1}-{Math.min(endIndex, allRecipes.length)} de {allRecipes.length} recetas
           </div>
         )}
 
