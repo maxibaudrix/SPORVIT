@@ -100,3 +100,33 @@ export interface WeekInfo {
   endDate: Date;
   label: string; // "SEMANA X · DD MMM - DD MMM"
 }
+
+// ========================================
+// NEW CALENDAR SYSTEM TYPES
+// ========================================
+
+// Tipos de vista del calendario (para el nuevo sistema)
+export type CalendarView = 'week' | 'month';
+
+// Representación de un día en el calendario
+export interface CalendarDate {
+  date: Date;               // Fecha completa
+  dayNumber: number;        // Número del día (1-31)
+  dayName: string;          // Nombre abreviado (Lun, Mar, etc)
+  isToday: boolean;         // True si es el día actual
+  isCurrentMonth: boolean;  // True si pertenece al mes actual (útil en vista mensual)
+}
+
+// Estructura de datos para vista semanal
+export interface WeekData {
+  weekNumber: number;       // Número de semana del año
+  year: number;
+  days: CalendarDate[];     // Array de 7 días (L-D)
+}
+
+// Estructura de datos para vista mensual
+export interface MonthData {
+  month: number;            // 0-11 (enero-diciembre)
+  year: number;
+  weeks: CalendarDate[][];  // Array de semanas, cada semana es array de 7 días
+}

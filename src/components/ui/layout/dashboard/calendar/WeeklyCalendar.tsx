@@ -4,9 +4,16 @@ import { useEffect, useState } from 'react';
 import { DayEvent } from '@/types/calendar';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { useWeeklyPlan } from '@/hooks/useWeeklyPlan';
+import { useCalendarView } from '@/hooks/useCalendarView';
+import { useCalendarNavigation } from '@/hooks/useCalendarNavigation';
 import WeekSelector from './WeekSelector';
 import WeeklyDatePicker from './WeeklyDatePicker';
 import DailyDetailView from '@/components/ui/layout/dashboard/DailyDetailView';
+import { CalendarHeader } from './CalendarHeader';
+import { WeekView } from './WeekView';
+import { MonthView } from './MonthView';
+import { AddEventButton } from './AddEventButton';
+import { DailyModal } from './DailyModal';
 import { Loader2 } from 'lucide-react';
 
 interface WeeklyCalendarProps {
@@ -16,6 +23,9 @@ interface WeeklyCalendarProps {
 export default function WeeklyCalendar({
   userId,
 }: WeeklyCalendarProps) {
+  // Estado de vista (week/month) del nuevo sistema
+  const { view } = useCalendarView();
+  const navigation = useCalendarNavigation({ view });
   const {
     goToNextWeek,
     goToPreviousWeek,
@@ -111,34 +121,63 @@ export default function WeeklyCalendar({
     return <EmptyState />;
   }
 
+  // Convertir DayEvent[] a CalendarEvent[] para las nuevas vistas
+  const calendarEvents: DayEvent[] = weekPlan?.days.flatMap(day => day.events) || [];
+
   return (
     <div className="flex flex-col h-full bg-slate-950">
-      {/* Week selector */}
-      <WeekSelector
-        currentDate={weekStartDate}
-        onPreviousWeek={goToPreviousWeek}
-        onNextWeek={goToNextWeek}
-        onToday={goToToday}
-      />
+      {/* DESKTOP: Nuevo sistema con header y toggle week/month */}
+      <div className="hidden md:block">
+        <CalendarHeader
+          title={navigation.getHeaderTitle()}
+          onPrevious={navigation.goToPrevious}
+          onNext={navigation.goToNext}
+          onToday={navigation.goToToday}
+        />
 
-      {/* Weekly Date Picker */}
-      <WeeklyDatePicker
-        days={weekPlan.days}
-        selectedDate={selectedDate}
-        onDateSelect={handleDateSelect}
-      />
+        {/* Vista desktop según toggle */}
+        {view === 'week' ? (
+          <WeekView events={calendarEvents} />
+        ) : (
+          <MonthView events={calendarEvents} />
+        )}
 
-      {/* Daily Detail View - Integrado */}
-      {selectedDate && (
-        <div className="flex-1 overflow-y-auto pb-8">
-          <DailyDetailView
-            date={selectedDate}
-            events={selectedDayEvents}
-            onPreviousDay={handlePreviousDay}
-            onNextDay={handleNextDay}
-          />
-        </div>
-      )}
+        {/* Modal Daily */}
+        <DailyModal />
+      </div>
+
+      {/* MOBILE: Vista vertical actual (SIN MODIFICAR) */}
+      <div className="md:hidden flex flex-col h-full">
+        {/* Week selector */}
+        <WeekSelector
+          currentDate={weekStartDate}
+          onPreviousWeek={goToPreviousWeek}
+          onNextWeek={goToNextWeek}
+          onToday={goToToday}
+        />
+
+        {/* Weekly Date Picker */}
+        <WeeklyDatePicker
+          days={weekPlan.days}
+          selectedDate={selectedDate}
+          onDateSelect={handleDateSelect}
+        />
+
+        {/* Daily Detail View - Integrado */}
+        {selectedDate && (
+          <div className="flex-1 overflow-y-auto pb-8">
+            <DailyDetailView
+              date={selectedDate}
+              events={selectedDayEvents}
+              onPreviousDay={handlePreviousDay}
+              onNextDay={handleNextDay}
+            />
+          </div>
+        )}
+
+        {/* FAB Mobile */}
+        <AddEventButton date={new Date()} variant="fab" />
+      </div>
     </div>
   );
 }
