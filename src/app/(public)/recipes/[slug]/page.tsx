@@ -1,0 +1,311 @@
+// app/(public)/recipes/[slug]/page.tsx
+import React from 'react';
+import Link from 'next/link';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { 
+  Clock, 
+  Users, 
+  ChefHat, 
+  ArrowLeft, 
+  Printer,
+  Share2,
+  Bookmark,
+  CheckCircle2
+} from 'lucide-react';
+import { 
+  getRecipeBySlug, 
+  getAllRecipes,
+  getRelatedRecipes,
+  parseISODuration,
+  mapCategoryToUI 
+} from '@/lib/recipeUtils';
+
+// Generar metadata dinámica para SEO
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const recipe = await getRecipeBySlug(params.slug);
+  
+  if (!recipe) {
+    return {
+      title: 'Receta no encontrada | Sporvit Kitchen',
+    };
+  }
+
+  return {
+    title: `${recipe.name} | Sporvit Kitchen`,
+    description: recipe.summary || recipe.description,
+    openGraph: {
+      title: recipe.name,
+      description: recipe.summary || recipe.description,
+      images: [recipe.image],
+    },
+  };
+}
+
+// Generar todas las rutas estáticas en build time (ISR)
+export async function generateStaticParams() {
+  const recipes = await getAllRecipes();
+  
+  // Generar solo las primeras 100 recetas en build time
+  // El resto se generará on-demand
+  return recipes.slice(0, 100).map((recipe) => ({
+    slug: recipe.slug,
+  }));
+}
+
+export default async function RecipePage({ params }: { params: { slug: string } }) {
+  const recipe = await getRecipeBySlug(params.slug);
+  
+  if (!recipe) {
+    notFound();
+  }
+
+  const relatedRecipes = await getRelatedRecipes(params.slug, 3);
+  const displayCategory = mapCategoryToUI(recipe.recipeCategory);
+  const totalTime = parseISODuration(recipe.totalTime);
+  const prepTime = parseISODuration(recipe.prepTime);
+  const cookTime = parseISODuration(recipe.cookTime);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white">
+      
+      {/* Back Navigation */}
+      <div className="bg-slate-900/50 border-b border-slate-800">
+        <div className="container mx-auto px-6 py-4 max-w-6xl">
+          <Link 
+            href="/recipes" 
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver a recetas
+          </Link>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative">
+        <div className="h-[60vh] max-h-[600px] relative overflow-hidden">
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent z-10"></div>
+          
+          {/* Image */}
+          <img 
+            src={recipe.image} 
+            alt={recipe.name}
+            className="w-full h-full object-cover"
+          />
+
+          {/* Content Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 z-20 container mx-auto px-6 pb-12 max-w-6xl">
+            <div className="max-w-3xl">
+              {/* Category Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-medium mb-4">
+                <ChefHat className="w-3 h-3" />
+                {displayCategory}
+              </div>
+
+              {/* Title */}
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
+                {recipe.name}
+              </h1>
+
+              {/* Quick Stats */}
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-lg">
+                  <Clock className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm">
+                    <span className="text-slate-400">Tiempo total:</span>{' '}
+                    <span className="text-white font-semibold">{totalTime}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-lg">
+                  <Users className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm">
+                    <span className="text-slate-400">Porciones:</span>{' '}
+                    <span className="text-white font-semibold">{recipe.recipeYield}</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap gap-3">
+                <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-950 rounded-lg font-medium hover:bg-slate-100 transition-colors">
+                  <Bookmark className="w-4 h-4" />
+                  Guardar
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur border border-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors">
+                  <Share2 className="w-4 h-4" />
+                  Compartir
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur border border-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors">
+                  <Printer className="w-4 h-4" />
+                  Imprimir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-12 max-w-6xl">
+        <div className="grid lg:grid-cols-3 gap-12">
+          
+          {/* Left Column - Details & Instructions */}
+          <div className="lg:col-span-2 space-y-12">
+            
+            {/* Description */}
+            {recipe.description && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-white">Descripción</h2>
+                <p className="text-slate-300 leading-relaxed">
+                  {recipe.description}
+                </p>
+              </section>
+            )}
+
+            {/* Ingredients */}
+            <section className="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+              <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">
+                <ChefHat className="w-6 h-6 text-emerald-400" />
+                Ingredientes
+              </h2>
+              <ul className="space-y-3">
+                {recipe.recipeIngredient.map((ingredient, index) => (
+                  <li key={index} className="flex items-start gap-3 text-slate-300">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <span>{ingredient.trim()}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Instructions */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 text-white">Instrucciones</h2>
+              <div className="space-y-6">
+                {recipe.recipeInstructions.map((instruction, index) => (
+                  <div key={index} className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                      {index + 1}
+                    </div>
+                    <p className="text-slate-300 leading-relaxed pt-1">
+                      {instruction}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Keywords/Tags */}
+            <section>
+              <h3 className="text-lg font-semibold mb-4 text-white">Etiquetas</h3>
+              <div className="flex flex-wrap gap-2">
+                {recipe.keywords.split(',').map((keyword, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1 bg-slate-800/50 border border-slate-700 rounded-full text-xs text-slate-300"
+                  >
+                    {keyword.trim()}
+                  </span>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Right Column - Recipe Info Card */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24 space-y-6">
+              
+              {/* Time Breakdown Card */}
+              <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
+                <h3 className="text-lg font-bold mb-4 text-white">Tiempos</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-800">
+                    <span className="text-slate-400 text-sm">Preparación</span>
+                    <span className="text-white font-semibold">{prepTime}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-800">
+                    <span className="text-slate-400 text-sm">Cocción</span>
+                    <span className="text-white font-semibold">{cookTime}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400 text-sm font-semibold">Total</span>
+                    <span className="text-emerald-400 font-bold">{totalTime}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Nutrition Note */}
+              {!recipe.nutrition && (
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+                  <p className="text-yellow-200/80 text-xs">
+                    ℹ️ Información nutricional en desarrollo
+                  </p>
+                </div>
+              )}
+
+              {/* Quality Indicators */}
+              <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
+                <h3 className="text-lg font-bold mb-4 text-white">Calidad</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">SEO Ready</span>
+                    <span className={`text-xs font-semibold ${recipe.quality.seo_ready ? 'text-emerald-400' : 'text-slate-500'}`}>
+                      {recipe.quality.seo_ready ? '✓ Sí' : '○ No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Instrucciones</span>
+                    <span className="text-emerald-400 text-xs font-semibold capitalize">
+                      {recipe.quality.instructions_level}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Recipes */}
+        {relatedRecipes.length > 0 && (
+          <section className="mt-20">
+            <h2 className="text-3xl font-bold mb-8 text-white">Recetas Similares</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {relatedRecipes.map((relatedRecipe) => (
+                <Link
+                  key={relatedRecipe.slug}
+                  href={`/recipes/${relatedRecipe.slug}`}
+                  className="group bg-slate-900/50 rounded-xl border border-slate-800 overflow-hidden hover:border-emerald-500/30 transition-all duration-300"
+                >
+                  <div className="h-48 overflow-hidden relative">
+                    <img 
+                      src={relatedRecipe.image}
+                      alt={relatedRecipe.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2 mb-2">
+                      {relatedRecipe.name}
+                    </h3>
+                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {parseISODuration(relatedRecipe.totalTime)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {relatedRecipe.recipeYield}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
+  );
+}

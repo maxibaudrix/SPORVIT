@@ -130,7 +130,7 @@ export default function LandingPage() {
       
       <main>
         {/* HERO SECTION */}
-        <section className="relative pt-16 pb-16 md:pt-16 md:pb-16 overflow-hidden bg-slate-950/95 md:bg-transparent">
+        <section className="relative pt-16 pb-16 md:pt-16 md:pb-16 overflow-hidden bg-slate-950">
           {/* Background Gradients */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-emerald-500/20 blur-[120px] rounded-full opacity-50 pointer-events-none" />
           <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-blue-500/10 blur-[100px] rounded-full opacity-30 pointer-events-none" />
