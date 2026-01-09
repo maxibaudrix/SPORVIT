@@ -42,7 +42,7 @@ export const DayColumnNew = ({ day, events }: DayColumnNewProps) => {
       <div className="space-y-2 mb-4">
         {hasEvents ? (
           events.map((event) => (
-            <EventCard key={event.id} event={event} onClick={() => {}} />
+            <EventCard key={event.id} event={event} />
           ))
         ) : (
           <EmptyDayState />

@@ -1,11 +1,11 @@
 'use client';
 
 import { DayEvent, WorkoutEvent, MealEvent, RestEvent } from '@/types/calendar';
-import { 
-  Dumbbell, 
-  Bike, 
-  Activity, 
-  Droplets, 
+import {
+  Dumbbell,
+  Bike,
+  Activity,
+  Droplets,
   Heart,
   Utensils,
   Cookie,
@@ -13,23 +13,35 @@ import {
   Coffee,
   BedDouble
 } from 'lucide-react';
+import { useDailyModal } from '@/hooks/useDailyModal';
 
 interface EventCardProps {
   event: DayEvent;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export default function EventCard({ event, onClick }: EventCardProps) {
+  const { openViewModal } = useDailyModal();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      // Si no hay onClick personalizado, abrir modal de visualización
+      openViewModal(event);
+    }
+  };
+
   if (event.type === 'workout') {
-    return <WorkoutCard event={event} onClick={onClick} />;
+    return <WorkoutCard event={event} onClick={handleClick} />;
   }
-  
+
   if (event.type === 'meal') {
-    return <MealCard event={event} onClick={onClick} />;
+    return <MealCard event={event} onClick={handleClick} />;
   }
-  
+
   if (event.type === 'rest') {
-    return <RestCard event={event} onClick={onClick} />;
+    return <RestCard event={event} onClick={handleClick} />;
   }
 
   return null;

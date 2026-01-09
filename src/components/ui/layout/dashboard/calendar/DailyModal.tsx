@@ -1,28 +1,45 @@
 'use client';
 
-import { useEffect } from 'react';
-import { X, Dumbbell, Salad, FileText } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { X, Dumbbell, Salad, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useDailyModal } from '@/hooks/useDailyModal';
-import EventCard from './EventCard';
+import { WorkoutDetails } from '@/components/dashboard/event-details/WorkoutDetails';
+import { MealDetails } from '@/components/dashboard/event-details/MealDetails';
+import { RestDayDetails } from '@/components/dashboard/event-details/RestDayDetails';
 
 export const DailyModal = () => {
-  const { isOpen, selectedDate, closeModal } = useDailyModal();
+  const {
+    isOpen,
+    selectedDate,
+    selectedEvent,
+    mode,
+    eventType,
+    closeModal,
+    switchToEditMode,
+    openAddModal
+  } = useDailyModal();
 
-  // Mock events - en el futuro esto vendrá de props o de un fetch
-  const events: any[] = [];
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Cerrar con ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        if (showDeleteConfirm) {
+          setShowDeleteConfirm(false);
+        } else {
+          closeModal();
+        }
+      }
     };
     if (isOpen) {
       window.addEventListener('keydown', handleEsc);
     }
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [isOpen, closeModal]);
+  }, [isOpen, showDeleteConfirm, closeModal]);
 
   // Lock body scroll
   useEffect(() => {
@@ -39,6 +56,183 @@ export const DailyModal = () => {
   if (!isOpen || !selectedDate) return null;
 
   const formattedDate = format(selectedDate, "EEEE d 'de' MMMM", { locale: es });
+
+  // Handler para eliminar evento
+  const handleDelete = async () => {
+    if (!selectedEvent) return;
+
+    setIsDeleting(true);
+    try {
+      const endpoint =
+        selectedEvent.type === 'workout'
+          ? `/api/workouts/${selectedEvent.id}`
+          : `/api/meals/${selectedEvent.id}`;
+
+      const response = await fetch(endpoint, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        closeModal();
+        // Recargar la página para refrescar los eventos
+        window.location.reload();
+      } else {
+        console.error('Error al eliminar evento');
+        alert('No se pudo eliminar el evento. Por favor intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Por favor intenta de nuevo.');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  // Handler para toggle complete (solo para workouts)
+  const handleToggleComplete = async () => {
+    if (!selectedEvent || selectedEvent.type !== 'workout') return;
+
+    try {
+      const response = await fetch(`/api/workouts/${selectedEvent.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          completed: !selectedEvent.completed,
+          completedAt: !selectedEvent.completed ? new Date().toISOString() : null,
+        }),
+      });
+
+      if (response.ok) {
+        // Recargar para refrescar
+        window.location.reload();
+      } else {
+        alert('No se pudo actualizar el estado.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión.');
+    }
+  };
+
+  // Renderizar contenido según el modo y tipo de evento
+  const renderContent = () => {
+    // Modo: Ver evento existente
+    if (mode === 'view' && selectedEvent) {
+      if (selectedEvent.type === 'workout') {
+        return (
+          <WorkoutDetails
+            event={selectedEvent as any}
+            mode="view"
+            onEdit={switchToEditMode}
+            onDelete={() => setShowDeleteConfirm(true)}
+            onToggleComplete={handleToggleComplete}
+          />
+        );
+      }
+
+      if (selectedEvent.type === 'meal') {
+        return (
+          <MealDetails
+            event={selectedEvent as any}
+            mode="view"
+            onEdit={switchToEditMode}
+            onDelete={() => setShowDeleteConfirm(true)}
+          />
+        );
+      }
+
+      if (selectedEvent.type === 'rest') {
+        return (
+          <RestDayDetails
+            event={selectedEvent as any}
+            dailyCalories={2000} // TODO: Obtener calorías del plan del usuario
+          />
+        );
+      }
+    }
+
+    // Modo: Editar evento (placeholder por ahora)
+    if (mode === 'edit' && selectedEvent) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-slate-400 mb-4">
+            La funcionalidad de edición se implementará próximamente.
+          </p>
+          <button
+            onClick={() => window.history.back()}
+            className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors"
+          >
+            Volver
+          </button>
+        </div>
+      );
+    }
+
+    // Modo: Agregar nuevo evento (placeholder - mantener UI original)
+    return (
+      <div>
+        <h2 className="text-2xl font-bold text-white capitalize mb-2">
+          {formattedDate}
+        </h2>
+        <p className="text-sm text-slate-400 mb-6">
+          Gestiona tus eventos del día
+        </p>
+
+        <div className="border-t border-slate-800 pt-6">
+          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-4">
+            Agregar nuevo evento
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* CTA Entrenamiento */}
+            <button
+              onClick={() => {
+                // TODO: Implementar agregar entrenamiento
+                alert('Funcionalidad en desarrollo');
+              }}
+              className="group p-6 rounded-xl bg-red-500/10 border border-red-500/30 hover:border-red-500/50 hover:bg-red-500/20 transition-all text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Dumbbell className="w-6 h-6 text-red-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">Entrenamiento</h3>
+              <p className="text-sm text-slate-400">Programa una sesión de ejercicio</p>
+            </button>
+
+            {/* CTA Comida */}
+            <button
+              onClick={() => {
+                // TODO: Implementar agregar comida
+                alert('Funcionalidad en desarrollo');
+              }}
+              className="group p-6 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:border-orange-500/50 hover:bg-orange-500/20 transition-all text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Salad className="w-6 h-6 text-orange-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">Comida</h3>
+              <p className="text-sm text-slate-400">Registra una comida o snack</p>
+            </button>
+
+            {/* CTA Nota */}
+            <button
+              onClick={() => {
+                // TODO: Implementar agregar nota
+                alert('Funcionalidad en desarrollo');
+              }}
+              className="group p-6 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:border-blue-500/50 hover:bg-blue-500/20 transition-all text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <FileText className="w-6 h-6 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">Nota</h3>
+              <p className="text-sm text-slate-400">Añade una nota o recordatorio</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -58,12 +252,14 @@ export const DailyModal = () => {
           <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-6 py-4 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white capitalize">
-                  {formattedDate}
-                </h2>
-                <p className="text-sm text-slate-400 mt-1">
-                  Gestiona tus eventos del día
-                </p>
+                {mode === 'view' && selectedEvent && (
+                  <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    {selectedEvent.type === 'workout' ? 'Entrenamiento' : 'Comida'}
+                  </div>
+                )}
+                {mode === 'add' && (
+                  <h2 className="text-xl font-bold text-white">Agregar Evento</h2>
+                )}
               </div>
               <button
                 onClick={closeModal}
@@ -77,72 +273,49 @@ export const DailyModal = () => {
 
           {/* Body scrollable */}
           <div className="overflow-y-auto max-h-[calc(85vh-80px)] p-6">
-            {/* Timeline de eventos */}
-            {events.length > 0 ? (
-              <div className="space-y-3 mb-6">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-3">
-                  Eventos programados
-                </h3>
-                {events.map((event) => (
-                  <EventCard key={event.id} event={event} onClick={() => {}} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 mb-6">
-                <div className="w-20 h-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-4">
-                  <FileText className="w-10 h-10 text-slate-500" />
+            {renderContent()}
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <>
+          <div className="fixed inset-0 bg-black/80 z-[60]" onClick={() => setShowDeleteConfirm(false)} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[61] w-full max-w-md p-6">
+            <div className="bg-slate-900 rounded-xl border border-red-500/30 p-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-red-400" />
                 </div>
-                <p className="text-slate-400 text-center">
-                  No hay eventos programados para este día
-                </p>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">¿Eliminar evento?</h3>
+                  <p className="text-sm text-slate-400">
+                    Esta acción no se puede deshacer.
+                  </p>
+                </div>
               </div>
-            )}
 
-            {/* CTAs para agregar eventos */}
-            <div className="border-t border-slate-800 pt-6">
-              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-4">
-                Agregar nuevo evento
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* CTA Entrenamiento */}
-                <button className="group p-6 rounded-xl bg-red-500/10 border border-red-500/30 hover:border-red-500/50 hover:bg-red-500/20 transition-all text-left">
-                  <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Dumbbell className="w-6 h-6 text-red-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    Entrenamiento
-                  </h3>
-                  <p className="text-sm text-slate-400">
-                    Programa una sesión de ejercicio
-                  </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition-colors disabled:opacity-50"
+                >
+                  Cancelar
                 </button>
-
-                {/* CTA Comida */}
-                <button className="group p-6 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:border-orange-500/50 hover:bg-orange-500/20 transition-all text-left">
-                  <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Salad className="w-6 h-6 text-orange-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">Comida</h3>
-                  <p className="text-sm text-slate-400">
-                    Registra una comida o snack
-                  </p>
-                </button>
-
-                {/* CTA Nota */}
-                <button className="group p-6 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:border-blue-500/50 hover:bg-blue-500/20 transition-all text-left">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <FileText className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">Nota</h3>
-                  <p className="text-sm text-slate-400">
-                    Añade una nota o recordatorio
-                  </p>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? 'Eliminando...' : 'Eliminar'}
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };

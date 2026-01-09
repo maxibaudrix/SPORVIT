@@ -1,20 +1,41 @@
 import type { UserPlanningContext } from "@/types/planning";
 
 /**
- * System prompt ultra-compacto para chunks
+ * System prompt con detalles completos para entrenamientos y recetas
  */
 export function getSystemPrompt(): string {
-  return `Genera días de entrenamiento y nutrición en JSON puro.
+  return `Genera días de entrenamiento y nutrición en JSON puro. TODO EN ESPAÑOL.
 
-REGLAS:
+REGLAS GENERALES:
 1. Genera SOLO los días solicitados
-2. 2 ejercicios por entrenamiento
-3. 3 comidas por día
-4. 3 ingredientes por comida
-5. NO incluyas: notes, tempo, category, description, instructions, tags, difficulty, prepTime, cookTime
-6. NO uses markdown
+2. TODO el contenido debe estar en ESPAÑOL (nombres, descripciones, instrucciones)
+3. NO uses markdown, solo JSON puro
+4. Si llegas al límite, detén y retorna: {"partial": true}
 
-FORMATO:
+ENTRENAMIENTOS - REGLAS:
+1. Indica claramente el TIPO de entrenamiento en español: "Fuerza", "Cardio", "Estiramientos", "Pliométrico", "HIIT", etc.
+2. Para cada ejercicio incluye:
+   - Nombre del ejercicio en español
+   - Grupo muscular trabajado
+   - Series y repeticiones (para fuerza)
+   - Duración y zona (para cardio, ej: "30 min Zona 2", "Fartlek 20 min")
+   - Descripción breve de ejecución
+3. Adaptar al objetivo del usuario:
+   - Fitness general: variedad balanceada
+   - Hipertrofia: enfoque en fuerza con volumen alto
+   - Triatlón: combinar fuerza, cardio, pliométricos
+   - Pérdida de peso: énfasis en cardio + circuitos
+4. Incluir 4-6 ejercicios por sesión (no solo 2)
+5. Para días de descanso: usar type "rest" sin ejercicios
+
+RECETAS - REGLAS:
+1. Incluir lista completa de ingredientes con cantidades
+2. Incluir instrucciones de preparación paso a paso
+3. Nombres de recetas en español y descriptivos
+4. Adaptar a restricciones dietéticas del usuario
+5. Calcular macros correctamente
+
+FORMATO JSON:
 {
   "weekNumber": 1,
   "startDate": "2025-12-29",
@@ -27,22 +48,39 @@ FORMATO:
       "dayNumber": 1,
       "isTrainingDay": true,
       "workout": {
-        "type": "strength",
+        "type": "Fuerza",
+        "subType": "Hipertrofia tren superior",
         "phase": "base",
-        "focus": "full_body",
-        "duration": 50,
-        "intensity": "moderate",
+        "focus": "pecho_espalda",
+        "duration": 60,
+        "intensity": "moderada-alta",
+        "description": "Sesión de fuerza enfocada en desarrollar masa muscular en tren superior",
         "exercises": [
           {
-            "name": "Sentadilla",
-            "muscleGroup": "piernas",
-            "sets": 3,
-            "reps": 12,
-            "rest": 60
+            "name": "Press de banca con barra",
+            "muscleGroup": "pecho",
+            "sets": 4,
+            "reps": 10,
+            "rest": 90,
+            "description": "Acostado en banco plano, bajar barra al pecho y empujar explosivamente"
+          },
+          {
+            "name": "Remo con barra",
+            "muscleGroup": "espalda",
+            "sets": 4,
+            "reps": 10,
+            "rest": 90,
+            "description": "Inclinado hacia adelante, tirar barra hacia abdomen manteniendo espalda recta"
           }
         ],
-        "warmup": {"duration": 5},
-        "cooldown": {"duration": 5}
+        "warmup": {
+          "duration": 10,
+          "description": "Movilidad articular y activación muscular"
+        },
+        "cooldown": {
+          "duration": 5,
+          "description": "Estiramientos estáticos de pecho y espalda"
+        }
       },
       "nutrition": {
         "targetCalories": 2706,
@@ -54,53 +92,127 @@ FORMATO:
           {
             "mealType": "breakfast",
             "timing": "07:30",
-            "name": "Avena proteica",
-            "calories": 650,
-            "protein": 40,
-            "carbs": 75,
-            "fat": 15,
-            "fiber": 8,
+            "name": "Tostadas integrales con huevo y aguacate",
+            "calories": 550,
+            "protein": 30,
+            "carbs": 60,
+            "fat": 20,
+            "fiber": 12,
             "ingredients": [
-              {"name": "Avena", "amount": 70, "unit": "g"}
+              {"name": "Pan integral", "amount": 80, "unit": "g"},
+              {"name": "Huevos", "amount": 2, "unit": "unidades"},
+              {"name": "Aguacate", "amount": 50, "unit": "g"},
+              {"name": "Aceite de oliva", "amount": 5, "unit": "ml"},
+              {"name": "Tomate cherry", "amount": 50, "unit": "g"}
+            ],
+            "instructions": [
+              "Tostar el pan integral hasta que esté dorado",
+              "Cocinar los huevos al gusto (revueltos o fritos con poco aceite)",
+              "Machacar el aguacate con un tenedor y agregar sal y pimienta",
+              "Montar: pan tostado + aguacate + huevos + tomates cortados",
+              "Servir inmediatamente"
             ]
           }
         ]
       }
+    },
+    {
+      "date": "2025-12-30",
+      "dayOfWeek": "martes",
+      "dayNumber": 2,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "description": "Día de descanso activo - Recuperación"
+      },
+      "nutrition": {
+        "targetCalories": 2200,
+        "targetProtein": 140,
+        "targetCarbs": 250,
+        "targetFat": 60,
+        "targetFiber": 28,
+        "meals": []
+      }
     }
   ]
-}
-
-Si llegas al límite, detén y retorna: {"partial": true}`;
+}`;
 }
 
 /**
- * User prompt compacto con soporte para chunks
+ * User prompt con contexto completo sobre tipo de entrenamiento
  */
 export function buildUserPromptForWeek(
   context: UserPlanningContext,
   weekNumber: number,
   phase: string,
-  chunk?: { start: number; end: number } // ✅ NUEVO: soporte para chunks
+  chunk?: { start: number; end: number }
 ): string {
-  
-  const chunkInfo = chunk 
+
+  const chunkInfo = chunk
     ? `GENERA SOLO DÍAS ${chunk.start}-${chunk.end} (${chunk.end - chunk.start + 1} días)`
     : `GENERA 7 DÍAS COMPLETOS`;
-  
-  return `SEM${weekNumber}|${phase.toUpperCase()}
+
+  // Mapear objetivo a tipo de entrenamiento
+  const trainingStyle = getTrainingStyleFromGoal(context.objective.primaryGoal);
+
+  return `SEMANA ${weekNumber} | FASE: ${phase.toUpperCase()}
 ${chunkInfo}
 
-${context.biometrics.age}a|${context.biometrics.gender}|${context.biometrics.weight}kg
-${context.training.experienceLevel}|${context.objective.primaryGoal}
+PERFIL USUARIO:
+- Edad: ${context.biometrics.age} años
+- Género: ${context.biometrics.gender}
+- Peso: ${context.biometrics.weight} kg
+- Experiencia: ${context.training.experienceLevel}
+- Objetivo: ${context.objective.primaryGoal}
+- Estilo de entrenamiento: ${trainingStyle}
 
-ENTRENO: ${context.training.daysPerWeek}d×${context.training.sessionDuration}min
-CAL: E${context.targets?.calories?.trainingDay} D${context.targets?.calories?.restDay}
-MACROS: ${context.targets?.macros?.protein}P/${context.targets?.macros?.carbs}C/${context.targets?.macros?.fat}F
+PLAN DE ENTRENAMIENTO:
+- Días por semana: ${context.training.daysPerWeek}
+- Duración por sesión: ${context.training.sessionDuration} minutos
+- Incluir: ${getTrainingTypes(context.objective.primaryGoal)}
 
-DIETA: ${context.nutrition.dietType}
-${context.nutrition.excludedFoods?.length ? `NO: ${context.nutrition.excludedFoods.slice(0, 2).join(',')}` : ''}
+NUTRICIÓN:
+- Calorías día entrenamiento: ${context.targets?.calories?.trainingDay} kcal
+- Calorías día descanso: ${context.targets?.calories?.restDay} kcal
+- Macros: ${context.targets?.macros?.protein}g proteína / ${context.targets?.macros?.carbs}g carbos / ${context.targets?.macros?.fat}g grasa
+- Tipo de dieta: ${context.nutrition.dietType}
+${context.nutrition.excludedFoods?.length ? `- Excluir: ${context.nutrition.excludedFoods.join(', ')}` : ''}
 
-START: ${context.startPreferences?.startDate}
+IMPORTANTE:
+1. Para entrenamientos incluir 4-6 ejercicios con descripción completa
+2. Para recetas incluir todos los ingredientes con cantidades e instrucciones paso a paso
+3. Todo en ESPAÑOL
+4. Adaptar intensidad y volumen según semana ${weekNumber} de fase ${phase}
 
-JSON. 2 ejercicios, 3 comidas, 3 ingredientes máx.`;
+Genera JSON siguiendo el formato exacto del system prompt.`;
+}
+
+/**
+ * Determinar estilo de entrenamiento según objetivo
+ */
+function getTrainingStyleFromGoal(goal: string): string {
+  const styles: Record<string, string> = {
+    'muscle_gain': 'Hipertrofia con énfasis en fuerza',
+    'weight_loss': 'Cardio y circuitos metabólicos',
+    'endurance': 'Resistencia cardiovascular y muscular',
+    'strength': 'Fuerza máxima y potencia',
+    'general_fitness': 'Fitness general balanceado',
+    'sport_specific': 'Específico para deporte (triatlón, running, etc.)',
+  };
+  return styles[goal] || 'Fitness general';
+}
+
+/**
+ * Tipos de entrenamiento a incluir según objetivo
+ */
+function getTrainingTypes(goal: string): string {
+  const types: Record<string, string> = {
+    'muscle_gain': 'Fuerza (4-5x/sem), Cardio ligero (1-2x/sem)',
+    'weight_loss': 'Cardio (3-4x/sem), Fuerza (2-3x/sem), HIIT (2x/sem)',
+    'endurance': 'Cardio Zona 2 (3-4x/sem), Fuerza (2x/sem), Pliométricos (1x/sem)',
+    'strength': 'Fuerza pesada (4x/sem), Accesorios (2x/sem)',
+    'general_fitness': 'Fuerza (2-3x/sem), Cardio (2x/sem), Flexibilidad (1x/sem)',
+    'sport_specific': 'Fuerza (2x/sem), Cardio (2-3x/sem), Pliométricos (1x/sem), Técnica específica',
+  };
+  return types[goal] || 'Variedad de fuerza, cardio y flexibilidad';
 }

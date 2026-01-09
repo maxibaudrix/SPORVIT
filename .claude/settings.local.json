@@ -8,7 +8,9 @@
       "Bash(npx prisma migrate deploy)",
       "Bash(npx prisma generate:*)",
       "Bash(\"c:\\\\Users\\\\maxib\\\\SPORVIT\\\\src\\\\app\\\\api\\\\notifications\\\\[id]\\\\read\\\\route.ts\")",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsx:*)"
     ]
   }
 }
