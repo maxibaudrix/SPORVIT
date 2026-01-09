@@ -653,7 +653,7 @@ export default function Step6ReviewPage() {
               </div>
               <div className="flex items-center gap-2 text-blue-400">
                 <Clock className="w-4 h-4" />
-                <span>Semanas 2-12 se generarán en segundo plano</span>
+                <span>Las siguientes semanas se generarán en segundo plano</span>
               </div>
             </div>
           </div>

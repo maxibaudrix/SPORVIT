@@ -1,0 +1,230 @@
+{
+  "weekNumber": 4,
+  "startDate": "2026-01-05",
+  "endDate": "2026-01-11",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-09",
+      "dayOfWeek": "viernes",
+      "dayNumber": 5,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Press Militar con Mancuernas",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Remo con Barra",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "07:30",
+            "name": "Tostadas proteicas",
+            "calories": 600,
+            "protein": 30,
+            "carbs": 70,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo",
+                "amount": 2,
+                "unit": "unidades"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Bowl de pollo y arroz",
+            "calories": 850,
+            "protein": 55,
+            "carbs": 110,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz integral",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón con batata",
+            "calories": 833,
+            "protein": 52,
+            "carbs": 100,
+            "fat": 28,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Batata",
+                "amount": 180,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-10",
+      "dayOfWeek": "sábado",
+      "dayNumber": 6,
+      "isTrainingDay": false,
+      "workout": null,
+      "nutrition": {
+        "targetCalories": 1971,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "09:00",
+            "name": "Yogur con bayas",
+            "calories": 500,
+            "protein": 35,
+            "carbs": 60,
+            "fat": 15,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Bayas mixtas",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Miel",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de lentejas y queso",
+            "calories": 700,
+            "protein": 45,
+            "carbs": 95,
+            "fat": 20,
+            "fiber": 12,
+            "ingredients": [
+              {
+                "name": "Lentejas cocidas",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Queso feta",
+                "amount": 50,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:00",
+            "name": "Pasta con salsa de pavo",
+            "calories": 771,
+            "protein": 57,
+            "carbs": 125,
+            "fat": 33,
+            "fiber": 13,
+            "ingredients": [
+              {
+                "name": "Pavo molido",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Pasta integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

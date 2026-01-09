@@ -1,0 +1,68 @@
+{
+  "weekNumber": 3,
+  "startDate": "2026-01-09",
+  "endDate": "2026-01-15",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-15",
+      "dayOfWeek": "jueves",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 1971,
+        "targetProtein": 137,
+        "targetCarbs": 200,
+        "targetFat": 60,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostada con huevo",
+            "calories": 450,
+            "protein": 25,
+            "carbs": 45,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {"name": "Huevo", "amount": 3, "unit": "unidad"},
+              {"name": "Pan integral", "amount": 60, "unit": "g"},
+              {"name": "Aguacate", "amount": 50, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de atún y garbanzos",
+            "calories": 600,
+            "protein": 45,
+            "carbs": 60,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Atún en agua", "amount": 150, "unit": "g"},
+              {"name": "Garbanzos cocidos", "amount": 100, "unit": "g"},
+              {"name": "Pepino", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pechuga de pavo con arroz",
+            "calories": 921,
+            "protein": 67,
+            "carbs": 95,
+            "fat": 20,
+            "fiber": 10,
+            "ingredients": [
+              {"name": "Pechuga de pavo", "amount": 180, "unit": "g"},
+              {"name": "Arroz integral", "amount": 150, "unit": "g"},
+              {"name": "Brócoli", "amount": 150, "unit": "g"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

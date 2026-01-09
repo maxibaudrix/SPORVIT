@@ -1,0 +1,258 @@
+{
+  "weekNumber": 1,
+  "startDate": "2026-01-05",
+  "endDate": "2026-01-11",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-09",
+      "dayOfWeek": "viernes",
+      "dayNumber": 5,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano (RDL)",
+            "muscleGroup": "isquiotibiales",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          },
+          {
+            "name": "Press de Banca con Mancuernas",
+            "muscleGroup": "pecho",
+            "sets": 3,
+            "reps": 12,
+            "rest": 75
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostada con Huevo y Aguacate",
+            "calories": 620,
+            "protein": 40,
+            "carbs": 70,
+            "fat": 20,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Pollo con Arroz y Brócoli",
+            "calories": 805,
+            "protein": 50,
+            "carbs": 100,
+            "fat": 25,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco cocido",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Ensalada de Lentejas y Pavo",
+            "calories": 858,
+            "protein": 47,
+            "carbs": 110,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Lentejas cocidas",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Pavo molido",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate cherry",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-10",
+      "dayOfWeek": "sábado",
+      "dayNumber": 6,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla Goblet",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 75
+          },
+          {
+            "name": "Remo con Barra",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 10,
+            "rest": 90
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "09:00",
+            "name": "Batido de Proteínas y Fruta",
+            "calories": 600,
+            "protein": 45,
+            "carbs": 80,
+            "fat": 15,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Proteína de suero",
+                "amount": 30,
+                "unit": "g"
+              },
+              {
+                "name": "Leche",
+                "amount": 300,
+                "unit": "ml"
+              },
+              {
+                "name": "Plátano",
+                "amount": 1,
+                "unit": "unidad"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "14:00",
+            "name": "Salmón con Patata Dulce",
+            "calories": 830,
+            "protein": 45,
+            "carbs": 90,
+            "fat": 30,
+            "fiber": 9,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Patata dulce",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Pasta Integral con Carne Molida",
+            "calories": 853,
+            "protein": 47,
+            "carbs": 110,
+            "fat": 23,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pasta integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Carne de res molida magra",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 150,
+                "unit": "ml"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

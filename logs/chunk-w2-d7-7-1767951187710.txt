@@ -1,0 +1,104 @@
+{
+  "weekNumber": 2,
+  "startDate": "2026-01-09",
+  "endDate": "2026-01-15",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-15",
+      "dayOfWeek": "jueves",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 1971,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostada proteica con aguacate",
+            "calories": 500,
+            "protein": 35,
+            "carbs": 70,
+            "fat": 15,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Huevo entero",
+                "amount": 2,
+                "unit": "unidad"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 2,
+                "unit": "rebanadas"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Ensalada de pollo y quinoa",
+            "calories": 700,
+            "protein": 50,
+            "carbs": 100,
+            "fat": 18,
+            "fiber": 9,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo a la plancha",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa cocida",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Mezcla de hojas verdes",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón y batata",
+            "calories": 771,
+            "protein": 52,
+            "carbs": 110,
+            "fat": 35,
+            "fiber": 9,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 140,
+                "unit": "g"
+              },
+              {
+                "name": "Batata al horno",
+                "amount": 250,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "weekNumber": 4,
+  "startDate": "2026-01-09",
+  "endDate": "2026-01-10",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-09",
+      "dayOfWeek": "viernes",
+      "dayNumber": 1,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Sentadilla con peso corporal",
+            "muscleGroup": "piernas",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Remo con mancuerna",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostadas con huevo",
+            "calories": 600,
+            "protein": 30,
+            "carbs": 80,
+            "fat": 20,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Huevos",
+                "amount": 3,
+                "unit": "unidad"
+              },
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Bowl de pollo y arroz",
+            "calories": 850,
+            "protein": 50,
+            "carbs": 100,
+            "fat": 30,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz blanco",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Brócoli",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón con tubérculos",
+            "calories": 833,
+            "protein": 57,
+            "carbs": 100,
+            "fat": 18,
+            "fiber": 14,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Patata dulce",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Espinacas",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-10",
+      "dayOfWeek": "sábado",
+      "dayNumber": 2,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano con mancuernas",
+            "muscleGroup": "isquiotibiales",
+            "sets": 3,
+            "reps": 10,
+            "rest": 60
+          },
+          {
+            "name": "Press de hombro con mancuernas (sentado)",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "09:00",
+            "name": "Yogur con fruta",
+            "calories": 600,
+            "protein": 35,
+            "carbs": 75,
+            "fat": 18,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Frutos rojos",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Granola",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "14:00",
+            "name": "Pasta con boloñesa ligera",
+            "calories": 850,
+            "protein": 50,
+            "carbs": 105,
+            "fat": 25,
+            "fiber": 9,
+            "ingredients": [
+              {
+                "name": "Ternera molida",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Pasta integral",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Salsa de tomate",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:30",
+            "name": "Tofu salteado con quinoa",
+            "calories": 833,
+            "protein": 52,
+            "carbs": 100,
+            "fat": 25,
+            "fiber": 14,
+            "ingredients": [
+              {
+                "name": "Tofu firme",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pimientos",
+                "amount": 150,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

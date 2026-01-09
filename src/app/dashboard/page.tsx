@@ -171,7 +171,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Plan Generation Toast - Esquina inferior derecha */}
+      {/* Plan Generation Toast - Esquina inferior derecha (solo si no está completo) */}
       {planStatus && !planStatus.isComplete && (
         <PlanGenerationToast
           generatedWeeks={planStatus.generatedWeeks}
@@ -179,8 +179,8 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Week Status Drawer - Esquina inferior izquierda */}
-      {planStatus && (
+      {/* Week Status Drawer - Esquina inferior izquierda (solo si no está completo) */}
+      {planStatus && !planStatus.isComplete && (
         <WeekStatusDrawer
           weeks={planStatus.weeks}
           generatedWeeks={planStatus.generatedWeeks}

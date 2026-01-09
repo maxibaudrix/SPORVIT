@@ -1,0 +1,243 @@
+{
+  "weekNumber": 1,
+  "startDate": "2026-01-09",
+  "endDate": "2026-01-15",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-11",
+      "dayOfWeek": "domingo",
+      "dayNumber": 3,
+      "isTrainingDay": true,
+      "workout": {
+        "type": "strength",
+        "phase": "base",
+        "focus": "full_body",
+        "duration": 45,
+        "intensity": "moderate",
+        "exercises": [
+          {
+            "name": "Press de Hombro con Mancuernas",
+            "muscleGroup": "hombros",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          },
+          {
+            "name": "Remo con Barra Inclinado",
+            "muscleGroup": "espalda",
+            "sets": 3,
+            "reps": 12,
+            "rest": 60
+          }
+        ],
+        "warmup": {
+          "duration": 5
+        },
+        "cooldown": {
+          "duration": 5
+        }
+      },
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostada de aguacate y huevo",
+            "calories": 550,
+            "protein": 25,
+            "carbs": 55,
+            "fat": 25,
+            "fiber": 7,
+            "ingredients": [
+              {
+                "name": "Pan integral",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Aguacate",
+                "amount": 50,
+                "unit": "g"
+              },
+              {
+                "name": "Huevo",
+                "amount": 2,
+                "unit": "unidad"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Ensalada de pollo y quinoa",
+            "calories": 780,
+            "protein": 55,
+            "carbs": 90,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {
+                "name": "Pechuga de pollo",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Quinoa cocida",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Tomate cherry",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Salmón al horno con patata",
+            "calories": 750,
+            "protein": 45,
+            "carbs": 95,
+            "fat": 20,
+            "fiber": 6,
+            "ingredients": [
+              {
+                "name": "Salmón",
+                "amount": 120,
+                "unit": "g"
+              },
+              {
+                "name": "Patata",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Espárragos",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-01-12",
+      "dayOfWeek": "lunes",
+      "dayNumber": 4,
+      "isTrainingDay": false,
+      "workout": {
+        "type": "rest",
+        "phase": "base",
+        "focus": "recovery",
+        "duration": 0,
+        "intensity": "low",
+        "exercises": [],
+        "warmup": {
+          "duration": 0
+        },
+        "cooldown": {
+          "duration": 0
+        }
+      },
+      "nutrition": {
+        "targetCalories": 1971,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Yogur con frutos rojos",
+            "calories": 450,
+            "protein": 30,
+            "carbs": 50,
+            "fat": 15,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Yogur griego",
+                "amount": 150,
+                "unit": "g"
+              },
+              {
+                "name": "Frutos rojos",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Semillas de chía",
+                "amount": 10,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Lentejas estofadas",
+            "calories": 680,
+            "protein": 40,
+            "carbs": 100,
+            "fat": 15,
+            "fiber": 10,
+            "ingredients": [
+              {
+                "name": "Lentejas cocidas",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Arroz integral",
+                "amount": 80,
+                "unit": "g"
+              },
+              {
+                "name": "Zanahoria",
+                "amount": 50,
+                "unit": "g"
+              }
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "20:00",
+            "name": "Tortilla de atún y verduras",
+            "calories": 600,
+            "protein": 50,
+            "carbs": 50,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {
+                "name": "Claras de huevo",
+                "amount": 200,
+                "unit": "g"
+              },
+              {
+                "name": "Atún en agua",
+                "amount": 100,
+                "unit": "g"
+              },
+              {
+                "name": "Pimientos",
+                "amount": 100,
+                "unit": "g"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

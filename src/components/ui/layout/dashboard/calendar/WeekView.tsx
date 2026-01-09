@@ -2,22 +2,24 @@
 
 import { useMemo } from 'react';
 import { isSameDay } from 'date-fns';
-import { DayEvent } from '@/types/calendar';
-import { useCalendarNavigation } from '@/hooks/useCalendarNavigation';
+import { DayEvent, WeekData } from '@/types/calendar';
 import { DayColumnNew } from './DayColumnNew';
 
 interface WeekViewProps {
   events: DayEvent[];
+  weekData: WeekData;
 }
 
-export const WeekView = ({ events }: WeekViewProps) => {
-  const navigation = useCalendarNavigation({ view: 'week' });
-  const weekData = navigation.getWeekData();
-
+export const WeekView = ({ events, weekData }: WeekViewProps) => {
   // Filtrar eventos por día
   const getEventsForDay = (date: Date) => {
-    return events.filter((event) => isSameDay(event.date, date));
+    const dayEvents = events.filter((event) => isSameDay(event.date, date));
+    console.log(`📅 [WeekView] Events for ${date.toISOString().split('T')[0]}:`, dayEvents.length);
+    return dayEvents;
   };
+
+  console.log('📊 [WeekView] Total events:', events.length);
+  console.log('📊 [WeekView] Week days:', weekData.days.map(d => d.date.toISOString().split('T')[0]));
 
   return (
     <div className="hidden md:grid md:grid-cols-7 gap-4 p-6">

@@ -36,9 +36,9 @@ export default function WeeklyCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState<DayEvent[]>([]);
 
-  // 🚨 HARDCODED TEMPORALMENTE - Semana del 29 de diciembre 2025
-  const weekStartDate = new Date('2025-12-29T00:00:00');
-  console.log('🚨 [WeeklyCalendar] FECHA HARDCODEADA:', weekStartDate.toISOString());
+  // ✅ Usar la fecha del hook de navegación (dinámica)
+  const weekStartDate = navigation.currentDate;
+  console.log('✅ [WeeklyCalendar] Fecha dinámica:', weekStartDate.toISOString());
 
   // Fetch weekly plan
   const { weekPlan, isLoading, error, refetch } = useWeeklyPlan({
@@ -124,6 +124,9 @@ export default function WeeklyCalendar({
   // Convertir DayEvent[] a CalendarEvent[] para las nuevas vistas
   const calendarEvents: DayEvent[] = weekPlan?.days.flatMap(day => day.events) || [];
 
+  // Obtener weekData de la navegación
+  const weekData = navigation.getWeekData();
+
   return (
     <div className="flex flex-col h-full bg-slate-950">
       {/* DESKTOP: Nuevo sistema con header y toggle week/month */}
@@ -137,7 +140,7 @@ export default function WeeklyCalendar({
 
         {/* Vista desktop según toggle */}
         {view === 'week' ? (
-          <WeekView events={calendarEvents} />
+          <WeekView events={calendarEvents} weekData={weekData} />
         ) : (
           <MonthView events={calendarEvents} />
         )}

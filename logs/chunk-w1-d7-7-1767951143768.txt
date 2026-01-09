@@ -1,0 +1,68 @@
+{
+  "weekNumber": 1,
+  "startDate": "2026-01-05",
+  "endDate": "2026-01-11",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-09",
+      "dayOfWeek": "viernes",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 1971,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 25,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Tostada con proteína",
+            "calories": 500,
+            "protein": 25,
+            "carbs": 50,
+            "fat": 20,
+            "fiber": 6,
+            "ingredients": [
+              {"name": "Huevo", "amount": 2, "unit": "unidad"},
+              {"name": "Pan integral", "amount": 80, "unit": "g"},
+              {"name": "Aguacate", "amount": 50, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:30",
+            "name": "Pollo y arroz",
+            "calories": 700,
+            "protein": 50,
+            "carbs": 90,
+            "fat": 10,
+            "fiber": 7,
+            "ingredients": [
+              {"name": "Pechuga de pollo", "amount": 150, "unit": "g"},
+              {"name": "Arroz blanco", "amount": 150, "unit": "g"},
+              {"name": "Brócoli", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Salmón y batata",
+            "calories": 771,
+            "protein": 62,
+            "carbs": 140,
+            "fat": 38,
+            "fiber": 12,
+            "ingredients": [
+              {"name": "Salmón", "amount": 180, "unit": "g"},
+              {"name": "Batata", "amount": 250, "unit": "g"},
+              {"name": "Aceite de oliva", "amount": 10, "unit": "ml"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

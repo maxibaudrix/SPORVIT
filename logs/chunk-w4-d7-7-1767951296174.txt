@@ -1,0 +1,68 @@
+{
+  "weekNumber": 4,
+  "startDate": "2026-01-09",
+  "endDate": "2026-01-15",
+  "phase": "base",
+  "days": [
+    {
+      "date": "2026-01-15",
+      "dayOfWeek": "jueves",
+      "dayNumber": 7,
+      "isTrainingDay": false,
+      "nutrition": {
+        "targetCalories": 2283,
+        "targetProtein": 137,
+        "targetCarbs": 280,
+        "targetFat": 68,
+        "targetFiber": 30,
+        "meals": [
+          {
+            "mealType": "breakfast",
+            "timing": "08:00",
+            "name": "Huevos revueltos con tostada",
+            "calories": 450,
+            "protein": 25,
+            "carbs": 45,
+            "fat": 20,
+            "fiber": 5,
+            "ingredients": [
+              {"name": "Huevo", "amount": 3, "unit": "unidad"},
+              {"name": "Pan integral", "amount": 2, "unit": "rebanadas"},
+              {"name": "Aguacate", "amount": 30, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "lunch",
+            "timing": "13:00",
+            "name": "Ensalada de pollo y arroz",
+            "calories": 750,
+            "protein": 55,
+            "carbs": 90,
+            "fat": 20,
+            "fiber": 8,
+            "ingredients": [
+              {"name": "Pechuga de pollo", "amount": 150, "unit": "g"},
+              {"name": "Arroz blanco", "amount": 120, "unit": "g"},
+              {"name": "Zanahoria", "amount": 100, "unit": "g"}
+            ]
+          },
+          {
+            "mealType": "dinner",
+            "timing": "19:30",
+            "name": "Pescado al horno con batata",
+            "calories": 1083,
+            "protein": 57,
+            "carbs": 145,
+            "fat": 28,
+            "fiber": 17,
+            "ingredients": [
+              {"name": "Salmón", "amount": 180, "unit": "g"},
+              {"name": "Batata", "amount": 300, "unit": "g"},
+              {"name": "Espárragos", "amount": 150, "unit": "g"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
