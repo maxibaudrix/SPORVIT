@@ -350,7 +350,6 @@ const handleBack = () => {
                       <div className={`font-bold mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {goal.label}
                       </div>
-                      <div className="text-xs text-slate-500">{goal.description}</div>
                     </button>
                   );
                 })}
@@ -403,7 +402,7 @@ const handleBack = () => {
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-400">{speed.duration}</div>
+                          <div className="text-xs text-slate-400 truncate">{speed.duration}</div>
                         </div>
                       </button>
                     );
@@ -448,7 +447,7 @@ const handleBack = () => {
                       <div className={`font-bold text-lg mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {timeline.label}
                       </div>
-                      <div className="text-xs text-slate-400">{timeline.subtitle}</div>
+                      <div className="text-xs text-slate-400 truncate">{timeline.subtitle}</div>
                     </button>
                   );
                 })}

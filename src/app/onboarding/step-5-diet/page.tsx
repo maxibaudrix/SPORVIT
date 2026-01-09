@@ -319,7 +319,7 @@ const handleBack = () => {
                       <div className={`font-bold mb-1 text-sm ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {diet.label}
                       </div>
-                      <div className="text-xs text-slate-500">{diet.description}</div>
+                      <div className="text-xs text-slate-500 truncate">{diet.description}</div>
                     </button>
                   );
                 })}
@@ -362,7 +362,7 @@ const handleBack = () => {
                       <div className={`font-bold mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {option.label}
                       </div>
-                      <div className="text-xs text-slate-500">{option.subtitle}</div>
+                      <div className="text-xs text-slate-500 truncate">{option.subtitle}</div>
                     </button>
                   );
                 })}
@@ -569,7 +569,6 @@ const handleBack = () => {
                       <div className={`font-bold mb-1 text-sm ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {freq.label}
                       </div>
-                      <div className="text-xs text-slate-500">{freq.description}</div>
                     </button>
                   );
                 })}
@@ -619,7 +618,7 @@ const handleBack = () => {
                       <div className={`text-sm font-bold mb-0.5 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {complexity.label}
                       </div>
-                      <div className="text-xs text-slate-400">{complexity.time}</div>
+                      <div className="text-xs text-slate-400 truncate">{complexity.time}</div>
                     </button>
                   );
                 })}
@@ -663,9 +662,6 @@ const handleBack = () => {
                       <div className={`text-sm font-bold mb-0.5 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {option.label}
                       </div>
-                      {option.subtitle && (
-                        <div className="text-xs text-slate-400">{option.subtitle}</div>
-                      )}
                     </button>
                   );
                 })}

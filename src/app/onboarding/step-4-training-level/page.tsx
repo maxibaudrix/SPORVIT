@@ -400,7 +400,7 @@ const handleBack = () => {
                       <div className={`font-bold mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                         {level.label}
                       </div>
-                      <div className="text-xs text-slate-500">{level.description}</div>
+                      <div className="text-xs text-slate-500 truncate">{level.description}</div>
                     </button>
                   );
                 })}
@@ -449,7 +449,7 @@ const handleBack = () => {
                           {sport.label}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-400">{sport.description}</div>
+                      <div className="text-xs text-slate-400 truncate">{sport.description}</div>
                     </button>
                   );
                 })}
@@ -490,7 +490,7 @@ const handleBack = () => {
                         <div className={`font-bold mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                           {dist.label}
                         </div>
-                        <div className="text-xs text-slate-400">{dist.distance}</div>
+                        <div className="text-xs text-slate-400 truncate">{dist.distance}</div>
                       </button>
                     );
                   })}

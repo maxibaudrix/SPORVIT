@@ -39,19 +39,54 @@ interface CalculationsResult {
   targetTimeline: number;
 }
 
+// Helper functions para traducir valores
+const translateActivityLevel = (level: string): string => {
+  const translations: Record<string, string> = {
+    'SEDENTARY': 'Sedentario',
+    'LIGHTLY_ACTIVE': 'Ligeramente activo',
+    'MODERATELY_ACTIVE': 'Moderadamente activo',
+    'VERY_ACTIVE': 'Muy activo',
+    'SUPER_ACTIVE': 'Super activo',
+  };
+  return translations[level] || level;
+};
+
+const translateWorkType = (type: string): string => {
+  const translations: Record<string, string> = {
+    'DESK': 'Escritorio',
+    'MIXED': 'Mixto',
+    'ACTIVE': 'Activo',
+    'PHYSICAL': 'Físico',
+  };
+  return translations[type] || type;
+};
+
+const translateSittingHours = (hours: string): string => {
+  const translations: Record<string, string> = {
+    'LESS_THAN_4H': 'Menos de 4h',
+    '4H_6H': '4-6 horas',
+    '6H_8H': '6-8 horas',
+    'MORE_THAN_8H': 'Más de 8h',
+  };
+  return translations[hours] || hours;
+};
+
 export default function Step6ReviewPage() {
   const router = useRouter();
   const [startDate, setStartDate] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // ✅ OBTENER DATOS Y SETTERS DEL STORE
-  const biometrics = useOnboardingStore((state) => state.biometrics);
-  const goal = useOnboardingStore((state) => state.goal);
-  const activity = useOnboardingStore((state) => state.activity);
-  const training = useOnboardingStore((state) => state.training);
-  const diet = useOnboardingStore((state) => state.diet);
+  const biometrics = useOnboardingStore((state) => state.data.biometrics);
+  const goal = useOnboardingStore((state) => state.data.goal);
+  const activity = useOnboardingStore((state) => state.data.activity);
+  const training = useOnboardingStore((state) => state.data.training);
+  const diet = useOnboardingStore((state) => state.data.diet);
   const saveStartDateToStore = useOnboardingStore((state) => state.setStartDate);
   const onboardingType = useOnboardingStore((state) => state.onboardingType);
+
+  // Debug: Ver datos del store
+  console.log('[Step 6] Store data:', { biometrics, goal, activity, training, diet, onboardingType });
 
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
@@ -252,6 +287,12 @@ export default function Step6ReviewPage() {
       });
 
       if (!response.ok) {
+        // Si es 409 (Conflict), significa que ya existe un plan
+        if (response.status === 409) {
+          alert('Ya tienes un plan existente. Serás redirigido al dashboard.');
+          router.push('/dashboard');
+          return;
+        }
         throw new Error('Failed to generate plan');
       }
 
@@ -503,15 +544,15 @@ export default function Step6ReviewPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Nivel:</span>
-                    <span className="text-white font-bold capitalize">{activity?.activityLevel?.replace('_', ' ')}</span>
+                    <span className="text-white font-bold">{activity?.activityLevel ? translateActivityLevel(activity.activityLevel) : 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Horas sentado:</span>
-                    <span className="text-white font-bold">{activity?.sittingHours || 'N/A'}</span>
+                    <span className="text-white font-bold">{activity?.sittingHours ? translateSittingHours(activity.sittingHours) : 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Tipo trabajo:</span>
-                    <span className="text-white font-bold capitalize">{activity?.workType || 'N/A'}</span>
+                    <span className="text-white font-bold">{activity?.workType ? translateWorkType(activity.workType) : 'N/A'}</span>
                   </div>
                 </div>
               </div>

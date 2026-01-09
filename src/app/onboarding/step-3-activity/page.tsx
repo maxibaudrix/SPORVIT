@@ -384,14 +384,8 @@ const handleSubmit = () => {
                           <div className={`font-bold mb-1 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                             {level.label}
                           </div>
-                          <div className="text-xs text-slate-400">{level.description}</div>
+                          <div className="text-xs text-slate-400 truncate">{level.description}</div>
                         </div>
-                      </div>
-                      <div className="text-xs text-slate-500 bg-slate-950/50 rounded-lg px-2 py-1.5 mt-2">
-                        {level.details}
-                      </div>
-                      <div className="absolute top-3 right-3">
-                        <span className="text-[10px] font-mono text-slate-500">{level.multiplier}</span>
                       </div>
                     </button>
                   );
@@ -437,7 +431,7 @@ const handleSubmit = () => {
                         <div className={`font-bold mb-0.5 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                           {range.label}
                         </div>
-                        <div className="text-xs text-slate-400">{range.steps}</div>
+                        <div className="text-xs text-slate-400 truncate">{range.steps}</div>
                       </div>
                     </button>
                   );
@@ -525,7 +519,7 @@ const handleSubmit = () => {
                           <div className={`font-bold mb-0.5 ${isSelected ? 'text-white' : 'text-slate-300'}`}>
                             {slot.label}
                           </div>
-                          <div className="text-xs text-slate-400">{slot.time}</div>
+                          <div className="text-xs text-slate-400 truncate">{slot.time}</div>
                         </div>
                       </div>
                     </button>
