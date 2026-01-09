@@ -8,6 +8,9 @@ import { useDailyModal } from '@/hooks/useDailyModal';
 import { WorkoutDetails } from '@/components/dashboard/event-details/WorkoutDetails';
 import { MealDetails } from '@/components/dashboard/event-details/MealDetails';
 import { RestDayDetails } from '@/components/dashboard/event-details/RestDayDetails';
+import { RecipeBrowser } from '@/components/recipes/RecipeBrowser';
+import { RecipeDetailModal } from '@/components/recipes/RecipeDetailModal';
+import { Recipe } from '@/lib/recipeUtils';
 
 export const DailyModal = () => {
   const {
@@ -23,6 +26,12 @@ export const DailyModal = () => {
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Estados para el flujo de recetas
+  const [showRecipeBrowser, setShowRecipeBrowser] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [showRecipeDetail, setShowRecipeDetail] = useState(false);
+  const [selectedMealType, setSelectedMealType] = useState<string>('breakfast');
 
   // Cerrar con ESC
   useEffect(() => {
@@ -115,6 +124,62 @@ export const DailyModal = () => {
     }
   };
 
+  // Handler para abrir el browser de recetas
+  const handleOpenRecipeBrowser = (mealType: string) => {
+    setSelectedMealType(mealType);
+    setShowRecipeBrowser(true);
+  };
+
+  // Handler cuando se selecciona una receta del browser
+  const handleSelectRecipe = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+    setShowRecipeBrowser(false);
+    setShowRecipeDetail(true);
+  };
+
+  // Handler para agregar receta al plan
+  const handleAddRecipeToMeal = async (recipe: Recipe, portions: number) => {
+    if (!selectedDate) return;
+
+    try {
+      const response = await fetch('/api/user/meals/add-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipeSlug: recipe.slug,
+          date: selectedDate.toISOString(),
+          mealType: selectedMealType,
+          portions,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ ${data.message}`);
+        setShowRecipeDetail(false);
+        setSelectedRecipe(null);
+        closeModal();
+        // Recargar para ver la nueva comida
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Error: ${errorData.error || 'No se pudo agregar la receta'}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error de conexión. Por favor intenta de nuevo.');
+    }
+  };
+
+  // Reset estados de recetas cuando se cierra el modal
+  useEffect(() => {
+    if (!isOpen) {
+      setShowRecipeBrowser(false);
+      setSelectedRecipe(null);
+      setShowRecipeDetail(false);
+    }
+  }, [isOpen]);
+
   // Renderizar contenido según el modo y tipo de evento
   const renderContent = () => {
     // Modo: Ver evento existente
@@ -169,7 +234,12 @@ export const DailyModal = () => {
       );
     }
 
-    // Modo: Agregar nuevo evento (placeholder - mantener UI original)
+    // Modo: Agregar nuevo evento
+    // Si está mostrando el recipe browser, renderizar eso
+    if (showRecipeBrowser) {
+      return <RecipeBrowser onSelectRecipe={handleSelectRecipe} />;
+    }
+
     return (
       <div>
         <h2 className="text-2xl font-bold text-white capitalize mb-2">
@@ -199,20 +269,41 @@ export const DailyModal = () => {
               <p className="text-sm text-slate-400">Programa una sesión de ejercicio</p>
             </button>
 
-            {/* CTA Comida */}
-            <button
-              onClick={() => {
-                // TODO: Implementar agregar comida
-                alert('Funcionalidad en desarrollo');
-              }}
-              className="group p-6 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:border-orange-500/50 hover:bg-orange-500/20 transition-all text-left"
-            >
-              <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Salad className="w-6 h-6 text-orange-400" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-1">Comida</h3>
-              <p className="text-sm text-slate-400">Registra una comida o snack</p>
-            </button>
+            {/* CTA Comida - Ahora con submenu */}
+            <div className="group relative">
+              <button
+                onClick={() => {
+                  const mealTypes = [
+                    { value: 'breakfast', label: 'Desayuno' },
+                    { value: 'lunch', label: 'Almuerzo' },
+                    { value: 'dinner', label: 'Cena' },
+                    { value: 'snack', label: 'Snack' },
+                  ];
+
+                  // Mostrar selector simple
+                  const mealType = prompt(
+                    'Selecciona el tipo de comida:\n' +
+                    '1 - Desayuno\n' +
+                    '2 - Almuerzo\n' +
+                    '3 - Cena\n' +
+                    '4 - Snack',
+                    '1'
+                  );
+
+                  const selectedType = mealTypes[parseInt(mealType || '1') - 1];
+                  if (selectedType) {
+                    handleOpenRecipeBrowser(selectedType.value);
+                  }
+                }}
+                className="w-full p-6 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:border-orange-500/50 hover:bg-orange-500/20 transition-all text-left"
+              >
+                <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Salad className="w-6 h-6 text-orange-400" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">Comida</h3>
+                <p className="text-sm text-slate-400">Buscar receta del catálogo</p>
+              </button>
+            </div>
 
             {/* CTA Nota */}
             <button
@@ -315,6 +406,20 @@ export const DailyModal = () => {
             </div>
           </div>
         </>
+      )}
+
+      {/* Recipe Detail Modal */}
+      {selectedRecipe && (
+        <RecipeDetailModal
+          recipe={selectedRecipe}
+          isOpen={showRecipeDetail}
+          onClose={() => {
+            setShowRecipeDetail(false);
+            setSelectedRecipe(null);
+            setShowRecipeBrowser(true); // Volver al browser
+          }}
+          onAddToMeal={handleAddRecipeToMeal}
+        />
       )}
     </>
   );

@@ -304,8 +304,9 @@ model Meal {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   date     DateTime
-  mealType String // breakfast, lunch, dinner, snack
-  name     String? 
+  mealType String // breakfast, lunch, dinner, snack, snack_1, snack_2, pre_workout, post_workout
+  timing   String? // Hora de la comida (ej: "08:00", "13:30")
+  name     String?
 
   // Totals
   totalCalories Int
@@ -314,10 +315,15 @@ model Meal {
   totalFatG     Float
   totalFiberG   Float
 
+  // Recipe reference (si se agregó desde el catálogo)
+  recipeSlug String? // Slug de la receta del catálogo
+  recipeName String? // Nombre de la receta para referencia rápida
+
   notes String?
   createdAt DateTime @default(now())
 
   @@index([userId, date])
+  @@index([recipeSlug])
 }
 
 model DiaryMeal {

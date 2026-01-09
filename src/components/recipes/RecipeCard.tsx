@@ -1,51 +1,132 @@
-// src/components/recipes/RecipeCard.tsx
-import React from 'react';
-import { Recipe } from '@/types/recipe';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'; // Asegúrate de que Card exista en UI fase 2
-import { Button } from '@/components/ui/Button'; // Asegúrate de que Button exista
-import { formatCalories } from '@/lib/utils/formatCalories'; // De fase 3
+'use client';
+
+import { Recipe, parseISODuration } from '@/lib/recipeUtils';
+import { Clock, Flame, TrendingUp } from 'lucide-react';
 
 interface RecipeCardProps {
   recipe: Recipe;
-  onSelect?: (recipe: Recipe) => void;
+  onClick?: () => void;
 }
 
-export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onSelect }) => {
+export const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
+  // Obtener macros de la receta
+  const calories = recipe.nutrition?.calories || 0;
+  const protein = recipe.nutrition?.protein_g || 0;
+  const carbs = recipe.nutrition?.carbs_g || 0;
+  const fat = recipe.nutrition?.fat_g || 0;
+
+  // Parsear tiempo total
+  const totalTime = parseISODuration(recipe.totalTime);
+
+  // Determinar color según nutrition_score (si existe)
+  const getScoreColor = () => {
+    if (!recipe.nutrition_score) return 'text-slate-400';
+    const avgScore = (recipe.nutrition_score.general + recipe.nutrition_score.cut + recipe.nutrition_score.bulk + recipe.nutrition_score.endurance) / 4;
+    if (avgScore >= 7) return 'text-emerald-400';
+    if (avgScore >= 5) return 'text-yellow-400';
+    return 'text-orange-400';
+  };
+
   return (
-    <Card className="w-full max-w-sm hover:shadow-lg transition-shadow duration-200">
-      <div className="h-48 w-full bg-gray-200 rounded-t-xl flex items-center justify-center text-gray-400 overflow-hidden">
-        {recipe.imageUrl ? (
-            <img src={recipe.imageUrl} alt={recipe.title} className="w-full h-full object-cover" />
+    <button
+      onClick={onClick}
+      className="group w-full bg-slate-900/50 border border-slate-800 hover:border-emerald-500/50 rounded-xl overflow-hidden transition-all hover:shadow-lg hover:shadow-emerald-500/10 text-left"
+    >
+      {/* Imagen */}
+      <div className="relative h-48 bg-slate-800 overflow-hidden">
+        {recipe.image ? (
+          <img
+            src={recipe.image}
+            alt={recipe.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         ) : (
-            <span>No Image</span>
+          <div className="w-full h-full flex items-center justify-center">
+            <Flame className="w-16 h-16 text-slate-700" />
+          </div>
+        )}
+
+        {/* Badge de categoría */}
+        <div className="absolute top-3 left-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full border border-white/10">
+          <span className="text-xs font-medium text-white">
+            {recipe.recipeCategory}
+          </span>
+        </div>
+
+        {/* Nutrition Score Badge (si existe) */}
+        {recipe.nutrition_score && (
+          <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full border border-white/10 flex items-center gap-1">
+            <TrendingUp className={`w-3 h-3 ${getScoreColor()}`} />
+            <span className={`text-xs font-bold ${getScoreColor()}`}>
+              {Math.round((recipe.nutrition_score.general + recipe.nutrition_score.cut + recipe.nutrition_score.bulk + recipe.nutrition_score.endurance) / 4)}
+            </span>
+          </div>
         )}
       </div>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-            <CardTitle className="text-lg font-bold text-gray-800">{recipe.title}</CardTitle>
-            <span className="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                {formatCalories(recipe.macros.calories)}
-            </span>
+
+      {/* Content */}
+      <div className="p-4">
+        {/* Título */}
+        <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-emerald-400 transition-colors">
+          {recipe.name}
+        </h3>
+
+        {/* Descripción */}
+        {recipe.description && (
+          <p className="text-sm text-slate-400 mb-3 line-clamp-2">
+            {recipe.description}
+          </p>
+        )}
+
+        {/* Stats */}
+        <div className="flex items-center gap-4 mb-3 pb-3 border-b border-slate-800">
+          {/* Calorías */}
+          <div className="flex items-center gap-1.5">
+            <Flame className="w-4 h-4 text-orange-400" />
+            <span className="text-sm font-semibold text-white">{calories}</span>
+            <span className="text-xs text-slate-500">kcal</span>
+          </div>
+
+          {/* Tiempo */}
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-4 h-4 text-blue-400" />
+            <span className="text-sm text-slate-300">{totalTime}</span>
+          </div>
         </div>
-        <CardDescription className="line-clamp-2">{recipe.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-between text-sm text-gray-600">
-            <span>⏱️ {recipe.prepTimeMinutes + recipe.cookTimeMinutes} min</span>
-            <span>💪 {recipe.macros.protein}g Prot</span>
-            <span>🍞 {recipe.macros.carbs}g Carb</span>
+
+        {/* Macros Grid */}
+        <div className="grid grid-cols-3 gap-2">
+          {/* Proteína */}
+          <div className="text-center">
+            <div className="text-xs text-slate-500 mb-1">Proteína</div>
+            <div className="text-sm font-bold text-red-400">{protein}g</div>
+          </div>
+
+          {/* Carbohidratos */}
+          <div className="text-center">
+            <div className="text-xs text-slate-500 mb-1">Carbos</div>
+            <div className="text-sm font-bold text-blue-400">{carbs}g</div>
+          </div>
+
+          {/* Grasas */}
+          <div className="text-center">
+            <div className="text-xs text-slate-500 mb-1">Grasas</div>
+            <div className="text-sm font-bold text-yellow-400">{fat}g</div>
+          </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-1">
-            {recipe.tags.slice(0, 3).map(tag => (
-                <span key={tag} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">#{tag}</span>
-            ))}
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={() => onSelect?.(recipe)}>
-            Ver Receta
-        </Button>
-      </CardFooter>
-    </Card>
+
+        {/* Alertas nutricionales (si existen) */}
+        {recipe.nutrition_alerts && recipe.nutrition_alerts.length > 0 && (
+          <div className="mt-3 pt-3 border-t border-slate-800">
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 mt-1.5 flex-shrink-0" />
+              <p className="text-xs text-yellow-400 line-clamp-1">
+                {recipe.nutrition_alerts[0]}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </button>
   );
 };
