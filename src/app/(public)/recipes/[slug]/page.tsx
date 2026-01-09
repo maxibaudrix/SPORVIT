@@ -8,7 +8,10 @@ import {
   Users, 
   ChefHat, 
   ArrowLeft, 
-  CheckCircle2
+  CheckCircle2,
+  Flame,
+  Droplet,
+  Zap
 } from 'lucide-react';
 import { 
   getRecipeBySlug, 
@@ -49,6 +52,23 @@ export async function generateStaticParams() {
   return recipes.slice(0, 100).map((recipe) => ({
     slug: recipe.slug,
   }));
+}
+
+// Función para obtener color según score
+function getScoreColor(score: number): string {
+  if (score >= 70) return 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
+  if (score >= 40) return 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10';
+  return 'text-slate-400 border-slate-700 bg-slate-800/30';
+}
+
+// Función para obtener icono según tipo de score
+function getScoreIcon(type: string) {
+  switch(type) {
+    case 'cut': return '🔥';
+    case 'bulk': return '💪';
+    case 'endurance': return '⚡';
+    default: return '⭐';
+  }
 }
 
 export default async function RecipePage({ params }: { params: { slug: string } }) {
@@ -134,6 +154,14 @@ export default async function RecipePage({ params }: { params: { slug: string } 
                     <span className="text-white font-semibold">{recipe.recipeYield}</span>
                   </span>
                 </div>
+                {recipe.nutrition && (
+                  <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-lg">
+                    <Flame className="w-4 h-4 text-orange-400" />
+                    <span className="text-sm">
+                      <span className="text-white font-semibold">{recipe.nutrition.calories} kcal</span>
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
@@ -156,6 +184,45 @@ export default async function RecipePage({ params }: { params: { slug: string } 
                 <h2 className="text-2xl font-bold mb-4 text-white">Descripción</h2>
                 <p className="text-slate-300 leading-relaxed">
                   {recipe.description}
+                </p>
+              </section>
+            )}
+
+            {/* Nutrition Scores - Si existen */}
+            {recipe.nutrition_score && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-white">Puntuación Nutricional</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Score General */}
+                  <div className={`p-4 rounded-xl border ${getScoreColor(recipe.nutrition_score.general)}`}>
+                    <div className="text-2xl mb-1">{getScoreIcon('general')}</div>
+                    <div className="text-xs text-slate-400 mb-1">General</div>
+                    <div className="text-2xl font-bold">{recipe.nutrition_score.general}</div>
+                  </div>
+
+                  {/* Score Cut */}
+                  <div className={`p-4 rounded-xl border ${getScoreColor(recipe.nutrition_score.cut)}`}>
+                    <div className="text-2xl mb-1">{getScoreIcon('cut')}</div>
+                    <div className="text-xs text-slate-400 mb-1">Definición</div>
+                    <div className="text-2xl font-bold">{recipe.nutrition_score.cut}</div>
+                  </div>
+
+                  {/* Score Bulk */}
+                  <div className={`p-4 rounded-xl border ${getScoreColor(recipe.nutrition_score.bulk)}`}>
+                    <div className="text-2xl mb-1">{getScoreIcon('bulk')}</div>
+                    <div className="text-xs text-slate-400 mb-1">Volumen</div>
+                    <div className="text-2xl font-bold">{recipe.nutrition_score.bulk}</div>
+                  </div>
+
+                  {/* Score Endurance */}
+                  <div className={`p-4 rounded-xl border ${getScoreColor(recipe.nutrition_score.endurance)}`}>
+                    <div className="text-2xl mb-1">{getScoreIcon('endurance')}</div>
+                    <div className="text-xs text-slate-400 mb-1">Resistencia</div>
+                    <div className="text-2xl font-bold">{recipe.nutrition_score.endurance}</div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-500 mt-3">
+                  * Puntuaciones de 0-100. Mayor puntuación = más adecuado para el objetivo.
                 </p>
               </section>
             )}
@@ -213,6 +280,63 @@ export default async function RecipePage({ params }: { params: { slug: string } 
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
               
+              {/* Macros Card - Si existe información nutricional */}
+              {recipe.nutrition && recipe.quality.nutrition_ready && (
+                <div className="bg-gradient-to-br from-emerald-900/30 to-slate-900/50 rounded-2xl p-6 border border-emerald-500/20">
+                  <h3 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
+                    <Flame className="w-5 h-5 text-emerald-400" />
+                    Información Nutricional
+                  </h3>
+                  <p className="text-xs text-slate-400 mb-4">
+                    {recipe.nutrition.per_serving ? 'Por porción' : 'Total'}
+                  </p>
+
+                  {/* Macros principales */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-slate-950/50 rounded-xl p-3 border border-slate-800">
+                      <div className="text-xs text-slate-400 mb-1">Calorías</div>
+                      <div className="text-2xl font-bold text-white">{recipe.nutrition.calories}</div>
+                      <div className="text-xs text-slate-500">kcal</div>
+                    </div>
+                    <div className="bg-slate-950/50 rounded-xl p-3 border border-slate-800">
+                      <div className="text-xs text-slate-400 mb-1">Proteína</div>
+                      <div className="text-2xl font-bold text-emerald-400">{recipe.nutrition.protein_g}</div>
+                      <div className="text-xs text-slate-500">gramos</div>
+                    </div>
+                    <div className="bg-slate-950/50 rounded-xl p-3 border border-slate-800">
+                      <div className="text-xs text-slate-400 mb-1">Carbos</div>
+                      <div className="text-2xl font-bold text-blue-400">{recipe.nutrition.carbs_g}</div>
+                      <div className="text-xs text-slate-500">gramos</div>
+                    </div>
+                    <div className="bg-slate-950/50 rounded-xl p-3 border border-slate-800">
+                      <div className="text-xs text-slate-400 mb-1">Grasas</div>
+                      <div className="text-2xl font-bold text-yellow-400">{recipe.nutrition.fat_g}</div>
+                      <div className="text-xs text-slate-500">gramos</div>
+                    </div>
+                  </div>
+
+                  {/* Detalles nutricionales */}
+                  <div className="space-y-2 pt-4 border-t border-slate-800">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Fibra</span>
+                      <span className="text-white font-medium">{recipe.nutrition.fiber_g}g</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Azúcar</span>
+                      <span className="text-white font-medium">{recipe.nutrition.sugar_g}g</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Sodio</span>
+                      <span className="text-white font-medium">{recipe.nutrition.sodium_mg}mg</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400">Colesterol</span>
+                      <span className="text-white font-medium">{recipe.nutrition.cholesterol_mg}mg</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Time Breakdown Card */}
               <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
                 <h3 className="text-lg font-bold mb-4 text-white">Tiempos</h3>
@@ -232,7 +356,7 @@ export default async function RecipePage({ params }: { params: { slug: string } 
                 </div>
               </div>
 
-              {/* Nutrition Note */}
+              {/* Nutrition Note - Solo si NO hay información nutricional */}
               {!recipe.nutrition && (
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
                   <p className="text-yellow-200/80 text-xs">

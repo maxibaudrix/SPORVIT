@@ -14,6 +14,34 @@ export interface RecipeQuality {
   instructions_level: string;
 }
 
+export interface NutritionInfo {
+  "@type": string;
+  per_serving: boolean;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+  sugar_g: number;
+  sodium_mg: number;
+  sat_fat_g: number;
+  cholesterol_mg: number;
+}
+
+export interface NutritionScore {
+  general: number;
+  cut: number;
+  bulk: number;
+  endurance: number;
+}
+
+export interface NutritionQuality {
+  per_serving: boolean;
+  confidence: string;
+  data_source: string;
+  match_type: string;
+}
+
 export interface Recipe {
   "@context": string;
   "@type": string;
@@ -34,8 +62,11 @@ export interface Recipe {
   slug: string;
   ingredients_normalized: RecipeIngredient[];
   needs_review: boolean;
-  nutrition: any;
   quality: RecipeQuality;
+  nutrition: NutritionInfo | null;  // Agregar
+  nutrition_score?: NutritionScore;  // Agregar (opcional porque no todas las tienen)
+  nutrition_alerts?: string[];  // Agregar
+  nutrition_quality?: NutritionQuality;  // Agregar
 }
 
 // Función para convertir tiempo ISO8601 a minutos legibles
@@ -60,7 +91,7 @@ export function parseISODuration(duration: string): string {
 // Función para obtener todas las recetas
 export async function getAllRecipes(): Promise<Recipe[]> {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'recipes_publishable.json');
+    const filePath = path.join(process.cwd(), 'data', 'recipes_final_v1.3.json');
     
     if (!fs.existsSync(filePath)) {
       console.error('Archivo de recetas no encontrado en:', filePath);
