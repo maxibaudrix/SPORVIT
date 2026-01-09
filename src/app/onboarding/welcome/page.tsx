@@ -42,12 +42,12 @@ export default function OnboardingWelcomePage() {
 
         {/* Cards de Elección */}
         <div className="grid md:grid-cols-3 gap-6 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
-          
+
           {/* Opción 1: Básico - 3 Pasos */}
           <div
             onMouseEnter={() => setHoveredOption('basic')}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
+            className={`relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group flex flex-col ${
               hoveredOption === 'basic'
                 ? 'border-emerald-500 shadow-2xl shadow-emerald-500/20 scale-[1.02]'
                 : 'border-slate-700/50 hover:border-slate-600'
@@ -76,7 +76,7 @@ export default function OnboardingWelcomePage() {
             </p>
 
             {/* Features */}
-            <div className="space-y-3 mb-8">
+            <div className="space-y-3 mb-8 flex-grow">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-slate-300">Datos biométricos básicos</span>
@@ -97,7 +97,7 @@ export default function OnboardingWelcomePage() {
                 setOnboardingType('basic');
                 router.push('/onboarding/step-1-biometrics');
               }}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 group"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 group h-14"
             >
               <span>Empezar Ahora</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -112,7 +112,7 @@ export default function OnboardingWelcomePage() {
           <div
             onMouseEnter={() => setHoveredOption('complete')}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
+            className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group flex flex-col ${
               hoveredOption === 'complete'
                 ? 'border-blue-500 shadow-2xl shadow-blue-500/20 scale-[1.02]'
                 : 'border-slate-700/50 hover:border-slate-600'
@@ -134,7 +134,7 @@ export default function OnboardingWelcomePage() {
             </p>
 
             {/* Features */}
-            <div className="space-y-3 mb-8">
+            <div className="space-y-3 mb-8 flex-grow">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-slate-300">Experiencia y preferencias de entrenamiento</span>
@@ -155,7 +155,7 @@ export default function OnboardingWelcomePage() {
                 setOnboardingType('complete');
                 router.push('/onboarding/step-1-biometrics');
               }}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2 group border border-blue-500/50"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2 group border border-blue-500/50 h-14"
             >
               <span>Configuración Detallada</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -170,7 +170,7 @@ export default function OnboardingWelcomePage() {
           <div
             onMouseEnter={() => setHoveredOption('manual')}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group ${
+            className={`bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border rounded-3xl p-8 transition-all duration-300 cursor-pointer group flex flex-col ${
               hoveredOption === 'manual'
                 ? 'border-purple-500 shadow-2xl shadow-purple-500/20 scale-[1.02]'
                 : 'border-slate-700/50 hover:border-slate-600'
@@ -192,7 +192,7 @@ export default function OnboardingWelcomePage() {
             </p>
 
             {/* Features */}
-            <div className="space-y-3 mb-8">
+            <div className="space-y-3 mb-8 flex-grow">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-slate-300">Diseña tus propias rutinas</span>
@@ -212,7 +212,7 @@ export default function OnboardingWelcomePage() {
               onClick={() => {
                 router.push('/dashboard');
               }}
-              className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 group border border-slate-600"
+              className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 group border border-slate-600 h-14"
             >
               <span>Ir al Dashboard</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
