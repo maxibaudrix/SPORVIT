@@ -1,6 +1,7 @@
 'use client';
 
-import { Recipe, parseISODuration } from '@/lib/recipeUtils';
+import { Recipe } from '@/lib/recipeTypes';
+import { parseISODuration } from '@/lib/recipeFormatters';
 import { Clock, Flame, TrendingUp } from 'lucide-react';
 
 interface RecipeCardProps {
@@ -18,6 +19,27 @@ export const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
   // Parsear tiempo total
   const totalTime = parseISODuration(recipe.totalTime);
 
+  // Traducir alertas nutricionales al español
+  const translateAlert = (alert: string): string => {
+    const translations: { [key: string]: string } = {
+      'High in sodium': 'Alto en sodio',
+      'High in saturated fat': 'Alto en grasas saturadas',
+      'High in sugar': 'Alto en azúcar',
+      'High in calories': 'Alto en calorías',
+      'Low in protein': 'Bajo en proteína',
+      'High in cholesterol': 'Alto en colesterol',
+      'High in fat': 'Alto en grasas',
+      'Low in fiber': 'Bajo en fibra',
+      'Very high in sodium': 'Muy alto en sodio',
+      'Very high in sugar': 'Muy alto en azúcar',
+      'Very high in saturated fat': 'Muy alto en grasas saturadas',
+      'Moderate sodium': 'Sodio moderado',
+      'Low in calories': 'Bajo en calorías',
+      'High in carbs': 'Alto en carbohidratos',
+    };
+    return translations[alert] || alert;
+  };
+
   // Determinar color según nutrition_score (si existe)
   const getScoreColor = () => {
     if (!recipe.nutrition_score) return 'text-slate-400';
@@ -33,7 +55,7 @@ export const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
       className="group w-full bg-slate-900/50 border border-slate-800 hover:border-emerald-500/50 rounded-xl overflow-hidden transition-all hover:shadow-lg hover:shadow-emerald-500/10 text-left"
     >
       {/* Imagen */}
-      <div className="relative h-48 bg-slate-800 overflow-hidden">
+      <div className="relative h-64 bg-slate-800 overflow-hidden">
         {recipe.image ? (
           <img
             src={recipe.image}
@@ -121,7 +143,7 @@ export const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
             <div className="flex items-start gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 mt-1.5 flex-shrink-0" />
               <p className="text-xs text-yellow-400 line-clamp-1">
-                {recipe.nutrition_alerts[0]}
+                {translateAlert(recipe.nutrition_alerts[0])}
               </p>
             </div>
           </div>

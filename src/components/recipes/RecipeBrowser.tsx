@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Recipe } from '@/lib/recipeUtils';
+import { Recipe } from '@/lib/recipeTypes';
 import { RecipeCard } from './RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Search, Filter, Loader2, AlertCircle } from 'lucide-react';
 
 interface RecipeBrowserProps {
   onSelectRecipe: (recipe: Recipe) => void;
+  initialCategory?: string;
 }
 
 const CATEGORIES = [
@@ -20,9 +21,17 @@ const CATEGORIES = [
   'Batidos',
 ];
 
-export const RecipeBrowser = ({ onSelectRecipe }: RecipeBrowserProps) => {
+// Mapeo de mealType a categoría
+const MEAL_TYPE_TO_CATEGORY: { [key: string]: string } = {
+  'breakfast': 'Desayunos',
+  'lunch': 'Comidas',
+  'dinner': 'Cenas',
+  'snack': 'Snacks',
+};
+
+export const RecipeBrowser = ({ onSelectRecipe, initialCategory }: RecipeBrowserProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todas');
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory || 'Todas');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const { recipes, loading, error, totalCount, search } = useRecipes();

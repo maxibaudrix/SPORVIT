@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Recipe, parseISODuration } from '@/lib/recipeUtils';
+import { Recipe } from '@/lib/recipeTypes';
+import { parseISODuration } from '@/lib/recipeFormatters';
 import { X, Clock, Users, Flame, TrendingUp, ChevronDown, ChevronUp, Plus, Minus } from 'lucide-react';
 
 interface RecipeDetailModalProps {

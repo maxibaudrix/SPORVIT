@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Recipe } from '@/lib/recipeUtils';
+import { Recipe } from '@/lib/recipeTypes';
 
 interface UseRecipesOptions {
   query?: string;

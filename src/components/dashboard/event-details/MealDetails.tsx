@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { MealEvent } from '@/types/calendar';
-import { Utensils, Clock, Flame, Edit2, Trash2, Coffee, Cookie, Zap } from 'lucide-react';
+import { Utensils, Clock, Flame, Edit2, Trash2, Coffee, Cookie, Zap, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -14,26 +15,25 @@ interface MealDetailsProps {
 
 export function MealDetails({ event, mode, onEdit, onDelete }: MealDetailsProps) {
   const formattedDate = format(event.date, "EEEE d 'de' MMMM", { locale: es });
+  const [showRecipeDetails, setShowRecipeDetails] = useState(false);
+
+  // Extraer el título de la receta desde las notas
+  const recipeName = event.recipeName || event.notes?.split('\n')[0] || event.title || 'Comida';
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header simplificado - Solo título */}
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <div className="w-16 h-16 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
-            {getMealIcon(event.mealType)}
-          </div>
-          <div>
-            <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-1">
-              {getMealTypeLabel(event.mealType)}
-            </p>
-            <h2 className="text-2xl font-bold text-white mb-1">
-              {event.title || 'Comida'}
-            </h2>
-            <p className="text-sm text-slate-400 capitalize">
-              {formattedDate}
-            </p>
-          </div>
+        <div>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">
+            {getMealTypeLabel(event.mealType)}
+          </p>
+          <h2 className="text-3xl font-bold text-white mb-2">
+            {recipeName}
+          </h2>
+          <p className="text-sm text-slate-400 capitalize">
+            {formattedDate}
+          </p>
         </div>
 
         {mode === 'view' && (
@@ -133,15 +133,27 @@ export function MealDetails({ event, mode, onEdit, onDelete }: MealDetailsProps)
         </div>
       </div>
 
-      {/* Notes/Recipe */}
+      {/* Notes/Recipe - Colapsable */}
       {event.notes && (
-        <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-3">
-            {event.notes.includes('Ingredientes:') ? 'Receta' : 'Notas'}
-          </h3>
-          <div className="text-slate-300 leading-relaxed whitespace-pre-wrap">
-            {parseRecipe(event.notes)}
-          </div>
+        <div className="rounded-xl bg-slate-900/50 border border-slate-800 overflow-hidden">
+          <button
+            onClick={() => setShowRecipeDetails(!showRecipeDetails)}
+            className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
+          >
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wide">
+              {event.notes.includes('Ingredientes:') ? 'Ver detalles de la receta' : 'Ver notas'}
+            </h3>
+            {showRecipeDetails ? (
+              <ChevronUp className="w-5 h-5 text-slate-400" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-slate-400" />
+            )}
+          </button>
+          {showRecipeDetails && (
+            <div className="p-4 pt-0 text-slate-300 leading-relaxed">
+              {parseRecipe(event.notes)}
+            </div>
+          )}
         </div>
       )}
 
