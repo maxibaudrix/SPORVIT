@@ -3,15 +3,24 @@ import React from 'react';
 import Link from 'next/link';
 import { Search, Clock, ChevronRight, ChefHat, Flame, Utensils, Filter } from 'lucide-react';
 import { Metadata } from 'next';
+
+// 1. Importar funciones de servidor (Datos)
 import { 
   getAllRecipes, 
   getFeaturedRecipes, 
   getRecipesByCategory, 
   searchRecipes,
-  parseISODuration,
-  mapCategoryToUI,
   getRecipesCount
 } from '@/lib/recipeUtils';
+
+// 2. Importar funciones de formato (UI/Cliente)
+import { 
+  parseISODuration, 
+  mapCategoryToUI 
+} from '@/lib/recipeFormatters';
+
+// 3. Importar Tipos (si los usas explícitamente)
+import type { Recipe } from '@/lib/recipeTypes';
 
 export const metadata: Metadata = {
   title: 'Sporvit Kitchen - Recetas Saludables | +20,000 Recetas Fit',

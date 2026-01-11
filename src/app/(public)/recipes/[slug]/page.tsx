@@ -13,13 +13,22 @@ import {
   Droplet,
   Zap
 } from 'lucide-react';
+
+// 1. Importar funciones de servidor (Datos)
 import { 
   getRecipeBySlug, 
   getAllRecipes,
-  getRelatedRecipes,
-  parseISODuration,
-  mapCategoryToUI 
+  getRelatedRecipes 
 } from '@/lib/recipeUtils';
+
+// 2. Importar funciones de formato (UI/Cliente)
+import { 
+  parseISODuration, 
+  mapCategoryToUI 
+} from '@/lib/recipeFormatters';
+
+// 3. Importar Tipos
+import type { Recipe } from '@/lib/recipeTypes';
 import ShareButtons from '@/components/ShareButtons';
 
 // Generar metadata dinámica para SEO

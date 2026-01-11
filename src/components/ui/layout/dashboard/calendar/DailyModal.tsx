@@ -10,7 +10,7 @@ import { MealDetails } from '@/components/dashboard/event-details/MealDetails';
 import { RestDayDetails } from '@/components/dashboard/event-details/RestDayDetails';
 import { RecipeBrowser } from '@/components/recipes/RecipeBrowser';
 import { RecipeDetailModal } from '@/components/recipes/RecipeDetailModal';
-import { Recipe } from '@/lib/recipeUtils';
+import type { Recipe } from '@/lib/recipeTypes';
 
 export const DailyModal = () => {
   const {
