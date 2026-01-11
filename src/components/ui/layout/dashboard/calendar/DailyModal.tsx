@@ -10,6 +10,8 @@ import { MealDetails } from '@/components/dashboard/event-details/MealDetails';
 import { RestDayDetails } from '@/components/dashboard/event-details/RestDayDetails';
 import { RecipeBrowser } from '@/components/recipes/RecipeBrowser';
 import { RecipeDetailModal } from '@/components/recipes/RecipeDetailModal';
+import { AddMealTabs } from '@/components/recipes/AddMealTabs';
+import { ManualRecipeData } from '@/components/recipes/ManualRecipeForm';
 import type { Recipe } from '@/lib/recipeTypes';
 
 export const DailyModal = () => {
@@ -29,6 +31,7 @@ export const DailyModal = () => {
   const [showEventTypeSelector, setShowEventTypeSelector] = useState(false);
   const [showRecipeOptionsModal, setShowRecipeOptionsModal] = useState(false);
   const [showRecipeBrowser, setShowRecipeBrowser] = useState(false);
+  const [showAddMealTabs, setShowAddMealTabs] = useState(false); // Nuevo estado para tabs inteligentes
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipeDetail, setShowRecipeDetail] = useState(false);
   const [selectedMealType, setSelectedMealType] = useState<string>('breakfast');
@@ -71,6 +74,7 @@ export const DailyModal = () => {
   useEffect(() => {
     if (!isOpen) {
       setShowRecipeBrowser(false);
+      setShowAddMealTabs(false);
       setSelectedRecipe(null);
       setShowRecipeDetail(false);
     }
@@ -212,6 +216,55 @@ export const DailyModal = () => {
     }
   };
 
+  // Handler para agregar receta manual
+  const handleManualRecipeSubmit = async (data: ManualRecipeData) => {
+    if (!selectedDate) return;
+
+    try {
+      const response = await fetch('/api/user/meals/add-manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...data,
+          date: selectedDate.toISOString(),
+          mealType: selectedMealType,
+        }),
+      });
+
+      if (response.ok) {
+        const mealTypeLabels: { [key: string]: string } = {
+          breakfast: 'desayuno',
+          lunch: 'almuerzo',
+          dinner: 'cena',
+          snack: 'snack',
+        };
+        showToastNotification(
+          'Receta agregada',
+          `"${data.name}" se agregó al ${mealTypeLabels[selectedMealType] || selectedMealType}`,
+          'success'
+        );
+        setShowAddMealTabs(false);
+        closeModal();
+        // Recargar para ver la nueva comida
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        const errorData = await response.json();
+        showToastNotification(
+          'Error',
+          errorData.error || 'No se pudo agregar la receta',
+          'error'
+        );
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showToastNotification(
+        'Error de conexión',
+        'Por favor intenta de nuevo',
+        'error'
+      );
+    }
+  };
+
   // Renderizar contenido según el modo y tipo de evento
   const renderContent = () => {
     // Modo: Ver evento existente
@@ -267,7 +320,20 @@ export const DailyModal = () => {
     }
 
     // Modo: Agregar nuevo evento
-    // Si está mostrando el recipe browser, renderizar eso
+    // Si está mostrando el sistema de tabs (nuevo sistema inteligente)
+    if (showAddMealTabs) {
+      return (
+        <AddMealTabs
+          mealType={selectedMealType}
+          selectedDate={selectedDate}
+          onRecipeSelected={handleSelectRecipe}
+          onManualRecipeSubmit={handleManualRecipeSubmit}
+          onClose={() => setShowAddMealTabs(false)}
+        />
+      );
+    }
+
+    // Si está mostrando el recipe browser antiguo (legacy)
     if (showRecipeBrowser) {
       // Mapear mealType a categoría
       const categoryMap: { [key: string]: string } = {
@@ -473,51 +539,28 @@ export const DailyModal = () => {
         </>
       )}
 
-      {/* Recipe Options Modal - Buscar o Ingresar Manualmente */}
+      {/* Recipe Options Modal - Ahora va directo al selector de tipo de comida */}
       {showRecipeOptionsModal && (
         <>
           <div className="fixed inset-0 bg-black/80 z-[60]" onClick={() => setShowRecipeOptionsModal(false)} />
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[61] w-full max-w-md p-6">
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
-              <h3 className="text-xl font-bold text-white mb-4">¿Cómo quieres agregar la comida?</h3>
-              <div className="space-y-3">
-                {/* Opción Buscar Receta */}
-                <button
-                  onClick={() => {
-                    setShowRecipeOptionsModal(false);
-                    setShowMealTypeSelector(true);
-                  }}
-                  className="w-full p-4 rounded-lg bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500/20 hover:border-orange-500/50 transition-all text-left group flex items-center gap-4"
-                >
-                  <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                    <Salad className="w-6 h-6 text-orange-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-white mb-0.5">Buscar receta</h4>
-                    <p className="text-xs text-slate-400">Del catálogo de recetas</p>
-                  </div>
-                </button>
-
-                {/* Opción Ingresar Manualmente */}
-                <button
-                  onClick={() => {
-                    setShowRecipeOptionsModal(false);
-                    alert('Funcionalidad en desarrollo');
-                  }}
-                  className="w-full p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all text-left group flex items-center gap-4"
-                >
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                    <FileText className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-white mb-0.5">Ingresar manualmente</h4>
-                    <p className="text-xs text-slate-400">Crear receta personalizada</p>
-                  </div>
-                </button>
-              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Agregar Comida</h3>
+              <p className="text-sm text-slate-400 mb-4">
+                Selecciona el tipo de comida. Podrás buscar en el catálogo o crear una receta manual.
+              </p>
+              <button
+                onClick={() => {
+                  setShowRecipeOptionsModal(false);
+                  setShowMealTypeSelector(true);
+                }}
+                className="w-full px-6 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
+              >
+                Continuar
+              </button>
               <button
                 onClick={() => setShowRecipeOptionsModal(false)}
-                className="w-full mt-4 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition-colors"
+                className="w-full mt-3 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition-colors"
               >
                 Cancelar
               </button>
@@ -543,8 +586,9 @@ export const DailyModal = () => {
                   <button
                     key={mealType.value}
                     onClick={() => {
-                      handleOpenRecipeBrowser(mealType.value);
+                      setSelectedMealType(mealType.value);
                       setShowMealTypeSelector(false);
+                      setShowAddMealTabs(true); // Usar nuevo sistema de tabs
                     }}
                     className="p-4 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:border-emerald-500 border border-slate-700 transition-all text-center group"
                   >
